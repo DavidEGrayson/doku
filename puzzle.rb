@@ -25,12 +25,12 @@ class Puzzle
       groups.each do |groupB|
         break if groupB == groupA
 
-        sum = groupA + groupB
+        union = groupA + groupB
         groups.each do |groupC|
           next if groupC == groupA || groupC == groupB
 
-          if groupC.subset? sum
-            inferred_groups << g = sum - groupC
+          if groupC.subset? union
+            inferred_groups << g = union - groupC
             #puts "Inferred #{g} A=#{groupA.inspect} B=#{groupB.inspect} C=#{groupC.inspect}"
           end
         end
