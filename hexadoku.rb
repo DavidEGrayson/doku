@@ -1,6 +1,8 @@
 require_relative 'puzzle.rb'
 
 class Hexadoku < Puzzle
+  include PuzzleOnGrid
+
   def initialize(initial_view)
     @initial_view = initial_view
     @symbols = (0..15).to_a

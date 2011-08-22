@@ -1,11 +1,25 @@
 class Puzzle
-  Separators = %w{- + |}
-
-  attr_accessor :initial_view
   attr_accessor :symbols
-  attr_accessor :symbol_strings
   attr_accessor :squares
   attr_accessor :groups
+
+  def define_group(args)
+    if args.is_a? Hash
+      define_group squares.select { |s| s.matches? args }
+    else
+      group = args.dup
+      raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{group.size}." if group.size != symbols.size 
+      @groups = []
+      @groups << group
+    end
+  end
+end
+
+module PuzzleOnGrid
+  Separators = %w{- + |}
+
+  attr_accessor :symbol_strings
+  attr_accessor :initial_view
 
   def parse_initial_view
     @squares = []
@@ -28,17 +42,6 @@ class Puzzle
         x += 1
       end
       y += 1
-    end
-  end
-
-  def define_group(args)
-    if args.is_a? Hash
-      define_group squares.select { |s| s.matches? args }
-    else
-      group = args.dup
-      raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{group.size}." if group.size != symbols.size 
-      @groups = []
-      @groups << group
     end
   end
 end
