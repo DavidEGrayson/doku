@@ -42,6 +42,11 @@ class Hexadoku5 < Hexadoku
     define_groups_for_hexadoku 0, 8
     define_groups_for_hexadoku 16, 8
     define_groups_for_hexadoku 8, 16
+
+    # Avoid double-counting the column and row groups
+    # in the center hexadoku and avoid triple-counting the
+    # box groups.
+    @groups.uniq!
   end
 end
 

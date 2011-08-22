@@ -15,8 +15,20 @@ describe $puzzle do
     first_row = $puzzle.squares.select { |s| s.matches? x:8, y:(0..15) }
   end
 
-  it 'has 5*3*16 + 2*16 groups' do
-    $puzzle.groups.size.should == 5*3*16 + 2*16
+  it 'has the right number of groups' do
+    # A hexadoku has 3*16 groups (16 columns, 16 rows, 16 boxes)
+    # There are 5 hexadokus.
+    # The reckoning above counted the 32 rows and columns of the 
+    # center hexadoku twice, and counted the 16 boxes of the
+    # center hexaodoku thrice, so subtract 64.
+    # There are 2*16 inferred groups (16 columns, 16 rows).
+    $puzzle.groups.size.should == 5*3*16 - 64 + 2*16
+  end
+end
+
+describe Solver do
+  it 'produces the right solution' do
+    solution = Solver.solve $puzzle
   end
 end
 

@@ -30,7 +30,7 @@ class Puzzle
       candidates = groups.select { |g| g.intersection(groupC).size == glyphs.size/2 }
       candidates.each do |groupA|
         candidates.each do |groupB|
-          next if groupB == groupA
+          break if groupB == groupA
 
           g = groupA + groupB - groupC
           inferred_groups << g if g.size == glyphs.size
@@ -38,7 +38,7 @@ class Puzzle
       end
     end
 
-    self.groups += inferred_groups.uniq
+    self.groups += inferred_groups
   end
 end
 
