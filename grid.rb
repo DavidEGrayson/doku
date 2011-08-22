@@ -47,4 +47,9 @@ module SquareOnGrid
     end
     return true
   end
+
+  def inspect
+    "SquareOnGrid(#@x, #@y)"
+  end
 end
+

@@ -10,6 +10,7 @@ class Hexadoku < Puzzle
     @symbol_strings = @symbols.collect { |s| "%X"%[s] }
     parse_initial_view
     define_groups
+    infer_groups
   end
 
   def define_groups

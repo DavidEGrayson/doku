@@ -15,8 +15,8 @@ describe $puzzle do
     first_row = $puzzle.squares.select { |s| s.matches? x:8, y:(0..15) }
   end
 
-  it 'has 5*3*16 groups' do
-    $puzzle.groups.size.should == 5*3*16
+  it 'has 5*3*16 + 2*16 groups' do
+    $puzzle.groups.size.should == 5*3*16 + 2*16
   end
 end
 

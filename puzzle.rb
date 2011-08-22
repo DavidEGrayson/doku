@@ -15,6 +15,30 @@ class Puzzle
       @groups << Group.new(squares)
     end
   end
+
+  # Suppose A, B, and C are groups.
+  # If the A and B are disjoint and C is a subset of A+B, then
+  # (A+B)-C can be inferred as a group.
+  def infer_groups
+    inferred_groups = []
+    groups.each do |groupA|
+      groups.each do |groupB|
+        break if groupB == groupA
+
+        sum = groupA + groupB
+        groups.each do |groupC|
+          next if groupC == groupA || groupC == groupB
+
+          if groupC.subset? sum
+            inferred_groups << g = sum - groupC
+            #puts "Inferred #{g} A=#{groupA.inspect} B=#{groupB.inspect} C=#{groupC.inspect}"
+          end
+        end
+      end
+    end
+
+    self.groups += inferred_groups.uniq
+  end
 end
 
 class Square
