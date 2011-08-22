@@ -27,8 +27,18 @@ describe $puzzle do
 end
 
 describe Solver do
-  it 'produces the right solution' do
-    solution = Solver.solve $puzzle
+  context 'given the puzzle' do
+    before(:all) do
+      @solution = Solver.solve $puzzle
+    end
+
+    it 'solution is consistent with given glyphs' do
+      $puzzle.squares.each do |square|
+        if square.given_glyph
+          square.given_glyph.should == @solution[square]
+        end
+      end
+    end
   end
 end
 

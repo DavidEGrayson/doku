@@ -25,7 +25,7 @@ module PuzzleOnGrid
           square.char_number = char_number
 
           if glyph_strings.include? char
-            square.given_value = glyphs[glyph_strings.index char]
+            square.given_glyph = glyphs[glyph_strings.index char]
           end
         end
         x += 1

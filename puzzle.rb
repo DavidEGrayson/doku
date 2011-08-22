@@ -43,5 +43,5 @@ class Puzzle
 end
 
 class Square
-  attr_accessor :given_value
+  attr_accessor :given_glyph
 end
