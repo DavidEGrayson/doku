@@ -32,10 +32,8 @@ class Puzzle
         candidates.each do |groupB|
           next if groupB == groupA
 
-          union = groupA + groupB
-          if groupC.subset? union
-            inferred_groups << union - groupC
-          end
+          g = groupA + groupB - groupC
+          inferred_groups << g if g.size == glyphs.size
         end
       end
     end
