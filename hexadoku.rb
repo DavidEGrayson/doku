@@ -1,38 +1,24 @@
 require_relative 'puzzle.rb'
 
-# From Elektor 7/8-2011
 class Hexadoku < Puzzle
-  Separators = %w{- + |}
-
-  def initialize(string)
-    super()
+  def initialize(initial_view)
+    @initial_view = initial_view
     @symbols = (0..15).to_a
     @symbol_strings = @symbols.collect { |s| "%X"%[s] }
-
-    y = 0
-    string.lines.each_with_index do |line, line_number|
-      next if (line.chars.to_a - Separators).empty?
-
-      x = 0
-      line.chars.each_with_index do |char, char_number|
-        next if Separators.include?(char)
-
-        if char == '.' || symbol_strings.include?(char)
-          @squares << square = Square.new(x,y,line_number,char_number)
-
-          if symbol_strings.include? char
-            square.given_value = symbols[symbol_strings.index char]
-          end
-        end
-        x += 1
-      end
-      y += 1
-    end
+    parse_initial_view
+    define_groups
   end
 
+  def define_groups
+    define_group x: 8...24, y: 0
+  end
 end
 
-$puzzle = Hexadoku.new <<END
+class Hexadoku5 < Hexadoku
+end
+
+# From Elektor 7/8-2011
+$puzzle = Hexadoku5.new <<END
         |........|.0.17...|
         |..213...|5.B4....|
         |..0.....|......2.|
