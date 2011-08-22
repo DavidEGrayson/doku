@@ -8,7 +8,7 @@ class Puzzle
       define_group squares.select { |s| s.matches? args }
     else
       group = args.dup
-      raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{group.size}." if group.size != symbols.size 
+      raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{group.size}.  group = #{group.inspect}" if group.size != symbols.size 
       @groups = []
       @groups << group
     end
@@ -26,6 +26,7 @@ module PuzzleOnGrid
 
     y = 0
     initial_view.lines.each_with_index do |line, line_number|
+      line.chomp!
       next if (line.chars.to_a - Separators).empty?
 
       x = 0
@@ -33,7 +34,12 @@ module PuzzleOnGrid
         next if Separators.include?(char)
 
         if char == '.' || symbol_strings.include?(char)
-          @squares << square = Square.new(x,y,line_number,char_number)
+          @squares << square = Square.new
+          square.extend SquareOnGrid
+          square.x = x
+          square.y = y
+          square.line_number = line_number
+          square.char_number = char_number
 
           if symbol_strings.include? char
             square.given_value = symbols[symbol_strings.index char]
@@ -47,16 +53,15 @@ module PuzzleOnGrid
 end
 
 class Square
+  attr_accessor :given_value
+end
+
+module SquareOnGrid
   attr_accessor :x
   attr_accessor :y
   attr_accessor :line_number
   attr_accessor :char_number
-  attr_accessor :given_value
-
-  def initialize(x, y, line_number, char_number)
-    @x, @y, @line_number, @char_number = x, y, line_number, char_number
-  end
-
+  
   def matches?(args)
     args.each do |property, values| 
       return false unless values === send(property)

@@ -10,5 +10,9 @@ describe $puzzle do
     first_row = $puzzle.squares.select { |s| s.matches?(y:0) }
     first_row.size.should == 16
   end
+
+  it 'has 16 squares in the first column of the top puzzle' do
+    first_row = $puzzle.squares.select { |s| s.matches? x:8, y:(0..15) }
+  end
 end
 

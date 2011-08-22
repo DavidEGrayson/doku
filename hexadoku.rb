@@ -12,11 +12,22 @@ class Hexadoku < Puzzle
   end
 
   def define_groups
-    define_group x: 8...24, y: 0
+    define_groups_for_hexadoku 0, 0
   end
+
+  def define_groups_for_hexadoku(start_x, start_y)
+    0.upto(15).each do |n|
+      define_group x:(start_x+n), y:(start_y..(start_y+15))
+      define_group x:(start_x..(start_x+15)), y:(start_y+n)
+    end
+  end
+
 end
 
 class Hexadoku5 < Hexadoku
+  def define_groups
+    define_groups_for_hexadoku(8, 0)
+  end
 end
 
 # From Elektor 7/8-2011
