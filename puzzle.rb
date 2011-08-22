@@ -17,23 +17,24 @@ class Puzzle
     @groups << Group.new(s)
   end
 
-  # Suppose A, B, and C are groups.
-  # If the A and B are disjoint and C is a subset of A+B, then
-  # (A+B)-C can be inferred as a group.
+  # There are several ways to infer new groups from the ones
+  # already defined, but here is one:
+  #   Suppose A, B, and C are groups.
+  #   If the A and B are disjoint and C is a subset of A+B, then
+  #   (A+B)-C can be inferred as a group.
+  # This function detects such triplets (A, B, C) with the added
+  # condition that A-C and B-C are the same size.
   def infer_groups
     inferred_groups = []
-    groups.each do |groupA|
-      groups.each do |groupB|
-        break if groupB == groupA
-        next unless groupA.intersection(groupB).empty?
+    groups.each do |groupC|
+      candidates = groups.select { |g| g.intersection(groupC).size == glyphs.size/2 }
+      candidates.each do |groupA|
+        candidates.each do |groupB|
+          next if groupB == groupA
 
-        union = groupA + groupB
-        groups.each do |groupC|
-          next if groupC == groupA || groupC == groupB
-
+          union = groupA + groupB
           if groupC.subset? union
-            inferred_groups << g = union - groupC
-            #puts "Inferred #{g} A=#{groupA.inspect} B=#{groupB.inspect} C=#{groupC.inspect}"
+            inferred_groups << union - groupC
           end
         end
       end
