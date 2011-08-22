@@ -1,7 +1,7 @@
 require_relative 'group'
 
 class Puzzle
-  attr_accessor :symbols
+  attr_accessor :glyphs
   attr_accessor :squares
   attr_accessor :groups
 
@@ -12,7 +12,7 @@ class Puzzle
       args.dup
     end
 
-    raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{s.size}.  squares = #{s.inspect}" if s.size != symbols.size 
+    raise ArgumentError, "Expected groups to be of size #{glyphs.size} but got one of size #{s.size}.  squares = #{s.inspect}" if s.size != glyphs.size 
     @groups ||= []
     @groups << Group.new(s)
   end
@@ -25,6 +25,7 @@ class Puzzle
     groups.each do |groupA|
       groups.each do |groupB|
         break if groupB == groupA
+        next unless groupA.intersection(groupB).empty?
 
         union = groupA + groupB
         groups.each do |groupC|

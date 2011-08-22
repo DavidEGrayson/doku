@@ -6,8 +6,8 @@ class Hexadoku < Puzzle
 
   def initialize(initial_view)
     @initial_view = initial_view
-    @symbols = (0..15).to_a
-    @symbol_strings = @symbols.collect { |s| "%X"%[s] }
+    @glyphs = (0..15).to_a
+    @glyph_strings = @glyphs.collect { |s| "%X"%[s] }
     parse_initial_view
     define_groups
     infer_groups

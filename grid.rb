@@ -1,7 +1,7 @@
 module PuzzleOnGrid
   Separators = %w{- + |}
 
-  attr_accessor :symbol_strings
+  attr_accessor :glyph_strings
   attr_accessor :initial_view
 
   def parse_initial_view
@@ -16,7 +16,7 @@ module PuzzleOnGrid
       line.chars.each_with_index do |char, char_number|
         next if Separators.include?(char)
 
-        if char == '.' || symbol_strings.include?(char)
+        if char == '.' || glyph_strings.include?(char)
           @squares << square = Square.new
           square.extend SquareOnGrid
           square.x = x
@@ -24,8 +24,8 @@ module PuzzleOnGrid
           square.line_number = line_number
           square.char_number = char_number
 
-          if symbol_strings.include? char
-            square.given_value = symbols[symbol_strings.index char]
+          if glyph_strings.include? char
+            square.given_value = glyphs[glyph_strings.index char]
           end
         end
         x += 1
