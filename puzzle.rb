@@ -6,14 +6,15 @@ class Puzzle
   attr_accessor :groups
 
   def define_group(args)
-    if args.is_a? Hash
-      define_group squares.select { |s| s.matches? args }
+    s = if args.is_a? Hash
+      squares.select { |sq| sq.matches? args }
     else
-      squares = args.dup
-      raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{group.size}.  squares = #{squares.inspect}" if squares.size != symbols.size 
-      @groups ||= []
-      @groups << Group.new(squares)
+      args.dup
     end
+
+    raise ArgumentError, "Expected groups to be of size #{symbols.size} but got one of size #{s.size}.  squares = #{s.inspect}" if s.size != symbols.size 
+    @groups ||= []
+    @groups << Group.new(s)
   end
 
   # Suppose A, B, and C are groups.
