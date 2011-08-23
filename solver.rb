@@ -17,17 +17,15 @@ class Solver
     end
   end
 
-  def squares
-    puzzle.squares
-  end
-
-  def glyphs
-    puzzle.glyphs
-  end
-  
   def solve
+    c = 0
     while not solved?
       return nil if !make_next_guess
+
+      # tmphax status reports
+      if ((c+=1) % 1000) == 0
+        puts puzzle.glyph_state_to_string(glyph_state)
+      end
     end
     glyph_state
   end
@@ -37,7 +35,7 @@ class Solver
   end
 
   def next_square_to_guess
-    unguessed_squares = squares.select { |sq| glyph_state[sq] == nil }
+    unguessed_squares = puzzle.squares.select { |sq| glyph_state[sq] == nil }
     unguessed_squares.first
   end
 
@@ -47,9 +45,7 @@ class Solver
     possible_glyphs = possible_glyph_guesses(square)
 
     if possible_glyphs.size > 0
-      g = Guess.new(square, possible_glyphs)
-      #puts "Created guess #{g.inspect}"
-      push_guess g
+      push_guess Guess.new(square, possible_glyphs)
     else
       backtrack_and_guess
     end
@@ -68,15 +64,34 @@ class Solver
   end
 
   def possible_glyph_guesses(square)
-    possible_glyphs = glyphs.dup
+    possible_glyphs = puzzle.glyphs.dup
     
-    # TODO: finish this
+    groups_that_include(square).each do |group|
+      possible_glyphs -= glyphs_present_in group
+    end
+
+    return possible_glyphs
+  end
+
+  def groups_that_include square
+    # TODO: try caching the result
+    puzzle.groups.select { |g| g.include? square }
+  end
+
+  def glyphs_present_in(group)
+    group.collect { |square| glyph_state[square] }.uniq - [nil]
   end
 
   def push_guess(guess)
-    puts "Guess #{guess.square.inspect} = #{guess.glyph}"
+    raise "tmphax error #{guess.glyph.inspect}" if !puzzle.glyphs.include?(guess.glyph)
     glyph_state[guess.square] = guess.glyph
     guesses.push guess
+  end
+
+  def pop_guess
+    guess = guesses.pop
+    glyph_state[guess.square] = nil
+    return guess
   end
 
 end

@@ -1,7 +1,7 @@
 require_relative 'hexadoku'
 require_relative 'solver'
 
-describe $puzzle do
+describe '$puzzle' do
   it 'has 768 squares' do
     $puzzle.squares.size.should == 768
   end
@@ -24,6 +24,15 @@ describe $puzzle do
     # There are 2*16 inferred groups (16 columns, 16 rows).
     $puzzle.groups.size.should == 5*3*16 - 64 + 2*16
   end
+
+  it 'has valid line and char numbers' do
+    lines = $puzzle.initial_view.split("\n")
+    $puzzle.squares.each do |square|
+      line = lines[square.line_number]
+      line.should_not be_nil
+      line.size.should > square.char_number
+    end
+  end
 end
 
 describe Solver do
@@ -38,6 +47,17 @@ describe Solver do
           square.given_glyph.should == @solution[square]
         end
       end
+    end
+
+    it 'contains squares glyphs' do
+      @solution.each do |square, glyph|
+        $puzzle.squares.should include square
+        $puzzle.glyphs.should include glyph
+      end
+    end
+
+    it 'is the correct solution' do
+      puts $puzzle.glyph_state_to_string @solution
     end
   end
 end

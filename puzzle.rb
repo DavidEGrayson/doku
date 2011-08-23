@@ -40,6 +40,10 @@ class Puzzle
 
     self.groups += inferred_groups
   end
+
+  def glyph_state_to_string(glyph_state)
+    glyph_state.inspect
+  end
 end
 
 class Square
