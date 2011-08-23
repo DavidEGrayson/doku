@@ -17,7 +17,7 @@ class Solver
     end
 
     @debug = false
-    @debug_grid = true
+    @debug_grid = false
   end
 
   def solve
