@@ -50,7 +50,7 @@ class Hexadoku5 < Hexadoku
 end
 
 # From Elektor 7/8-2011
-$puzzle = Hexadoku5.new <<END
+$hexadoku = Hexadoku5.new <<END
         |........|.0.17...|
         |..213...|5.B4....|
         |..0.....|......2.|
