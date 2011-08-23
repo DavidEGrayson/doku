@@ -15,6 +15,8 @@ class Solver
     @glyph_state = puzzle.squares.each_with_object({}) do |square, h|
       h[square] = square.given_glyph
     end
+
+    @debug = false
   end
 
   def solve
@@ -24,7 +26,7 @@ class Solver
 
       # tmphax status reports
       if ((c+=1) % 1000) == 0
-        puts puzzle.glyph_state_to_string(glyph_state)
+        #puts puzzle.glyph_state_to_string(glyph_state)
       end
     end
     glyph_state
@@ -58,6 +60,7 @@ class Solver
         # Unsolvable puzzle.
         return false
       elsif guess = pop_guess.next
+        print "Backtrack "        
         return push_guess guess
       end
     end
@@ -83,7 +86,10 @@ class Solver
   end
 
   def push_guess(guess)
-    raise "tmphax error #{guess.glyph.inspect}" if !puzzle.glyphs.include?(guess.glyph)
+    if @debug
+      puts "Guess #{guess.square} = #{guess.glyph} (#{guess.other_possible_glyphs})"
+    end
+
     glyph_state[guess.square] = guess.glyph
     guesses.push guess
   end
@@ -113,11 +119,15 @@ class Solver::Guess
     @glyphs.size > 1
   end
 
+  def other_possible_glyphs
+    g = @glyphs.dup
+    g.shift
+    g
+  end
+
   def next
     if other_possible_glyphs?
-      g = glyphs.dup
-      g.pop
-      self.class.new square, g
+      self.class.new square, other_possible_glyphs
     else
       nil
     end

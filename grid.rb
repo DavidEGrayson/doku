@@ -58,7 +58,7 @@ module SquareOnGrid
   attr_accessor :y
   attr_accessor :line_number
   attr_accessor :char_number
-  
+
   def matches?(args)
     args.each do |property, values| 
       return false unless values === send(property)
@@ -66,8 +66,8 @@ module SquareOnGrid
     return true
   end
 
-  def inspect
-    "SquareOnGrid(#@x, #@y)"
+  def to_s
+    "Square(#@x, #@y)"
   end
 end
 
