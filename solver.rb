@@ -17,16 +17,17 @@ class Solver
     end
 
     @debug = false
+    @debug_grid = true
   end
 
   def solve
-    c = 0
+    @loop_count = 0
     while not solved?
       return nil if !make_next_guess
 
       # tmphax status reports
-      if ((c+=1) % 1000) == 0
-        #puts puzzle.glyph_state_to_string(glyph_state)
+      if ((@loop_count+=1) % 1000) == 0
+        print_status
       end
     end
     glyph_state
@@ -60,7 +61,7 @@ class Solver
         # Unsolvable puzzle.
         return false
       elsif guess = pop_guess.next
-        print "Backtrack "        
+        print "Backtrack " if @debug
         return push_guess guess
       end
     end
@@ -86,12 +87,10 @@ class Solver
   end
 
   def push_guess(guess)
-    if @debug
-      puts "Guess #{guess.square} = #{guess.glyph} (#{guess.other_possible_glyphs})"
-    end
-
     glyph_state[guess.square] = guess.glyph
     guesses.push guess
+    push_guess_debug
+    return guess
   end
 
   def pop_guess
@@ -100,6 +99,31 @@ class Solver
     return guess
   end
 
+end
+
+class Solver   # Debug functions
+  def push_guess_debug
+    guess = guesses.last
+
+    @max_depth ||= 0
+
+    if guesses.size > @max_depth
+      @max_depth = guesses.size
+      print_status
+    end
+
+    if @debug
+      puts "Guess #{guess.square} = #{guess.glyph} (#{guess.other_possible_glyphs}), depth=#{guesses.size} (max #{@max_depth})"
+    end
+  end
+
+  def print_status
+    return unless @debug_grid
+    puts
+    puts
+    puts "Depth: %3u (max %3u).  Loops: %10u" % [guesses.size, @max_depth, @loop_count]
+    puts puzzle.glyph_state_to_string(glyph_state)
+  end
 end
 
 class Solver::Guess
