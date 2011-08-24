@@ -1,18 +1,18 @@
 module DancingLinks
   class LinkEnumerator
     include Enumerable
-    def initialize(link, start, termination=start)
+    def initialize(link, start, endpoint=start)
       @link = link
       @start = start
-      @termination = termination
+      @end = endpoint
     end
 
     def each
       n = @start
       while true
+        return if n == @end
         yield n
-        n = n.send(@link)
-        return nil if n == @termination
+        n = n.send @link
       end
     end
   end
