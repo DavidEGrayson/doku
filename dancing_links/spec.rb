@@ -39,8 +39,13 @@ describe DancingLinks::SparseMatrix do
     end
 
     it "has the expected columns" do
-      columns = @sm.columns.to_a
-      Set.new(columns.collect &:id).should == Set.new(@universe)
+      column_ids = @sm.columns.collect &:id
+      Set.new(column_ids).should == Set.new(@universe)
+      columns = @universe.collect { |e| @sm.column e }
+      columns[0].down.right.up.should == columns[3]
+      columns[0].down.should_not == columns[0]
+      columns[0].rows.to_a.size.should == 2
+      columns[0].down.should == columns[0][0]
     end
   end
 end

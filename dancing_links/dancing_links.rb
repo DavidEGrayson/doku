@@ -2,9 +2,7 @@ module DancingLinks
   class LinkEnumerator
     include Enumerable
     def initialize(link, start, endpoint=start)
-      @link = link
-      @start = start
-      @end = endpoint
+      @link, @start, @end = link, start, endpoint
     end
 
     def each
@@ -65,6 +63,16 @@ module DancingLinks
         @up = @down = self
         @id = id
       end
+
+      def rows
+        LinkEnumerator.new :down, self.down, self
+      end
+
+      def [](row_index)
+        e = rows
+        row_index.times { e.next }
+        e.peek
+      end
     end
 
     class SparseMatrix::Node
@@ -73,7 +81,7 @@ module DancingLinks
 
       attr_reader :column
 
-      def intialize(column)
+      def initialize(column)
         @column = column
         self.up = column.up
         self.down = column
@@ -98,15 +106,19 @@ module DancingLinks
       LinkEnumerator.new :right, self.right, self
     end
 
-    def find_or_create_column(id)
-      @columns[id] || create_column(id)
-    end
-
     def create_column(id)
       column = Column.new(id)
       column.insert_left self
       @column_count += 1
       return @columns[id] = column
+    end
+
+    def column(id)
+      @columns[id]
+    end
+
+    def find_or_create_column(id)
+      @columns[id] || create_column(id)
     end
 
     def self.from_sets(rows)
