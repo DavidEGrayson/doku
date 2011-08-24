@@ -1,4 +1,22 @@
 module DancingLinks
+  class LinkEnumerator
+    include Enumerable
+    def initialize(link, start, termination=start)
+      @link = link
+      @start = start
+      @termination = termination
+    end
+
+    def each
+      n = @start
+      while true
+        yield n
+        n = n.send(@link)
+        return nil if n == @termination
+      end
+    end
+  end
+
   module HorizontalLinks
     def self.included(klass)
       klass.instance_eval do
@@ -19,7 +37,7 @@ module DancingLinks
     def insert_right(obj)
       self.left, self.right = obj, obj.right
       reinsert_horizontal
-    end
+    end  
   end
 
   module VerticalLinks
@@ -29,48 +47,55 @@ module DancingLinks
         attr_accessor :down
       end
     end
-
-    def reinsert_vertical
-      up.down = down.up = self
-    end
-
-    def insert_up(obj)
-      self.up, self.down = obj.up, obj
-      reinsert_vertical
-    end
-
-    def insert_down(obj)
-      self.up, self.down = obj, obj.down
-      reinsert_vertical
-    end
   end
 
+  # SparseMatrix object is the Root object from Knuth.
   class SparseMatrix
+
+    # The Column Header object from Knuth.
     class SparseMatrix::Column
       include HorizontalLinks
       include VerticalLinks
 
       # An ID object provided by the user to give meaning to the column.
       # (the N relation from Knuth)
-      attr_accessor :id
+      attr_reader :id
 
       def initialize(id)
-        @id = id
         @up = @down = self
+        @id = id
       end
     end
 
     class SparseMatrix::Node
       include HorizontalLinks
       include VerticalLinks
+
+      attr_reader :column
+
+      def intialize(column)
+        @column = column
+        self.up = column.up
+        self.down = column
+        reinsert
+      end
+
+      def reinsert
+        up.down = down.up = self
+      end
     end
 
-    include HorizontalLinks  # SparseMatrix object is the Root object from Knuth.
-    attr_accessor :column_count # TODO: implement
+    include HorizontalLinks
+    attr_reader :column_count
 
     def initialize
+      @column_count = 0
       @left = @right = self
       @columns = {}   # column_id object => SparseMatrixColumn
+    end
+
+    def columns
+      LinkEnumerator.new :right, self.right, self
     end
 
     def find_or_create_column(id)
@@ -80,12 +105,12 @@ module DancingLinks
     def create_column(id)
       column = Column.new(id)
       column.insert_left self
+      @column_count += 1
       return @columns[id] = column
     end
 
     def self.from_sets(rows)
-      sparse_matrix = new
-      rows.each do |row|
+      rows.each_with_object(new) do |row, sparse_matrix|
         sparse_matrix.add_row row
       end
     end
@@ -99,7 +124,6 @@ module DancingLinks
       row.each do |column_id|
         column = find_or_create_column(column_id)
         node = Node.new(column)
-        node.insert_up column
         if first_node.nil?
           first_node = node.left = node.right = node
         else
