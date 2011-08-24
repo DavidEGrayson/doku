@@ -64,14 +64,8 @@ module DancingLinks
         @id = id
       end
 
-      def rows
+      def nodes
         LinkEnumerator.new :down, self.down, self
-      end
-
-      def [](row_index)
-        e = rows
-        row_index.times { e.next }
-        e.peek
       end
     end
 

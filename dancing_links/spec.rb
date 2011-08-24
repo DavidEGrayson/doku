@@ -16,7 +16,6 @@ describe DancingLinks::SparseMatrix do
 
     it "has no columns" do
       @sm.columns.to_a.size.should == 0
-      @sm.columns.each { |c| raise }
     end
   end
 
@@ -41,11 +40,32 @@ describe DancingLinks::SparseMatrix do
     it "has the expected columns" do
       column_ids = @sm.columns.collect &:id
       Set.new(column_ids).should == Set.new(@universe)
+    end
+
+    it "has the expected structure" do
+      # This test is not exhaustive.
       columns = @universe.collect { |e| @sm.column e }
-      columns[0].down.right.up.should == columns[3]
       columns[0].down.should_not == columns[0]
-      columns[0].rows.to_a.size.should == 2
-      columns[0].down.should == columns[0][0]
+      columns[0].up.should_not == columns[0]
+      columns[0].nodes.to_a.size.should == 2
+      columns[0].up.up.should == columns[0].down
+      columns[0].up.should == columns[0].down.down
+
+      columns[0].down.right.up.should == columns[3]
+      columns[3].down.left.up.should == columns[0]
+      columns[0].down.down.right.up.up.should == columns[3]
+      columns[0].down.down.right.right.right.down.down.should == columns[3]
+      columns[2].up.right.down.should == columns[5]
+
+      columns[6].down.down.down.left.up.left.down.left.down.down.should == columns[1]
+    end
+
+    it "every row has a reference to the column" do
+      @sm.columns.each do |column|
+        column.nodes.each do |node|
+          node.column.should == column
+        end
+      end
     end
   end
 end
