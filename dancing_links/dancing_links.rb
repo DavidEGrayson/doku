@@ -118,6 +118,7 @@ module DancingLinks
       include VerticalLinks
 
       attr_accessor :column
+      attr_accessor :row_id
 
       # All nodes in the row, starting with self.
       def row_rightward
@@ -174,8 +175,14 @@ module DancingLinks
         sparse_matrix.find_or_create_column column_id
       end
 
-      rows.each do |row|
-        sparse_matrix.add_row row
+      if rows.is_a? Array
+        rows.each do |column_ids|
+          sparse_matrix.add_row column_ids
+        end
+      else
+        rows.each do |row_id, column_ids|
+          sparse_matrix.add_row column_ids, row_id
+        end
       end
 
       sparse_matrix
@@ -184,10 +191,10 @@ module DancingLinks
     # row is an Enumerable of column_ids.
     # If a column_id is not recognized, it will be added to the matrix
     # as a new column.
-    def add_row(row)
+    def add_row(column_ids, row_id=column_ids.dup)
       first_node = nil
       last_node = nil
-      row.each do |column_id|
+      column_ids.each do |column_id|
         column = find_or_create_column(column_id)
         node = Node.new
 
@@ -195,7 +202,8 @@ module DancingLinks
         node.column = column
         node.insert_above column
 
-        # Set the horizontal links.
+        # Set the horizontal links and row_id.
+        node.row_id = row_id
         if first_node.nil?
           first_node = node.left = node.right = node
         else
@@ -237,11 +245,7 @@ module DancingLinks
     def find_exact_cover(rows=[])
       if right == self
         # Success
-        return rows.collect do |r|
-          r.row_rightward.collect do |n|
-            n.column.id
-          end
-        end
+        return rows.collect &:row_id
       end
 
       c = choose_column
