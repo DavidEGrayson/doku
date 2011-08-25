@@ -85,9 +85,15 @@ module DancingLinks
         @size = 0
       end
 
-      def nodes
-        LinkEnumerator.new :down, self.down, self
+      def nodes_downward
+        LinkEnumerator.new :down, down, self
       end
+
+      def nodes_upward
+        LinkEnumerator.new :up, up, self
+      end
+
+      alias :nodes :nodes_downward      
     end
 
     class SparseMatrix::Node
@@ -97,9 +103,15 @@ module DancingLinks
       attr_accessor :column
 
       # peers does NOT include self; a better name is welcome
-      def peers
-        LinkEnumerator.new :right, self.right, self
+      def peers_rightward
+        LinkEnumerator.new :right, right, self
       end
+
+      def peers_leftward
+        LinkEnumerator.new :left, left, self
+      end
+
+      alias :peers :peers_rightward
     end
 
     include HorizontalLinks
@@ -178,12 +190,18 @@ module DancingLinks
       column.remove_horizontal
       @column_count -= 1
 
-      column.nodes.each do |i|
-        i.peers.each do |j|
+      column.nodes_downward.each do |i|
+        i.peers_rightward.each do |j|
           j.remove_vertical
           j.column.size -= 1
         end
       end
+    end
+
+    # From page 6 of Knuth.
+    def uncover_column(column)
+      @column_count += 1
+      raise NotImplementedError
     end
   end
 end
