@@ -1,6 +1,16 @@
 module DancingLinks
+  # The data structures used here are too complicated
+  # and interconnected for Ruby to efficiently inspect
+  # them.
+  module Uninspectable
+    def inspect
+      to_s
+    end
+  end
+
   class LinkEnumerator
     include Enumerable
+
     def initialize(link, start, endpoint=start)
       @link, @start, @end = link, start, endpoint
     end
@@ -16,6 +26,8 @@ module DancingLinks
   end
 
   module HorizontalLinks
+    include Uninspectable
+
     def self.included(klass)
       klass.instance_eval do
         attr_accessor :left
@@ -43,6 +55,8 @@ module DancingLinks
   end
 
   module VerticalLinks
+    include Uninspectable
+
     def self.included(klass)
       klass.instance_eval do
         attr_accessor :up

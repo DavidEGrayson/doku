@@ -1,5 +1,4 @@
 require_relative 'dancing_links'
-require 'set'
 
 describe DancingLinks::LinkEnumerator do
   it "has a nice inspect function" do
