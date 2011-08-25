@@ -242,37 +242,37 @@ module DancingLinks
     end
 
     # From page 5 of Knuth.
-    def find_exact_cover(rows=[])
+    def find_exact_cover(nodes=[])
       if right == self
         # Success
-        return rows.collect &:row_id
+        return nodes.collect &:row_id
       end
 
       c = choose_column
-      #puts "  "*rows.size+"Chose and covered column #{c.id}"
+      #puts "  "*nodes.size+"Chose and covered column #{c.id}"
       cover_column c
 
       c.nodes_downward.each do |r|
-        #puts "  "*rows.size+"Chose node #{r}"
+        #puts "  "*nodes.size+"Chose node #{r}"
 
-        rows.push r
+        nodes.push r
 
         r.peers_rightward.each do |j|
-          #puts "  "*rows.size+"Covering column #{j.column.id}"
+          #puts "  "*nodes.size+"Covering column #{j.column.id}"
           cover_column j.column
         end
 
-        if answer = find_exact_cover(rows)
+        if answer = find_exact_cover(nodes)
           # Success
           return answer
         end
         
         r.peers_leftward.each do |j|
-          #puts "  "*rows.size+"Uncovering column #{j.column.id}"
+          #puts "  "*nodes.size+"Uncovering column #{j.column.id}"
           uncover_column j.column
         end
 
-        rows.pop
+        nodes.pop
       end
 
       uncover_column c
