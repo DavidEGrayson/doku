@@ -118,8 +118,9 @@ module DancingLinks
 
       attr_accessor :column
 
+      # All nodes in the row, starting with self.
       def row_rightward
-        raise NotImplemented
+        LinkEnumerator.new :right, self, true
       end
 
       # peers does NOT include self; a better name is welcome
@@ -236,8 +237,7 @@ module DancingLinks
       if right == self
         # Success
         return rows.collect do |r|
-          # TODO: replace ugliness with r.row_rightward
-          ([r]+r.peers_rightward.to_a).collect do |n|
+          r.row_rightward.collect do |n|
             n.column.id
           end
         end
