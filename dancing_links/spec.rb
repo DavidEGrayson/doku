@@ -19,20 +19,7 @@ describe DancingLinks::SparseMatrix do
     end
   end
 
-  context "given figure 3 from Knuth" do
-    before do
-      @universe = u = (1..7).collect { Object.new }
-      @subsets = [
-                  [          u[2],     u[4],u[5]    ],
-                  [u[0],          u[3],         u[6]],
-                  [     u[1],u[2],          u[5]    ],
-                  [u[0],          u[3]              ],
-                  [     u[1],                   u[6]],
-                  [               u[3],u[4],    u[6]],
-                 ]
-      @sm = DancingLinks::SparseMatrix.from_sets @subsets, @universe
-    end
-
+  shared_examples_for "figure 3 from Knuth" do
     it "has 7 columns" do
       @sm.column_count.should == 7
       @sm.columns.to_a.size.should == 7
@@ -67,6 +54,23 @@ describe DancingLinks::SparseMatrix do
         end
       end
     end
+  end
+
+  context "given figure 3 from Knuth" do
+    before do
+      @universe = u = (1..7).collect { Object.new }
+      @subsets = [
+                  [          u[2],     u[4],u[5]    ],
+                  [u[0],          u[3],         u[6]],
+                  [     u[1],u[2],          u[5]    ],
+                  [u[0],          u[3]              ],
+                  [     u[1],                   u[6]],
+                  [               u[3],u[4],    u[6]],
+                 ]
+      @sm = DancingLinks::SparseMatrix.from_sets @subsets, @universe
+    end
+
+    it_should_behave_like "figure 3 from Knuth"
 
     context "with one row covered" do
       before do
@@ -104,6 +108,14 @@ describe DancingLinks::SparseMatrix do
         columns[5].down.right.down.should == columns[1]
 
         columns[5].up.left.up.right.up.right.right.down.down.should == columns[4]
+      end
+
+      context "and then uncovered" do
+        before do
+          @sm.uncover_column @sm.column(@universe[3])          
+        end
+
+        it_should_behave_like "figure 3 from Knuth"
       end
     end
   end

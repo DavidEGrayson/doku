@@ -200,8 +200,15 @@ module DancingLinks
 
     # From page 6 of Knuth.
     def uncover_column(column)
+      column.nodes_upward.each do |i|
+        i.peers_leftward.each do |j|
+          j.column.size += 1
+          j.reinsert_vertical
+        end
+      end
+
       @column_count += 1
-      raise NotImplementedError
+      column.reinsert_horizontal
     end
   end
 end
