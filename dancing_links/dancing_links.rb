@@ -11,16 +11,18 @@ module DancingLinks
   class LinkEnumerator
     include Enumerable
 
-    def initialize(link, start)
-      @link, @start, @end = link, start.send(link), start
+    def initialize(link, start, include_start=false)
+      @link, @start, @include_start = link, start, include_start
     end
 
     def each
+      yield @start if @include_start
+
       n = @start
       while true
-        return if n == @end
-        yield n
         n = n.send @link
+        return if n == @start
+        yield n
       end
     end
   end
