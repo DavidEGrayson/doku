@@ -74,7 +74,19 @@ describe Solver do
     end
 
     it 'is the correct solution' do
-      puts $puzzle.glyph_state_to_string @solution
+      $puzzle.glyph_state_to_string(@solution).strip.should == <<END.strip
+964|278|351
+287|135|649
+531|496|872
+---+---+---
+319|754|286
+452|681|937
+876|923|514
+---+---+---
+195|367|428
+723|849|165
+648|512|793
+END
     end
   end
 end

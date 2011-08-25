@@ -86,7 +86,7 @@ module DancingLinks
   class SparseMatrix
 
     # The Column Header object from Knuth.
-    class SparseMatrix::Column
+    class Column
       include HorizontalLinks
       include VerticalLinks
 
@@ -113,7 +113,7 @@ module DancingLinks
       alias :nodes :nodes_downward      
     end
 
-    class SparseMatrix::Node
+    class Node
       include HorizontalLinks
       include VerticalLinks
 
