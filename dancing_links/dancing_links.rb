@@ -11,8 +11,8 @@ module DancingLinks
   class LinkEnumerator
     include Enumerable
 
-    def initialize(link, start, endpoint=start)
-      @link, @start, @end = link, start, endpoint
+    def initialize(link, start)
+      @link, @start, @end = link, start.send(link), start
     end
 
     def each
@@ -100,11 +100,11 @@ module DancingLinks
       end
 
       def nodes_downward
-        LinkEnumerator.new :down, down, self
+        LinkEnumerator.new :down, self
       end
 
       def nodes_upward
-        LinkEnumerator.new :up, up, self
+        LinkEnumerator.new :up, self
       end
 
       alias :nodes :nodes_downward      
@@ -122,11 +122,11 @@ module DancingLinks
 
       # peers does NOT include self; a better name is welcome
       def peers_rightward
-        LinkEnumerator.new :right, right, self
+        LinkEnumerator.new :right, self
       end
 
       def peers_leftward
-        LinkEnumerator.new :left, left, self
+        LinkEnumerator.new :left, self
       end
 
       alias :peers :peers_rightward
@@ -142,7 +142,7 @@ module DancingLinks
     end
 
     def columns
-      LinkEnumerator.new :right, self.right, self
+      LinkEnumerator.new :right, self
     end
 
     def create_column(id)

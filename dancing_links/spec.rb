@@ -1,12 +1,5 @@
 require_relative 'dancing_links'
 
-describe DancingLinks::LinkEnumerator do
-  it "has a nice inspect function" do
-    e = DancingLinks::LinkEnumerator.new :pred, 1, -3
-    e.to_a.should == [1,0,-1,-2]
-  end
-end
-
 describe DancingLinks::SparseMatrix do
   context "when created from scratch" do
     before do
