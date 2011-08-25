@@ -116,6 +116,10 @@ module DancingLinks
 
       attr_accessor :column
 
+      def row_rightward
+        raise NotImplemented
+      end
+
       # peers does NOT include self; a better name is welcome
       def peers_rightward
         LinkEnumerator.new :right, right, self
@@ -230,18 +234,24 @@ module DancingLinks
       if right == self
         # Success
         return rows.collect do |r|
-          r.nodes.collect do |n|
+          # TODO: replace ugliness with r.row_rightward
+          ([r]+r.peers_rightward.to_a).collect do |n|
             n.column.id
           end
         end
       end
 
       c = choose_column
+      #puts "  "*rows.size+"Chose and covered column #{c.id}"
+      cover_column c
 
       c.nodes_downward.each do |r|
+        #puts "  "*rows.size+"Chose node #{r}"
+
         rows.push r
 
         r.peers_rightward.each do |j|
+          #puts "  "*rows.size+"Covering column #{j.column.id}"
           cover_column j.column
         end
 
@@ -251,6 +261,7 @@ module DancingLinks
         end
         
         r.peers_leftward.each do |j|
+          #puts "  "*rows.size+"Uncovering column #{j.column.id}"
           uncover_column j.column
         end
 

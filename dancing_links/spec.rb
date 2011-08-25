@@ -73,7 +73,7 @@ describe DancingLinks::SparseMatrix do
 
     it "can find an exact cover" do
       result = @sm.find_exact_cover
-      result.should_not be_nil
+      result.should == [[1, 4], [2, 7], [3, 5, 6]]
     end
 
     context "with one row covered" do
