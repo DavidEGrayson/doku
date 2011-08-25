@@ -13,7 +13,6 @@ describe DancingLinks::SparseMatrix do
 
   shared_examples_for "figure 3 from Knuth" do
     it "has 7 columns" do
-      @sm.column_count.should == 7
       @sm.columns.to_a.size.should == 7
     end
 
@@ -75,7 +74,6 @@ describe DancingLinks::SparseMatrix do
       end
 
       it "has only 6 columns" do
-        @sm.column_count.should == 6
         @sm.columns.to_a.size.should == 6
       end
 

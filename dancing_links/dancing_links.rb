@@ -138,10 +138,8 @@ module DancingLinks
     end
 
     include HorizontalLinks
-    attr_reader :column_count
 
     def initialize
-      @column_count = 0
       @left = @right = self
       @columns = {}   # column_id object => SparseMatrixColumn
     end
@@ -153,7 +151,6 @@ module DancingLinks
     def create_column(id)
       column = Column.new(id)
       column.insert_left self
-      @column_count += 1
       return @columns[id] = column
     end
 
@@ -218,7 +215,6 @@ module DancingLinks
     # From page 6 of Knuth.
     def cover_column(column)
       column.remove_horizontal
-      @column_count -= 1
 
       column.nodes_downward.each do |i|
         i.peers_rightward.each do |j|
@@ -237,7 +233,6 @@ module DancingLinks
         end
       end
 
-      @column_count += 1
       column.reinsert_horizontal
     end
 
