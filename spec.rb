@@ -61,7 +61,7 @@ describe Solver do
     it 'solution is consistent with given glyphs' do
       $puzzle.squares.each do |square|
         if square.given_glyph
-          square.given_glyph.should == @solution[square]
+          @solution[square].should == square.given_glyph
         end
       end
     end

@@ -141,7 +141,8 @@ module DancingLinks
 
     def initialize
       @left = @right = self
-      @columns = {}   # column_id object => SparseMatrixColumn
+      @columns = {}   # column_id object => Column
+      @rows = {} # row_id object => Node
     end
 
     def columns
@@ -194,6 +195,7 @@ module DancingLinks
       column_ids.each do |column_id|
         column = find_or_create_column(column_id)
         node = Node.new
+        @rows[row_id] ||= node
 
         # Set the vertical links and column.
         node.column = column
@@ -277,6 +279,13 @@ module DancingLinks
     # When choosing a column, we use Knuth's S heuristic.
     def choose_column
       columns.min_by &:size
+    end
+
+    def cover_row(row_id)
+      raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
+      @rows[row_id].row_rightward.each do |node|
+        cover_column node.column
+      end
     end
   end
 end
