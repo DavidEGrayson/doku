@@ -224,5 +224,46 @@ module DancingLinks
       @column_count += 1
       column.reinsert_horizontal
     end
+
+    # From page 5 of Knuth.
+    def find_exact_cover(rows=[])
+      if right == self
+        # Success
+        return rows.collect do |r|
+          r.nodes.collect do |n|
+            n.column.id
+          end
+        end
+      end
+
+      c = choose_column
+
+      c.nodes_downward.each do |r|
+        rows.push r
+
+        r.peers_rightward.each do |j|
+          cover_column j.column
+        end
+
+        if answer = find_exact_cover(rows)
+          # Success
+          return answer
+        end
+        
+        r.peers_leftward.each do |j|
+          uncover_column j.column
+        end
+
+        rows.pop
+      end
+
+      uncover_column c
+      return nil
+    end
+
+    # When choosing a column, we use Knuth's S heuristic.
+    def choose_column
+      columns.min { |c| c.size }
+    end
   end
 end

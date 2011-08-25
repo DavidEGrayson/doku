@@ -57,7 +57,7 @@ describe DancingLinks::SparseMatrix do
 
   context "given figure 3 from Knuth" do
     before do
-      @universe = u = (1..7).collect { Object.new }
+      @universe = u = (1..7).to_a
       @subsets = [
                   [          u[2],     u[4],u[5]    ],
                   [u[0],          u[3],         u[6]],
@@ -70,6 +70,11 @@ describe DancingLinks::SparseMatrix do
     end
 
     it_should_behave_like "figure 3 from Knuth"
+
+    it "can find an exact cover" do
+      result = @sm.find_exact_cover
+      result.should_not be_nil
+    end
 
     context "with one row covered" do
       before do
