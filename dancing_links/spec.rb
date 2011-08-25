@@ -78,12 +78,32 @@ describe DancingLinks::SparseMatrix do
         @sm.columns.to_a.size.should == 6
       end
 
-      # 0 0 1 1 1 0
-      # 0 1 1 0 1 0
-      # 0 1 0 0 0 1
+      # @sm will now look like (minus means a covered element)
+      # 0 0 1 - 1 1 0
+      # - - - - - - -
+      # 0 1 1 - 0 1 0
+      # - - - - - - -
+      # 0 1 0 - 0 0 1
+      # - - - - - - -
       it "has the expected column sizes" do
         @universe.collect { |e| @sm.column(e).size }.should == [0, 2, 2, 3, 1, 2, 1]
         @sm.columns.collect { |c| c.size }.should == [0, 2, 2, 1, 2, 1]
+      end
+
+      it "has the expected structure" do
+        columns = @sm.columns.to_a
+
+        # Column 0 is empty.
+        columns[0].down.should == columns[0]
+        columns[0].up.should == columns[0]
+        columns[0].nodes.to_a.should be_empty
+
+        columns[1].down.right.up.up.should == columns[2]
+        columns[2].down.right.up.should == columns[3]
+        columns[3].up.right.down.down.should == columns[4]
+        columns[5].down.right.down.should == columns[1]
+
+        columns[5].up.left.up.right.up.right.right.down.down.should == columns[4]
       end
     end
   end
