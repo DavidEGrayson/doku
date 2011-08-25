@@ -1,7 +1,8 @@
 module DancingLinks
   # The data structures used here are too complicated
-  # and interconnected for Ruby to efficiently inspect
-  # them.
+  # and interconnected for Ruby to efficiently inspect them.
+  # Without this module, even a 7x6 Sparse Matrix takes
+  # many many seconds to inspect.
   module Uninspectable
     def inspect
       to_s
@@ -276,7 +277,7 @@ module DancingLinks
 
     # When choosing a column, we use Knuth's S heuristic.
     def choose_column
-      columns.min { |c| c.size }
+      columns.min_by &:size
     end
   end
 end
