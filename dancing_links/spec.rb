@@ -30,7 +30,7 @@ describe DancingLinks::SparseMatrix do
                   [     u[1],                   u[6]],
                   [               u[3],u[4],    u[6]],
                  ]
-      @sm = DancingLinks::SparseMatrix.from_sets @subsets
+      @sm = DancingLinks::SparseMatrix.from_sets @subsets, @universe
     end
 
     it "has 7 columns" do
@@ -39,13 +39,12 @@ describe DancingLinks::SparseMatrix do
     end
 
     it "has the expected columns" do
-      column_ids = @sm.columns.collect &:id
-      Set.new(column_ids).should == Set.new(@universe)
+      @sm.columns.collect(&:id).should == @universe
     end
 
     it "has the expected structure" do
       # This test is not exhaustive.
-      columns = @universe.collect { |e| @sm.column e }
+      columns = @sm.columns.to_a
       columns[0].down.should_not == columns[0]
       columns[0].up.should_not == columns[0]
       columns[0].nodes.to_a.size.should == 2
@@ -66,6 +65,25 @@ describe DancingLinks::SparseMatrix do
         column.nodes.each do |node|
           node.column.should == column
         end
+      end
+    end
+
+    context "with one row covered" do
+      before do
+        @sm.cover_column @sm.column(@universe[3])
+      end
+
+      it "has only 6 columns" do
+        @sm.column_count.should == 6
+        @sm.columns.to_a.size.should == 6
+      end
+
+      # 0 0 1 1 1 0
+      # 0 1 1 0 1 0
+      # 0 1 0 0 0 1
+      it "has the expected column sizes" do
+        @universe.collect { |e| @sm.column(e).size }.should == [0, 2, 2, 3, 1, 2, 1]
+        @sm.columns.collect { |c| c.size }.should == [0, 2, 2, 1, 2, 1]
       end
     end
   end
