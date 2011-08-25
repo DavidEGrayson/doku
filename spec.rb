@@ -2,8 +2,6 @@ require_relative 'hexadoku'
 require_relative 'sudoku'
 require_relative 'solver'
 
-$puzzle = $sudoku
-
 describe 'Hexadoku5 puzzle' do
   it 'has 768 squares' do
     $hexadoku.squares.size.should == 768
@@ -53,13 +51,13 @@ describe "Sudoku puzzle" do
 end
 
 describe Solver do
-  context 'given the puzzle' do
+  context 'given the sudoku puzzle' do
     before(:all) do
-      @solution = Solver.solve $puzzle
+      @solution = Solver.solve $sudoku
     end
 
     it 'solution is consistent with given glyphs' do
-      $puzzle.squares.each do |square|
+      $sudoku.squares.each do |square|
         if square.given_glyph
           @solution[square].should == square.given_glyph
         end
@@ -68,13 +66,13 @@ describe Solver do
 
     it 'contains squares glyphs' do
       @solution.each do |square, glyph|
-        $puzzle.squares.should include square
-        $puzzle.glyphs.should include glyph
+        $sudoku.squares.should include square
+        $sudoku.glyphs.should include glyph
       end
     end
 
     it 'is the correct solution' do
-      $puzzle.glyph_state_to_string(@solution).strip.should == <<END.strip
+      $sudoku.glyph_state_to_string(@solution).strip.should == <<END.strip
 964|278|351
 287|135|649
 531|496|872
@@ -87,6 +85,16 @@ describe Solver do
 723|849|165
 648|512|793
 END
+    end
+  end
+
+  context 'given the hexadoku puzzle' do
+    before(:all) do
+      @solution = Solver.solve $hexadoku
+    end
+
+    it "is the correct solution" do
+      puts $hexadoku.glyph_state_to_string(@solution)
     end
   end
 end
