@@ -283,8 +283,8 @@ module DancingLinks
 
     # When choosing a column, we use Knuth's S heuristic.
     def choose_column
-      # Slow version of this function:
-      # return columns.min_by &:size
+      # Slow but concise version of this function:
+      #return columns.min_by &:size
 
       min_size = 9999999
       smallest_column = nil
@@ -292,8 +292,8 @@ module DancingLinks
         
         if column.size < min_size
           #return column if column.size == 0
-          smallest_column, min_size = column, column.size
-          break if min_size == 0
+          smallest_column = column
+          break if (min_size = column.size).zero?
         end
       end
       return smallest_column

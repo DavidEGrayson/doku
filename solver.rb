@@ -2,6 +2,10 @@ require_relative 'puzzle'
 require_relative 'dancing_links/dancing_links'
 
 module Solver
+  Profile = true
+
+  require 'ruby-prof' if Profile
+
   def self.solve(puzzle)
     # Compute the universe (square and every group/glyph combo).
     universe = puzzle.squares.dup
@@ -43,8 +47,18 @@ module Solver
     end
 
     # Do the real work.
+    RubyProf.start if Profile
+
     exact_cover = sm.find_exact_cover
     
+    if Profile
+      result = RubyProf.stop
+      printer = RubyProf::GraphHtmlPrinter.new(result)
+      File.open("profile.html", 'w') do |file|
+        printer.print file, :min_percent=>2.0
+      end
+    end
+
     # Convert the exact cover to a glyph_state hash.
     glyph_state = {}
     puzzle.squares.each do |square|
