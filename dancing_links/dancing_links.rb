@@ -245,10 +245,15 @@ module DancingLinks
         return nodes.collect &:row_id
       end
 
+      return "timeout" if @counter == 2_000 #tmphax
+
+      @counter ||= 0
+      @counter += 1
+
       c = choose_column
-      #puts "  "*nodes.size+"Chose and covered column #{c.id}"
       cover_column c
 
+      #puts "Progress: #{nodes.size} #{c.size} #{c.id.class}" if (@counter & 2047) == 0
       c.nodes_downward.each do |r|
         #puts "  "*nodes.size+"Chose node #{r}"
 
@@ -278,7 +283,20 @@ module DancingLinks
 
     # When choosing a column, we use Knuth's S heuristic.
     def choose_column
-      columns.min_by &:size
+      # Slow version of this function:
+      # return columns.min_by &:size
+
+      min_size = 9999999
+      smallest_column = nil
+      columns.each do |column|
+        
+        if column.size < min_size
+          #return column if column.size == 0
+          smallest_column, min_size = column, column.size
+          break if min_size == 0
+        end
+      end
+      return smallest_column
     end
 
     def cover_row(row_id)
