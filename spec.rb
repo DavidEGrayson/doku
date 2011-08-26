@@ -88,14 +88,13 @@ END
     end
   end
 
-  context 'given the hexadoku puzzle' do
-    before(:all) do
-      @solution = Solver.solve $hexadoku
-    end
-
-    it "is the correct solution" do
-      puts $hexadoku.glyph_state_to_string(@solution)
-    end
-  end
+  #context 'given the hexadoku puzzle' do
+  #  before(:all) do
+  #    @solution = Solver.solve $hexadoku
+  #  end
+  #  it "is the correct solution" do
+  #    puts $hexadoku.glyph_state_to_string(@solution)
+  #  end
+  #end
 end
 

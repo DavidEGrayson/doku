@@ -286,12 +286,13 @@ module DancingLinks
       # Slow but concise version of this function:
       #return columns.min_by &:size
 
-      min_size = 9999999
-      smallest_column = nil
-      columns.each do |column|
+      column = smallest_column = right
+      min_size = column.size
+      while true
+        column = column.right
+        break if column == self
         
         if column.size < min_size
-          #return column if column.size == 0
           smallest_column, min_size = column, column.size
           break if min_size == 0
         end
