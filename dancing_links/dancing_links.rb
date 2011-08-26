@@ -282,6 +282,7 @@ module DancingLinks
     end
 
     # When choosing a column, we use Knuth's S heuristic.
+    # Assumption: The matrix has at least one column.
     def choose_column
       # Slow but concise version of this function:
       #return columns.min_by &:size
@@ -290,11 +291,11 @@ module DancingLinks
       min_size = column.size
       while true
         column = column.right
-        break if column == self
+        return smallest_column if column == self
         
         if column.size < min_size
           smallest_column, min_size = column, column.size
-          break if min_size == 0
+          return smallest_column if min_size == 0
         end
       end
       return smallest_column
