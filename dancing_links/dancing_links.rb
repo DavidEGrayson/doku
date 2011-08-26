@@ -292,8 +292,8 @@ module DancingLinks
         
         if column.size < min_size
           #return column if column.size == 0
-          smallest_column = column
-          break if (min_size = column.size).zero?
+          smallest_column, min_size = column, column.size
+          break if min_size == 0
         end
       end
       return smallest_column
