@@ -245,7 +245,7 @@ module DancingLinks
         return nodes.collect &:row_id
       end
 
-      return "timeout" if @counter == 2_000 #tmphax
+      #return "timeout" if @counter == 2_000 #tmphax
 
       @counter ||= 0
       @counter += 1
@@ -253,7 +253,7 @@ module DancingLinks
       c = choose_column
       cover_column c
 
-      #puts "Progress: #{nodes.size} #{c.size} #{c.id.class}" if (@counter & 2047) == 0
+      puts "Progress: #{nodes.size} #{c.size} #{c.id.to_s[0,60]}" if (@counter & 2047) == 0
       c.nodes_downward.each do |r|
         #puts "  "*nodes.size+"Chose node #{r}"
 
@@ -298,7 +298,6 @@ module DancingLinks
           return smallest_column if min_size == 0
         end
       end
-      return smallest_column
     end
 
     def cover_row(row_id)

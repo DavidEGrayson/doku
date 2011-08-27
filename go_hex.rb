@@ -8,7 +8,7 @@ expected = <<END
 unknown
 END
 
-solution_string = $sudoku.glyph_state_to_string(solution)
+solution_string = $hexadoku.glyph_state_to_string(solution)
 
 if solution_string.strip != expected.strip
   puts "FAILED"

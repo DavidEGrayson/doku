@@ -2,7 +2,7 @@ require_relative 'puzzle'
 require_relative 'dancing_links/dancing_links'
 
 module Solver
-  Profile = true
+  Profile = false
 
   require 'ruby-prof' if Profile
 
