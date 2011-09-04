@@ -51,12 +51,12 @@ describe DancingLinks::SparseMatrix do
     before do
       @universe = u = (1..7).to_a
       @subsets = [
-                  [          u[2],     u[4],u[5]    ],
-                  [u[0],          u[3],         u[6]],
-                  [     u[1],u[2],          u[5]    ],
-                  [u[0],          u[3]              ],
-                  [     u[1],                   u[6]],
-                  [               u[3],u[4],    u[6]],
+                  [    3,  5,6  ],
+                  [1,    4,    7],
+                  [  2,3,    6  ],
+                  [1,    4      ],
+                  [  2,        7],
+                  [      4,5,  7]
                  ]
       @sm = DancingLinks::SparseMatrix.from_sets @subsets, @universe
     end
