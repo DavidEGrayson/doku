@@ -238,29 +238,21 @@ module DancingLinks
       column.reinsert_horizontal
     end
 
-    # From page 5 of Knuth.
+    # Recursive method of finding the exact cover,
+    # from page 5 of Knuth.
     def find_exact_cover(nodes=[])
       if right == self
-        # Success
+        # Success.  Matrix is empty because every column is covered.
         return nodes.collect &:row_id
       end
-
-      #return "timeout" if @counter == 2_000 #tmphax
-
-      @counter ||= 0
-      @counter += 1
 
       c = choose_column
       cover_column c
 
-      puts "Progress: #{nodes.size} #{c.size} #{c.id.to_s[0,60]}" if (@counter & 2047) == 0
       c.nodes_downward.each do |r|
-        #puts "  "*nodes.size+"Chose node #{r}"
-
         nodes.push r
 
         r.peers_rightward.each do |j|
-          #puts "  "*nodes.size+"Covering column #{j.column.id}"
           cover_column j.column
         end
 
@@ -270,7 +262,6 @@ module DancingLinks
         end
         
         r.peers_leftward.each do |j|
-          #puts "  "*nodes.size+"Uncovering column #{j.column.id}"
           uncover_column j.column
         end
 
@@ -279,6 +270,17 @@ module DancingLinks
 
       uncover_column c
       return nil
+    end
+
+    def find_exact_cover_non_recursive
+      columns = []  # Which columns are currently covered.
+      nodes = []    # columns[i] was covered by nodes[i].
+      while true
+        if right == self
+          # Success.  Matrix is empty because every column is covered.
+          return nodes.collect &:row_id
+        end
+      end
     end
 
     # When choosing a column, we use Knuth's S heuristic.

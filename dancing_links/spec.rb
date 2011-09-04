@@ -49,9 +49,8 @@ describe DancingLinks::SparseMatrix do
 
   context "given figure 3 from Knuth" do
     before do
-      @universe = u = (1..7).to_a
-      @subsets = [
-                  [    3,  5,6  ],
+      @universe = [1,2,3,4,5,6,7]
+      @subsets = [[    3,  5,6  ],
                   [1,    4,    7],
                   [  2,3,    6  ],
                   [1,    4      ],
@@ -67,6 +66,10 @@ describe DancingLinks::SparseMatrix do
       result = @sm.find_exact_cover
       result.collect(&:sort).sort.should == [[1, 4], [2, 7], [3, 5, 6]]
     end
+
+    #it "can find all exact covers" do
+    #  @sm.exact_covers.to_a.sort.should == []
+    #end
 
     context "with one row covered" do
       before do
