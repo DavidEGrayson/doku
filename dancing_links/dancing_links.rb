@@ -272,6 +272,7 @@ module DancingLinks
       return nil
     end
 
+    # TODO: see if recursive or non-recursive algorithm is faster.
     def find_exact_cover
       columns = []  # Which columns are currently covered.
       nodes = []    # columns[i] was covered by the row containing nodes[i].
@@ -288,7 +289,7 @@ module DancingLinks
         cover_column column
         columns.push column
 
-        # Choose a node to cover, back-tracking if necessary.
+        # Choose a node to try, back-tracking if necessary.
         node = column.down
         while node == column
           # Our downwards iteration has cover full-circle
@@ -300,8 +301,8 @@ module DancingLinks
           # Go back to previous column and node.
           column = columns.last
 
-          # We already tried this node, so pop it off and
-          # uncover the corresponding columns.
+          # We already tried this node and it didn't work, so
+          # pop it off and uncover the corresponding columns.
           node = nodes.pop
           node.peers_leftward.each do |j|
             uncover_column j.column
@@ -311,7 +312,7 @@ module DancingLinks
           node = node.down
         end
 
-        # Cover the node.
+        # Try the node (push it and cover its columns).
         nodes.push node
         node.peers_rightward.each do |j|
           cover_column j.column
