@@ -240,7 +240,7 @@ module DancingLinks
 
     # Recursive method of finding the exact cover,
     # from page 5 of Knuth.
-    def find_exact_cover(nodes=[])
+    def find_exact_cover_recursive(nodes=[])
       if right == self
         # Success.  Matrix is empty because every column is covered.
         return nodes.collect &:row_id
@@ -272,13 +272,39 @@ module DancingLinks
       return nil
     end
 
-    def find_exact_cover_non_recursive
+    def find_exact_cover
       columns = []  # Which columns are currently covered.
-      nodes = []    # columns[i] was covered by nodes[i].
+      nodes = []    # columns[i] was covered by the row containing nodes[i].
       while true
         if right == self
           # Success.  Matrix is empty because every column is covered.
           return nodes.collect &:row_id
+        end
+
+        # Choose a column to cover.
+        column = choose_column
+        cover_column column
+        columns.push column
+
+        # Choose a node to cover, back-tracking if necessary.
+        node = column.down
+        while node == column
+          uncover_column column
+          columns.pop
+
+          column = columns.last
+
+          node = nodes.pop
+          node.peers_leftward.each do |j|
+            uncover_column j.column
+          end
+
+          node = node.down
+        end
+
+        nodes.push node
+        node.peers_rightward.each do |j|
+          cover_column j.column
         end
       end
     end
