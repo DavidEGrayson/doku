@@ -283,25 +283,35 @@ module DancingLinks
 
         # Choose a column to cover.
         column = choose_column
+
+        # Cover the column.
         cover_column column
         columns.push column
 
         # Choose a node to cover, back-tracking if necessary.
         node = column.down
         while node == column
-          uncover_column column
-          columns.pop
+          # Our downwards iteration has cover full-circle
+          # back to the column object where it started.
+          # Therefore we have tried all the nodes in this column.
+          # Uncover the column and pop it off the list.
+          uncover_column columns.pop
 
+          # Go back to previous column and node.
           column = columns.last
 
+          # We already tried this node, so pop it off and
+          # uncover the corresponding columns.
           node = nodes.pop
           node.peers_leftward.each do |j|
             uncover_column j.column
           end
 
+          # Try the next node for this column.
           node = node.down
         end
 
+        # Cover the node.
         nodes.push node
         node.peers_rightward.each do |j|
           cover_column j.column
