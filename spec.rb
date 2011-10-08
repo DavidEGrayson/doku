@@ -2,18 +2,70 @@ require_relative 'hexadoku'
 require_relative 'sudoku'
 require_relative 'solver'
 
-describe 'Hexadoku5 puzzle' do
+$sudoku = Sudoku.new <<END
+...|..8|...
+..7|.35|..9
+5..|4.6|8..
+---+---+---
+...|..4|2..
+4..|...|.37
+8..|...|5..
+---+---+---
+.9.|.67|...
+..3|...|1.5
+...|...|..3
+END
+
+$hexamurai = Hexamurai.new <<END
+        |........|.0.17...|
+        |..213...|5.B4....|
+        |..0.....|......2.|
+        |.....4.5|..9A1.E.|
+        |..3C....|.1654.0.|
+        |.1..2...|3......6|
+        |...90...|..4.25..|
+        |2.57....|...03.D1|
+--------+--------+--------+--------
+52.0..3.|A.....B.|0.....3.|7......6
+4.8.1...|..9.....|...E..4.|2.063...
+.7......|.4F.50.9|.7.2..8E|.1..4...
+..6...0.|.....C3.|...6.7.0|5..3..21
+A1..4.6.|...3.7..|....AD.4|.....8..
+E.......|...5B...|........|.9....5A
+8.....5.|...2....|.....6F8|.2.1.4.3
+.5F.3.9.|1B..E...|...D...3|0..E.2..
+--------+--------+--------+--------
+.3.1..7.|B.5.2...|........|B.6....4
+C.......|4.......|......B.|9.40.178
+..28....|.C......|.......1|..3.5.0.
+047.5...|.6......|.....5..|1....3..
+..036.4.|.1...EA.|6..73..9|........
+1......2|8.4..96.|A3....2.|4.5.0...
+..4..51.|.7..3...|...1..5.|........
+6.5...8.|...9...1|8..5..0.|........
+--------+--------+--------+--------
+        |......39|..0..2..|
+        |5.804..2|.6.3.E7.|
+        |........|....5.3.|
+        |...2.7..|C4.....0|
+        |..6.5340|.729A1..|
+        |7...1...|.....6.3|
+        |...4....|.B..0...|
+        |........|0......2|
+END
+
+describe 'Hexamurai puzzle' do
   it 'has 768 squares' do
-    $hexadoku.squares.size.should == 768
+    $hexamurai.squares.size.should == 768
   end
 
   it 'has 16 squares in the first row' do
-    first_row = $hexadoku.squares.select { |s| s.matches?(y:0) }
+    first_row = $hexamurai.squares.select { |s| s.matches?(y:0) }
     first_row.size.should == 16
   end
 
   it 'has 16 squares in the first column of the top hexadoku' do
-    first_row = $hexadoku.squares.select { |s| s.matches? x:8, y:(0..15) }
+    first_row = $hexamurai.squares.select { |s| s.matches? x:8, y:(0..15) }
   end
 
   it 'has the right number of groups' do
@@ -23,12 +75,12 @@ describe 'Hexadoku5 puzzle' do
     # center hexadoku twice, and counted the 16 boxes of the
     # center hexaodoku thrice, so subtract 64.
     # There are 2*16 inferred groups (16 columns, 16 rows).
-    $hexadoku.groups.size.should == 5*3*16 - 64 + 2*16
+    $hexamurai.groups.size.should == 5*3*16 - 64 + 2*16
   end
 
   it 'has valid line and char numbers' do
-    lines = $hexadoku.initial_view.split("\n")
-    $hexadoku.squares.each do |square|
+    lines = $hexamurai.initial_view.split("\n")
+    $hexamurai.squares.each do |square|
       line = lines[square.line_number]
       line.should_not be_nil
       line.size.should > square.char_number
@@ -117,7 +169,7 @@ END
     end
 
     it "gives the correct solution" do
-      @puzzle.glyph_state_to_string(@solution).should == <<END
+      @puzzle.glyph_state_to_string(@solution).should == <<END.strip
 2A07|BCF3|9D64|8E15
 B839|A54D|70E1|62FC
 51CD|E906|8F23|74AB
