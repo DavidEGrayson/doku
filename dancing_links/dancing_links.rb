@@ -292,7 +292,7 @@ module DancingLinks
         # Choose a node to try, back-tracking if necessary.
         node = column.down
         while node == column
-          # Our downwards iteration has cover full-circle
+          # Our downwards iteration has gone full-circle
           # back to the column object where it started.
           # Therefore we have tried all the nodes in this column.
           # Uncover the column and pop it off the list.
