@@ -29,10 +29,6 @@ class Hexadoku < Puzzle
 ....|....|....|....
 END
 
-  def self.define_groups
-    define_groups_for_hexadoku 0, 0
-  end
-
   def self.define_groups_for_hexadoku(start_x, start_y)
     # Define row and column groups.
     0.upto(15).each do |n|
@@ -47,6 +43,8 @@ END
       end
     end
   end
+
+  define_groups_for_hexadoku 0, 0
 end
 
 class Hexamurai < Hexadoku
@@ -91,18 +89,18 @@ class Hexamurai < Hexadoku
         |........|........|
 END
 
-  def self.define_groups
-    define_groups_for_hexadoku 8, 8
+  define_groups_for_hexadoku 8, 8
 
-    define_groups_for_hexadoku 8, 0
-    define_groups_for_hexadoku 0, 8
-    define_groups_for_hexadoku 16, 8
-    define_groups_for_hexadoku 8, 16
+  define_groups_for_hexadoku 8, 0
+  define_groups_for_hexadoku 0, 8
+  define_groups_for_hexadoku 16, 8
+  define_groups_for_hexadoku 8, 16
 
-    # Avoid double-counting the column and row groups
-    # in the center hexadoku and avoid triple-counting the
-    # box groups.
-    @groups.uniq!
-  end
+  # Avoid double-counting the column and row groups
+  # in the center hexadoku and avoid triple-counting the
+  # box groups.
+  @groups.uniq!
+  infer_groups
+
 end
 

@@ -24,15 +24,12 @@ class Puzzle
   end
 
   def self.squares
-    define_squares if !@squares
+    raise "squares not defined for #{self}" if !defined?(@glyphs)
     @squares
   end
 
   def self.groups
-    if !@groups
-      define_groups
-      infer_groups
-    end
+    raise "groups not defined for #{self}" if !defined?(@groups)
     @groups
   end
 

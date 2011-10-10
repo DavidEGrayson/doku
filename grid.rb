@@ -27,6 +27,7 @@ module PuzzleOnGrid
 
     def has_template(string)
       @template = string.freeze
+      define_squares_from_template
     end
 
     def has_glyph_chars(chars)
@@ -48,13 +49,9 @@ module PuzzleOnGrid
       @squares << square
     end
 
-    def each_char_on_grid(grid_string)
-
-    end
-
     # Using the template provided for the puzzle, this function
     # defines objects to represent each of the different squares.
-    def define_squares
+    def define_squares_from_template
       y = 0
       template.lines.each_with_index do |line, line_number|
         line.chomp!
