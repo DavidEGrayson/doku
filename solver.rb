@@ -41,8 +41,8 @@ module Solver
     # Take into account square.given_glyph by covering certain
     # rows (removing the row and all columns it touches).
     puzzle.squares.each do |square|
-      if square.given_glyph
-        sm.cover_row sgs[square][square.given_glyph]
+      if glyph = puzzle[square]
+        sm.cover_row sgs[square][glyph]
       end
     end
 
@@ -59,15 +59,17 @@ module Solver
       end
     end
 
-    # Convert the exact cover to a glyph_state hash.
-    glyph_state = {}
-    puzzle.squares.each do |square|
-      glyph_state[square] = square.given_glyph
-    end
+    # Convert the exact cover to a new instance of the puzzle.
+    solution = puzzle.dup
     exact_cover.each do |sg|
-      glyph_state[sg.square] = sg.glyph
+      solution[sg.square] = sg.glyph
     end
-    return glyph_state
+
+    # TODO: if !(puzzle <= solution && solution.complete?)
+    #   raise "There was a bug in the solving algorithm."
+    # end
+    
+    return solution
   end
 
   class SquareAndGlyph < Struct.new(:square, :glyph)

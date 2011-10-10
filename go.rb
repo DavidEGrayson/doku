@@ -18,7 +18,7 @@ expected = <<END
 648|512|793
 END
 
-solution_string = $sudoku.glyph_state_to_string(solution)
+solution_string = solution.to_grid_string
 
 if solution_string.strip != expected.strip
   puts "FAILED"

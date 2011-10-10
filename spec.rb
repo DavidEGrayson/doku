@@ -54,18 +54,22 @@ C.......|4.......|......B.|9.40.178
         |........|0......2|
 END
 
-describe 'Hexamurai puzzle' do
+describe 'Hexamurai class' do
+  it 'has a template' do
+    Hexamurai.template.should be_a_kind_of String
+  end
+
   it 'has 768 squares' do
-    $hexamurai.squares.size.should == 768
+    Hexamurai.squares.size.should == 768
   end
 
   it 'has 16 squares in the first row' do
-    first_row = $hexamurai.squares.select { |s| s.matches?(y:0) }
+    first_row = Hexamurai.squares.select { |s| s.matches?(y:0) }
     first_row.size.should == 16
   end
 
   it 'has 16 squares in the first column of the top hexadoku' do
-    first_row = $hexamurai.squares.select { |s| s.matches? x:8, y:(0..15) }
+    first_row = Hexamurai.squares.select { |s| s.matches? x:8, y:(0..15) }
   end
 
   it 'has the right number of groups' do
@@ -75,12 +79,12 @@ describe 'Hexamurai puzzle' do
     # center hexadoku twice, and counted the 16 boxes of the
     # center hexaodoku thrice, so subtract 64.
     # There are 2*16 inferred groups (16 columns, 16 rows).
-    $hexamurai.groups.size.should == 5*3*16 - 64 + 2*16
+    Hexamurai.groups.size.should == 5*3*16 - 64 + 2*16
   end
 
   it 'has valid line and char numbers' do
-    lines = $hexamurai.initial_view.split("\n")
-    $hexamurai.squares.each do |square|
+    lines = Hexamurai.template.split("\n")
+    Hexamurai.squares.each do |square|
       line = lines[square.line_number]
       line.should_not be_nil
       line.size.should > square.char_number
@@ -110,22 +114,25 @@ describe Solver do
     end
 
     it 'solution is consistent with given glyphs' do
-      $sudoku.squares.each do |square|
-        if square.given_glyph
-          @solution[square].should == square.given_glyph
+      Sudoku.squares.each do |square|
+        if $sudoku[square]
+          @solution[square].should == $sudoku[square]
         end
       end
     end
 
-    it 'contains squares glyphs' do
+    it 'contains squares and glyphs' do
+      yielded = false
       @solution.each do |square, glyph|
+        yielded = true
         $sudoku.squares.should include square
         $sudoku.glyphs.should include glyph
       end
+      yielded.should == true
     end
 
     it 'is the correct solution' do
-      $sudoku.glyph_state_to_string(@solution).strip.should == <<END.strip
+      @solution.to_grid_string.strip.should == <<END.strip
 964|278|351
 287|135|649
 531|496|872
@@ -170,7 +177,7 @@ END
     end
 
     it "gives the correct solution" do
-      @puzzle.glyph_state_to_string(@solution).should == <<END.strip
+      @solution.to_grid_string.should == <<END.strip
 2A07|BCF3|9D64|8E15
 B839|A54D|70E1|62FC
 51CD|E906|8F23|74AB

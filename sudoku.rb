@@ -4,15 +4,24 @@ require_relative 'grid'
 class Sudoku < Puzzle
   include PuzzleOnGrid
 
-  def initialize(initial_view)
-    @initial_view = initial_view
-    @glyphs = (1..9).to_a
-    @glyph_chars = @glyphs.collect { |s| s.to_s }
-    parse_initial_view
-    define_groups
-  end
+  has_glyphs (1..9).to_a
+  has_glyph_chars glyphs.collect &:to_s
 
-  def define_groups
+  has_template <<END
+...|...|...
+...|...|...
+...|...|...
+---+---+---
+...|...|...
+...|...|...
+...|...|...
+---+---+---
+...|...|...
+...|...|...
+...|...|...
+END
+
+  def self.define_groups
     0.upto(8) do |n|
       define_group x:n
       define_group y:n
@@ -25,3 +34,4 @@ class Sudoku < Puzzle
     end
   end
 end
+
