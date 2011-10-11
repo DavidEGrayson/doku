@@ -1,6 +1,4 @@
-require_relative 'hexadoku'
-require_relative 'sudoku'
-require_relative 'solver'
+require_relative 'spec_helper'
 
 $sudoku = Sudoku.new <<END
 ...|..8|...
