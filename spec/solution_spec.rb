@@ -1,6 +1,9 @@
 require_relative 'spec_helper'
 
-$sudoku = Sudoku.new <<END
+describe Solver do
+  context 'given the sudoku puzzle' do
+    before(:all) do
+      @puzzle = Sudoku.new <<END
 ...|..8|...
 ..7|.35|..9
 5..|4.6|8..
@@ -14,28 +17,11 @@ $sudoku = Sudoku.new <<END
 ...|...|..3
 END
 
-describe Solver do
-  context 'given the sudoku puzzle' do
-    before(:all) do
-      @solution = Solver.solve $sudoku
+      @solution = Solver.solve @puzzle
     end
 
-    it 'solution is consistent with given glyphs' do
-      Sudoku.squares.each do |square|
-        if $sudoku[square]
-          @solution[square].should == $sudoku[square]
-        end
-      end
-    end
-
-    it 'contains squares and glyphs' do
-      yielded = false
-      @solution.each do |square, glyph|
-        yielded = true
-        $sudoku.squares.should include square
-        $sudoku.glyphs.should include glyph
-      end
-      yielded.should == true
+    it 'solves the puzzle' do
+      @solution.is_solution_for?(@puzzle).should == true
     end
 
     it 'is the correct solution' do

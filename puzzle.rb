@@ -7,6 +7,17 @@ class Puzzle
     @glyphs = glyphs
   end
 
+  def self.define_square(square)
+    raise ArgumentError, "square should not be nil" if square.nil?
+    @squares ||= []
+    @squares << square
+  end
+
+  def self.has_squares(squares)
+    raise ArgumentError, "list of squares should not contain nil" if squares.include? nil
+    @squares = squares.uniq
+  end
+
   public
 
   def initialize
@@ -48,10 +59,13 @@ class Puzzle
   attr_reader :glyph_state
 
   def [](square)
+    raise IndexError, "Key must be a square in this puzzle." if !squares.include?(square)
     @glyph_state[square]
   end
 
   def []=(square, glyph)
+    raise IndexError, "Key must be a square in this puzzle." if !squares.include?(square)
+    raise ArgumentError, "Value must be a glyph in this puzzle or nil." if !glyph.nil? && !glyphs.include?(glyph)
     @glyph_state[square] = glyph
   end
 

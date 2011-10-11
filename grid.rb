@@ -45,8 +45,8 @@ module PuzzleOnGrid
       @square_index ||= Hash.new({})
       @square_index[x] = {} unless @square_index.has_key?(x)
       @square_index[x][y] = square
-      @squares ||= []
-      @squares << square
+
+      define_square square
     end
 
     # Using the template provided for the puzzle, this function
