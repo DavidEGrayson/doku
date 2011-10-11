@@ -14,21 +14,6 @@ $sudoku = Sudoku.new <<END
 ...|...|..3
 END
 
-describe "Sudoku puzzle" do
-  it 'has 81 squares' do
-    $sudoku.squares.size.should == 81
-  end
-
-  it 'has 9 squares in the first row' do
-    first_row = $sudoku.squares.select { |s| s.matches?(y:0) }
-    first_row.size.should == 9
-  end
-
-  it 'has the right number of groups' do
-    $sudoku.groups.size.should == 3*9
-  end
-end
-
 describe Solver do
   context 'given the sudoku puzzle' do
     before(:all) do
