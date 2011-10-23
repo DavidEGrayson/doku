@@ -79,24 +79,24 @@ class Puzzle
     glyph_state.inspect
   end
 
-  def <= (other)
-    same_class_as?(other) && glyph_state_subset_of?(other)
+  def <= (puzzle)
+    same_class_as?(puzzle) and glyph_state_subset_of?(puzzle)
   end
 
-  def == (other)
-    same_class_as?(other) && glyph_state == other.glyph_state
+  def == (puzzle)
+    same_class_as?(puzzle) and glyph_state == puzzle.glyph_state
   end
 
-  def < (other)
-    self != other && self <= other
+  def < (puzzle)
+    self != puzzle and self <= puzzle
   end
 
-  def >= (other)
-    other <= self
+  def >= (puzzle)
+    puzzle <= self
   end
 
-  def > (other)
-    other < self
+  def > (puzzle)
+    puzzle < self
   end
 
   def filled?
@@ -113,11 +113,11 @@ class Puzzle
   end
 
   def solution?
-    filled? && valid?
+    filled? and valid?
   end
 
   def solution_for?(puzzle)
-    solution? && puzzle <= self
+    solution? and puzzle <= self
   end
 
   private
@@ -129,8 +129,8 @@ class Puzzle
     return true
   end
 
-  def same_class_as?(other)
-    self.class == other.class
+  def same_class_as?(puzzle)
+    self.class == puzzle.class
   end
 
   def self.define_group(args)
