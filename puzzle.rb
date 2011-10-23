@@ -20,8 +20,10 @@ class Puzzle
 
   public
 
-  def initialize
-    @glyph_state ||= {}
+  def initialize(glyph_state = {})
+    @glyph_state = {}
+    # We initialize glyph_state this way so that the data gets validated.
+    glyph_state.each { |square, glyph| self[square] = glyph }
   end
 
   def initialize_copy(source)
@@ -77,7 +79,60 @@ class Puzzle
     glyph_state.inspect
   end
 
+  def <= (other)
+    same_class_as?(other) && glyph_state_subset_of?(other)
+  end
+
+  def == (other)
+    same_class_as?(other) && glyph_state == other.glyph_state
+  end
+
+  def < (other)
+    self != other && self <= other
+  end
+
+  def >= (other)
+    other <= self
+  end
+
+  def > (other)
+    other < self
+  end
+
+  def filled?
+    (squares - glyph_state.keys).empty?
+  end
+
+  def valid?
+    groups.each do |group|
+      gs = group.collect { |square| self[square] }
+      gs.delete nil
+      return false if gs.uniq.length != gs.length
+    end
+    return true
+  end
+
+  def solution?
+    filled? && valid?
+  end
+
+  def solution_for?(puzzle)
+    solution? && puzzle <= self
+  end
+
   private
+
+  def glyph_state_subset_of?(puzzle)
+    glyph_state.each_pair do |square, glyph|
+      return false if puzzle[square] != glyph
+    end
+    return true
+  end
+
+  def same_class_as?(other)
+    self.class == other.class
+  end
+
   def self.define_group(args)
     s = if args.is_a? Hash
       squares.select { |sq| sq.matches? args }

@@ -21,7 +21,7 @@ END
     end
 
     it 'solves the puzzle' do
-      @solution.is_solution_for?(@puzzle).should == true
+      @solution.solution_for?(@puzzle).should == true
     end
 
     it 'is the correct solution' do
