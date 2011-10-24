@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe Solver do
+describe "Puzzle#solve" do
   context 'given the sudoku puzzle' do
     before(:all) do
       @puzzle = Sudoku.new <<END
@@ -17,7 +17,7 @@ describe Solver do
 ...|...|..3
 END
 
-      @solution = Solver.solve @puzzle
+      @solution = @puzzle.solve
     end
 
     it 'solves the puzzle' do
@@ -66,7 +66,7 @@ F.B.|51..|2.A.|....
 ...1|F3A4|..9.|5.E2
 END
 
-      @solution = Solver.solve @puzzle
+      @solution = @puzzle.solve
     end
 
     it "gives the correct solution" do

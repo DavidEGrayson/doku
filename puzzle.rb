@@ -120,6 +120,10 @@ class Puzzle
     solution? and puzzle <= self
   end
 
+  def solve
+    Solver.solve self
+  end
+
   private
 
   def glyph_state_subset_of?(puzzle)
