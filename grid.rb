@@ -35,8 +35,7 @@ module PuzzleOnGrid
     end
 
     def define_square_on_grid(x, y, line_number, char_number)
-      square = Square.new
-      square.extend SquareOnGrid
+      square = SquareOnGrid.new
       square.x = x
       square.y = y
       square.line_number = line_number
@@ -130,7 +129,7 @@ module PuzzleOnGrid
   end
 end
 
-module SquareOnGrid
+class SquareOnGrid
   attr_accessor :x
   attr_accessor :y
   attr_accessor :line_number

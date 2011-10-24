@@ -174,5 +174,3 @@ class Puzzle
   end
 end
 
-class Square
-end
