@@ -115,4 +115,31 @@ describe "Puzzle instance" do
     end
   end
 
+  shared_examples_for "copied puzzle" do
+    it "produces an equal puzzle" do
+      @copy.should == @puzzle
+      @copy.should_not equal @puzzle
+    end
+
+    it "produces a puzzle with a different glyph_state hash" do
+      @copy.glyph_state.should_not equal @puzzle.glyph_state
+    end
+  end
+
+  describe "dup" do
+    before do
+      @copy = @puzzle.dup
+    end
+
+    it_should_behave_like "copied puzzle"
+  end
+
+  describe "clone" do
+    before do
+      @copy = @puzzle.clone
+    end
+
+    it_should_behave_like "copied puzzle"
+  end
+
 end

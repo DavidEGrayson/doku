@@ -27,7 +27,6 @@ class Puzzle
   end
 
   def initialize_copy(source)
-    super
     @glyph_state = @glyph_state.dup
   end
 
