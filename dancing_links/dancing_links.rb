@@ -290,9 +290,9 @@ module DancingLinks
       if right == self
         # Success.  Matrix is empty because every column is covered.
         yield @nodes.collect &:row_id
-        true
+        return true
       end
-      false
+      return false
     end
 
     def choose_appropriate_column
@@ -312,12 +312,15 @@ module DancingLinks
 
           # Try the node (push it and cover its columns).
           @node = @column.down
-
         else
 
           # Choose a node to try, back-tracking if necessary.
-
           while true
+            if @covered_columns.empty?
+              # We tried all posibilites so we are done now.
+              return
+            end
+
             # Go back to previous column and node.
             @column = @covered_columns.last
 

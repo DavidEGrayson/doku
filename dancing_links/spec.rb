@@ -55,7 +55,7 @@ describe DancingLinks::SparseMatrix do
                   [  2,3,    6  ],
                   [1,    4      ],
                   [  2,        7],
-                  [      4,5,  7]
+                  [      4,5,  7],
                  ]
       @sm = DancingLinks::SparseMatrix.from_sets @subsets, @universe
     end
@@ -67,8 +67,9 @@ describe DancingLinks::SparseMatrix do
       result.collect(&:sort).sort.should == [[1, 4], [2, 7], [3, 5, 6]]
     end
 
+    # TODO: test this using a matrix that has multiple exact covers
     it "can find all exact covers" do
-      @sm.exact_covers.to_a.sort.should == []
+      @sm.exact_covers.to_a.sort.should == [[[1, 4], [3, 5, 6], [2,7]]]
     end
 
     context "with one row covered" do
