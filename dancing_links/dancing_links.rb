@@ -256,7 +256,7 @@ module DancingLinks
           cover_column j.column
         end
 
-        if answer = find_exact_cover(nodes)
+        if answer = find_exact_cover_recursive(nodes)
           # Success
           return answer
         end
@@ -273,50 +273,81 @@ module DancingLinks
     end
 
     # TODO: see if recursive or non-recursive algorithm is faster.
+
     def find_exact_cover
-      columns = []  # Which columns are currently covered.
-      nodes = []    # columns[i] was covered by the row containing nodes[i].
-      while true
-        if right == self
-          # Success.  Matrix is empty because every column is covered.
-          return nodes.collect &:row_id
+      exact_covers_ { |ec| return ec }
+    end
+
+    def exact_covers
+      Enumerator.new do |y|
+        exact_covers_ do |ec|
+          y << ec
         end
+      end
+    end
 
-        # Choose a column to cover.
-        column = choose_column
+    def check_for_success
+      if right == self
+        # Success.  Matrix is empty because every column is covered.
+        yield @nodes.collect &:row_id
+        true
+      end
+      false
+    end
 
-        # Cover the column.
-        cover_column column
-        columns.push column
+    def choose_appropriate_column
+      column = choose_column
+      return nil if column.down == column
+      return column
+    end
 
-        # Choose a node to try, back-tracking if necessary.
-        node = column.down
-        while node == column
-          # Our downwards iteration has gone full-circle
-          # back to the column object where it started.
-          # Therefore we have tried all the nodes in this column.
-          # Uncover the column and pop it off the list.
-          uncover_column columns.pop
+    def exact_covers_(&block)
+      @covered_columns = []  # Which columns are currently covered.
+      @nodes = []    # columns[i] was covered by the row containing nodes[i].
+      while true
 
-          # Go back to previous column and node.
-          column = columns.last
+        if !check_for_success(&block) && (@column = choose_appropriate_column)
+          cover_column @column
+          @covered_columns.push @column
 
-          # We already tried this node and it didn't work, so
-          # pop it off and uncover the corresponding columns.
-          node = nodes.pop
-          node.peers_leftward.each do |j|
-            uncover_column j.column
+          # Try the node (push it and cover its columns).
+          @node = @column.down
+
+        else
+
+          # Choose a node to try, back-tracking if necessary.
+
+          while true
+            # Go back to previous column and node.
+            @column = @covered_columns.last
+
+            # We already tried this node and it didn't work, so
+            # pop it off and uncover the corresponding columns.
+            @node = @nodes.pop
+            @node.peers_leftward.each do |j|
+              uncover_column j.column
+            end
+            
+            # Try the next node for this column.
+            @node = @node.down
+
+            break unless @node == @column
+
+            # Our downwards iteration has gone full-circle
+            # back to the column object where it started.
+            # Therefore we have tried all the nodes in this column.
+            # Uncover the column and pop it off the list.
+            uncover_column @covered_columns.pop
           end
 
-          # Try the next node for this column.
-          node = node.down
         end
 
         # Try the node (push it and cover its columns).
-        nodes.push node
-        node.peers_rightward.each do |j|
+        @nodes.push @node
+        @node.peers_rightward.each do |j|
           cover_column j.column
         end
+
       end
     end
 

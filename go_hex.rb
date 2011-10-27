@@ -1,20 +1,6 @@
 #!/usr/bin/env ruby
 require_relative 'hexadoku'
 require_relative 'solver'
+require_relative 'puzzles/elektor/2011-07'
 
-solution = Solver.solve $hexadoku
-
-expected = <<END
-unknown
-END
-
-solution_string = $hexadoku.glyph_state_to_string(solution)
-
-if solution_string.strip != expected.strip
-  puts "FAILED"
-  puts solution_string
-  exit 1 
-end
-
-puts "Success".
-puts exit 0
+puts $puzzle.solve.to_grid_string
