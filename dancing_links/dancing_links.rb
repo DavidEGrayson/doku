@@ -302,13 +302,11 @@ module DancingLinks
     end
 
     def exact_covers_(&block)
-      @covered_columns = []  # Which columns are currently covered.
       @nodes = []    # columns[i] was covered by the row containing nodes[i].
       while true
 
         if !check_for_success(&block) && (@column = choose_appropriate_column)
           cover_column @column
-          @covered_columns.push @column
 
           # Try the node (push it and cover its columns).
           @node = @column.down
@@ -316,31 +314,26 @@ module DancingLinks
 
           # Choose a node to try, back-tracking if necessary.
           while true
-            if @covered_columns.empty?
+            if @nodes.empty?
               # We tried all posibilites so we are done now.
               return
             end
 
-            # Go back to previous column and node.
-            @column = @covered_columns.last
-
-            # We already tried this node and it didn't work, so
+            # We tried @nodes.last and it didn't work, so
             # pop it off and uncover the corresponding columns.
             @node = @nodes.pop
             @node.peers_leftward.each do |j|
               uncover_column j.column
             end
             
-            # Try the next node for this column.
+            # Try the next node in this column.
             @node = @node.down
 
-            break unless @node == @column
+            break unless @node.is_a? Column
 
             # Our downwards iteration has gone full-circle
             # back to the column object where it started.
-            # Therefore we have tried all the nodes in this column.
-            # Uncover the column and pop it off the list.
-            uncover_column @covered_columns.pop
+            uncover_column @node
           end
 
         end
