@@ -149,6 +149,10 @@ module DancingLinks
       LinkEnumerator.new :right, self
     end
 
+    def empty?
+      right == self
+    end
+
     def create_column(id)
       column = Column.new(id)
       column.insert_left self
@@ -246,29 +250,25 @@ module DancingLinks
         return nodes.collect &:row_id
       end
 
-      c = choose_column
-      cover_column c
+      c = choose_smallest_column
+      c.cover
 
       c.nodes_downward.each do |r|
         nodes.push r
 
-        r.peers_rightward.each do |j|
-          cover_column j.column
-        end
+        r.cover
 
         if answer = find_exact_cover_recursive(nodes)
           # Success
           return answer
         end
         
-        r.peers_leftward.each do |j|
-          uncover_column j.column
-        end
+        r.uncover
 
         nodes.pop
       end
 
-      uncover_column c
+      c.uncover
       return nil
     end
 
@@ -286,26 +286,16 @@ module DancingLinks
       end
     end
 
-    def check_for_success
-      if right == self
-        # Success.  Matrix is empty because every column is covered.
-        yield @nodes.collect &:row_id
-        return true
-      end
-      return false
-    end
-
-    def choose_appropriate_column
-      column = choose_column
-      return nil if column.down == column
-      return column
-    end
-
-    def exact_covers_(&block)
+    def exact_covers_
       @nodes = []    # columns[i] was covered by the row containing nodes[i].
       while true
 
-        if !check_for_success(&block) && (@column = choose_appropriate_column)
+        if empty?
+          # Success.  Matrix is empty because every column is covered once.
+          yield @nodes.collect &:row_id
+        end
+
+        if @column = choose_appropriate_column
           cover_column @column
 
           # Try the node (push it and cover its columns).
@@ -347,9 +337,16 @@ module DancingLinks
       end
     end
 
+    def choose_appropriate_column
+      return nil if empty?
+      column = choose_smallest_column
+      return nil if column.down == column
+      return column
+    end
+
     # When choosing a column, we use Knuth's S heuristic.
     # Assumption: The matrix has at least one column.
-    def choose_column
+    def choose_smallest_column
       # Slow but concise version of this function:
       #return columns.min_by &:size
 
