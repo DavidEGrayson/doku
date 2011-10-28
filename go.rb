@@ -2,29 +2,18 @@
 require_relative 'sudoku'
 require_relative 'solver'
 
-solution = Solver.solve $sudoku
-
-expected = <<END
-964|278|351
-287|135|649
-531|496|872
+puzzle = Sudoku.new <<END
+...|..8|...
+..7|.35|..9
+5..|4.6|8..
 ---+---+---
-319|754|286
-452|681|937
-876|923|514
+...|..4|2..
+4..|...|.37
+8..|...|5..
 ---+---+---
-195|367|428
-723|849|165
-648|512|793
+.9.|.67|...
+..3|...|1.5
+...|...|..3
 END
 
-solution_string = solution.to_grid_string
-
-if solution_string.strip != expected.strip
-  puts "FAILED"
-  puts solution_string
-  exit 1 
-end
-
-puts "Success".
-puts exit 0
+puts puzzle.solve.to_grid_string

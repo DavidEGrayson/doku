@@ -74,7 +74,7 @@ describe DancingLinks::SparseMatrix do
 
     context "with one row covered" do
       before do
-        @sm.cover_column @sm.column(@universe[3])
+        @sm.column(@universe[3]).cover
       end
 
       it "has only 6 columns" do
@@ -111,7 +111,7 @@ describe DancingLinks::SparseMatrix do
 
       context "and then uncovered" do
         before do
-          @sm.uncover_column @sm.column(@universe[3])          
+          @sm.column(@universe[3]).uncover          
         end
 
         it_should_behave_like "figure 3 from Knuth"

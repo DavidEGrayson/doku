@@ -110,7 +110,29 @@ module DancingLinks
         LinkEnumerator.new :up, self
       end
 
-      alias :nodes :nodes_downward      
+      alias :nodes :nodes_downward
+
+      # From page 6 of Knuth.
+      def cover
+        remove_horizontal
+        nodes_downward.each do |i|
+          i.peers_rightward.each do |j|
+            j.remove_vertical
+            j.column.size -= 1
+          end
+        end
+      end
+      
+      # From page 6 of Knuth.
+      def uncover
+        nodes_upward.each do |i|
+          i.peers_leftward.each do |j|
+            j.column.size += 1
+            j.reinsert_vertical
+          end
+        end
+        reinsert_horizontal
+      end
     end
 
     class Node
@@ -135,6 +157,19 @@ module DancingLinks
       end
 
       alias :peers :peers_rightward
+
+      def cover
+        peers_rightward.each do |j|
+          j.column.cover
+        end
+      end
+
+      def uncover
+        peers_leftward.each do |j|
+          j.column.uncover
+        end
+      end
+
     end
 
     include HorizontalLinks
@@ -218,30 +253,6 @@ module DancingLinks
       end
     end
 
-    # From page 6 of Knuth.
-    def cover_column(column)
-      column.remove_horizontal
-
-      column.nodes_downward.each do |i|
-        i.peers_rightward.each do |j|
-          j.remove_vertical
-          j.column.size -= 1
-        end
-      end
-    end
-
-    # From page 6 of Knuth.
-    def uncover_column(column)
-      column.nodes_upward.each do |i|
-        i.peers_leftward.each do |j|
-          j.column.size += 1
-          j.reinsert_vertical
-        end
-      end
-
-      column.reinsert_horizontal
-    end
-
     # Recursive method of finding the exact cover,
     # from page 5 of Knuth.
     def find_exact_cover_recursive(nodes=[])
@@ -287,52 +298,47 @@ module DancingLinks
     end
 
     def exact_covers_
-      @nodes = []    # columns[i] was covered by the row containing nodes[i].
+      nodes = []    # columns[i] was covered by the row containing nodes[i].
       while true
 
         if empty?
           # Success.  Matrix is empty because every column is covered once.
-          yield @nodes.collect &:row_id
+          yield nodes.collect &:row_id
         end
 
-        if @column = choose_appropriate_column
-          cover_column @column
+        if column = choose_appropriate_column
+          column.cover
 
-          # Try the node (push it and cover its columns).
-          @node = @column.down
+          # Pick the first node in the column.
+          node = column.down
         else
 
-          # Choose a node to try, back-tracking if necessary.
+          # Pick the next node to try by back-tracking until we get
+          # to a column where we haven't tried all the nodes.
           while true
-            if @nodes.empty?
-              # We tried all posibilites so we are done now.
-              return
-            end
+            return if nodes.empty?  # backtracked back to 0, so we are done
 
-            # We tried @nodes.last and it didn't work, so
+            # We tried nodes.last and it didn't work, so
             # pop it off and uncover the corresponding columns.
-            @node = @nodes.pop
-            @node.peers_leftward.each do |j|
-              uncover_column j.column
-            end
+            node = nodes.pop
+            node.uncover
             
             # Try the next node in this column.
-            @node = @node.down
+            x = node.down
 
-            break unless @node.is_a? Column
+            break unless x.is_a? Column
 
             # Our downwards iteration has gone full-circle
             # back to the column object where it started.
-            uncover_column @node
+            x.uncover   # Uncover the column.
           end
 
+          node = x
         end
 
         # Try the node (push it and cover its columns).
-        @nodes.push @node
-        @node.peers_rightward.each do |j|
-          cover_column j.column
-        end
+        nodes.push node
+        node.cover
 
       end
     end
@@ -366,7 +372,7 @@ module DancingLinks
     def cover_row(row_id)
       raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
       @rows[row_id].row_rightward.each do |node|
-        cover_column node.column
+        node.column.cover
       end
     end
   end
