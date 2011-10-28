@@ -253,6 +253,13 @@ module DancingLinks
       end
     end
 
+    def remove_row(row_id)
+      raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
+      @rows[row_id].row_rightward.each do |node|
+        node.column.cover
+      end
+    end
+
     # Recursive method of finding the exact cover,
     # from page 5 of Knuth.
     def find_exact_cover_recursive(nodes=[])
@@ -286,19 +293,20 @@ module DancingLinks
     # TODO: see if recursive or non-recursive algorithm is faster.
 
     def find_exact_cover
-      exact_covers_ { |ec| return ec }
+      each_exact_cover { |ec| return ec }
     end
 
     def exact_covers
       Enumerator.new do |y|
-        exact_covers_ do |ec|
+        each_exact_cover do |ec|
           y << ec
         end
       end
     end
 
-    def exact_covers_
-      nodes = []    # columns[i] was covered by the row containing nodes[i].
+    def each_exact_cover
+      nodes = []   # List of nodes that are currently "covered"
+
       while true
 
         if empty?
@@ -307,39 +315,43 @@ module DancingLinks
         end
 
         if column = choose_appropriate_column
+          # Cover a new column and pick the first node in it.
           column.cover
-
-          # Pick the first node in the column.
           node = column.down
         else
-
-          # Pick the next node to try by back-tracking until we get
-          # to a column where we haven't tried all the nodes.
-          while true
-            return if nodes.empty?  # backtracked back to 0, so we are done
-
-            # We tried nodes.last and it didn't work, so
-            # pop it off and uncover the corresponding columns.
-            node = nodes.pop
-            node.uncover
-            
-            # Try the next node in this column.
-            x = node.down
-
-            break unless x.is_a? Column
-
-            # Our downwards iteration has gone full-circle
-            # back to the column object where it started.
-            x.uncover   # Uncover the column.
-          end
-
-          node = x
+          # Uncover columns until we find one with a node we haven't tried.
+          node = backtrack_and_pick_node(nodes)
+          return if node.nil?  # Tried everything
         end
 
         # Try the node (push it and cover its columns).
         nodes.push node
         node.cover
 
+      end
+    end
+
+    # This is used by each_exact_cover.
+    # Picks the next node to try by back-tracking until we get
+    # to a column where we haven't tried all the nodes.
+    protected
+    def backtrack_and_pick_node(nodes)
+      while true
+        return nil if nodes.empty?  # backtracked back to 0, so we are done
+        
+        # We tried nodes.last and it didn't work, so
+        # pop it off and uncover the corresponding columns.
+        node = nodes.pop
+        node.uncover
+        
+        # Try the next node in this column.
+        x = node.down
+
+        return x unless x.is_a? Column
+        
+        # Our downwards iteration has gone full-circle
+        # back to the column object where it started.
+        x.uncover   # Uncover the column.
       end
     end
 
@@ -369,11 +381,5 @@ module DancingLinks
       end
     end
 
-    def cover_row(row_id)
-      raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
-      @rows[row_id].row_rightward.each do |node|
-        node.column.cover
-      end
-    end
   end
 end

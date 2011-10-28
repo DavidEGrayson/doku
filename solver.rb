@@ -42,7 +42,7 @@ module Solver
     # rows (removing the row and all columns it touches).
     puzzle.squares.each do |square|
       if glyph = puzzle[square]
-        sm.cover_row sgs[square][glyph]
+        sm.remove_row sgs[square][glyph]
       end
     end
 
