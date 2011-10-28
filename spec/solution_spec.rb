@@ -61,7 +61,6 @@ END
     it 'finds multiple solutions' do
       solutions = @puzzle.solutions.to_a
       solutions.size.should == 2
-      solutions.each { |s| s.should be_a_solution_for @puzzle }
 
       solutions.should include Sudoku.new <<END
 964|278|351
@@ -90,6 +89,38 @@ END
 723|849|165
 648|152|793
 END
+
+      solutions[0].should be_a_solution_for @puzzle
+      solutions[1].should be_a_solution_for @puzzle
+    end
+
+  end
+
+  context 'given a sudoku puzzle with NO solutions' do
+    before do
+      @puzzle = Sudoku.new <<END
+..4|...|...
+...|123|...
+...|...|4..
+---+---+---
+...|...|...
+...|...|...
+...|...|...
+---+---+---
+...|...|...
+...|...|...
+...|...|...
+END
+    end
+
+    it 'finds no solutions' do
+      @puzzle.solve.should == nil
+    end
+
+    it 'can tell instantly there is no solution, in this case' do
+      sm = Solver.puzzle_to_sparse_matrix(@puzzle)
+      sc = sm.columns.min_by(&:size)
+      sc.size.should == 0
     end
   end
 
@@ -121,7 +152,7 @@ END
       @solution = @puzzle.solve
     end
 
-    it "gives the correct solution" do
+    it 'finds the correct solution' do
       @solution.to_grid_string.should == <<END.strip
 2A07|BCF3|9D64|8E15
 B839|A54D|70E1|62FC
