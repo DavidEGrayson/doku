@@ -2,7 +2,7 @@ require_relative 'spec_helper'
 
 describe "Puzzle#solve" do
   context 'given the sudoku puzzle' do
-    before(:all) do
+    before do
       @puzzle = Sudoku.new <<END
 ...|..8|...
 ..7|.35|..9
@@ -41,8 +41,60 @@ END
     end
   end
 
+  context 'given a sudoku puzzle with multiple solutions' do
+    before do
+      @puzzle = Sudoku.new <<END
+...|..8|...
+..7|.3.|..9
+5..|4.6|8..
+---+---+---
+...|..4|2..
+4..|...|.37
+8..|...|5..
+---+---+---
+.9.|.67|...
+..3|...|1.5
+...|...|..3
+END
+    end
+
+    it 'finds multiple solutions' do
+      solutions = @puzzle.solutions.to_a
+      solutions.size.should == 2
+      solutions.each { |s| s.should be_a_solution_for @puzzle }
+
+      solutions.should include Sudoku.new <<END
+964|278|351
+287|135|649
+531|496|872
+---+---+---
+319|754|286
+452|681|937
+876|923|514
+---+---+---
+195|367|428
+723|849|165
+648|512|793
+END
+
+      solutions.should include Sudoku.new <<END
+964|278|351
+287|531|649
+531|496|872
+---+---+---
+359|714|286
+412|685|937
+876|923|514
+---+---+---
+195|367|428
+723|849|165
+648|152|793
+END
+    end
+  end
+
   context 'given a hexadoku puzzle' do
-    before(:all) do
+    before do
       # Elektor Hexadoku 2011
       @puzzle = Hexadoku.new <<END
 2A.7|.C..|9D64|8...

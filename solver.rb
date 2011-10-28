@@ -1,12 +1,35 @@
 require_relative 'puzzle'
 require_relative 'dancing_links/dancing_links'
 
+# Re-open the puzzle class and add some methods to it.
+class Puzzle
+  def each_solution(&block)
+    Solver.each_solution self, &block
+  end
+
+  def solve
+    each_solution { |s| return s }
+    return nil
+  end
+
+  def solutions
+    Enumerator.new do |y|
+      each_solution do |solution|
+        y << solution
+      end
+    end
+  end
+end
+
 module Solver
-  Profile = false
+  def self.each_solution(puzzle)
+    sm = puzzle_to_sparse_matrix puzzle
+    sm.each_exact_cover do |exact_cover|
+      yield exact_cover_to_solution(puzzle, exact_cover)
+    end
+  end
 
-  require 'ruby-prof' if Profile
-
-  def self.solve(puzzle)
+  def self.puzzle_to_sparse_matrix(puzzle)
     # Compute the universe (square and every group/glyph combo).
     universe = puzzle.squares.dup
     ggs = {}
@@ -46,29 +69,15 @@ module Solver
       end
     end
 
-    # Do the real work.
-    RubyProf.start if Profile
+    return sm
+  end
 
-    exact_cover = sm.find_exact_cover
-    
-    if Profile
-      result = RubyProf.stop
-      printer = RubyProf::GraphHtmlPrinter.new(result)
-      File.open("profile.html", 'w') do |file|
-        printer.print file, :min_percent=>2.0
-      end
-    end
-
-    # Convert the exact cover to a new instance of the puzzle.
+  # Convert the exact cover to a new instance of the puzzle.
+  def self.exact_cover_to_solution(puzzle, exact_cover)
     solution = puzzle.dup
     exact_cover.each do |sg|
       solution[sg.square] = sg.glyph
     end
-
-    # TODO: if !(puzzle <= solution && solution.complete?)
-    #   raise "There was a bug in the solving algorithm."
-    # end
-    
     return solution
   end
 
