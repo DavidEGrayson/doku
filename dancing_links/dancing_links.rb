@@ -72,8 +72,7 @@ module DancingLinks
     end
 
     def insert_above(other)
-      self.up = other.up
-      self.down = other
+      self.up, self.down = other.up, other
       reinsert_vertical
     end
 
@@ -87,8 +86,7 @@ module DancingLinks
 
     # The Column Header object from Knuth.
     class Column
-      include HorizontalLinks
-      include VerticalLinks
+      include HorizontalLinks, VerticalLinks
 
       # An ID object provided by the user to give meaning to the column.
       # (the N relation from Knuth)
@@ -133,11 +131,14 @@ module DancingLinks
         end
         reinsert_horizontal
       end
+
+      def empty?
+        size == 0   # Equivalent to (down == self)
+      end
     end
 
     class Node
-      include HorizontalLinks
-      include VerticalLinks
+      include HorizontalLinks, VerticalLinks
 
       attr_accessor :column
       attr_accessor :row_id
@@ -159,14 +160,14 @@ module DancingLinks
       alias :peers :peers_rightward
 
       def cover
-        peers_rightward.each do |j|
-          j.column.cover
+        peers_rightward.each do |node|
+          node.column.cover
         end
       end
 
       def uncover
-        peers_leftward.each do |j|
-          j.column.uncover
+        peers_leftward.each do |node|
+          node.column.uncover
         end
       end
 
@@ -335,26 +336,26 @@ module DancingLinks
 
     def choose_appropriate_column
       return nil if empty?
-      column = choose_smallest_column
-      return nil if column.down == column
+      column = smallest_column
+      return nil if column.empty?
       return column
     end
 
     # When choosing a column, we use Knuth's S heuristic.
     # Assumption: The matrix has at least one column.
-    def choose_smallest_column
+    def smallest_column
       # Slow but concise version of this function:
       #return columns.min_by &:size
 
-      column = smallest_column = right
+      column = smallest = right
       min_size = column.size
       while true
         column = column.right
-        return smallest_column if column == self
+        return smallest if column == self
         
         if column.size < min_size
-          smallest_column, min_size = column, column.size
-          return smallest_column if min_size == 0
+          smallest, min_size = column, column.size
+          return smallest if min_size == 0
         end
       end
     end
@@ -384,4 +385,5 @@ module DancingLinks
     end
 
   end
+
 end
