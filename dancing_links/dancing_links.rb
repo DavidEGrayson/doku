@@ -114,7 +114,7 @@ module DancingLinks
       def cover
         remove_horizontal
         nodes_downward.each do |i|
-          i.row_except_self_rightward.each do |j|
+          i.nodes_except_self_rightward.each do |j|
             j.remove_vertical
             j.column.size -= 1
           end
@@ -124,7 +124,7 @@ module DancingLinks
       # From page 6 of Knuth.
       def uncover
         nodes_upward.each do |i|
-          i.row_except_self_leftward.each do |j|
+          i.nodes_except_self_leftward.each do |j|
             j.column.size += 1
             j.reinsert_vertical
           end
@@ -144,28 +144,28 @@ module DancingLinks
       attr_accessor :row_id
 
       # All nodes in the row, starting with self.
-      def row_rightward
+      def nodes_rightward
         LinkEnumerator.new :right, self, true
       end
 
-      def row_except_self_rightward
+      def nodes_except_self_rightward
         LinkEnumerator.new :right, self
       end
 
-      def row_except_self_leftward
+      def nodes_except_self_leftward
         LinkEnumerator.new :left, self
       end
 
-      alias :row_except_self :row_except_self_rightward
+      alias :nodes_except_self :nodes_except_self_rightward
 
       def cover
-        row_except_self_rightward.each do |node|
+        nodes_except_self_rightward.each do |node|
           node.column.cover
         end
       end
 
       def uncover
-        row_except_self_leftward.each do |node|
+        nodes_except_self_leftward.each do |node|
           node.column.uncover
         end
       end
@@ -255,7 +255,7 @@ module DancingLinks
 
     def remove_row(row_id)
       raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
-      @rows[row_id].row_rightward.each do |node|
+      @rows[row_id].nodes_rightward.each do |node|
         node.column.cover
       end
     end
