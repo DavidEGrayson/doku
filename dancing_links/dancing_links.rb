@@ -114,7 +114,7 @@ module DancingLinks
       def cover
         remove_horizontal
         nodes_downward.each do |i|
-          i.peers_rightward.each do |j|
+          i.row_except_self_rightward.each do |j|
             j.remove_vertical
             j.column.size -= 1
           end
@@ -124,7 +124,7 @@ module DancingLinks
       # From page 6 of Knuth.
       def uncover
         nodes_upward.each do |i|
-          i.peers_leftward.each do |j|
+          i.row_except_self_leftward.each do |j|
             j.column.size += 1
             j.reinsert_vertical
           end
@@ -148,25 +148,24 @@ module DancingLinks
         LinkEnumerator.new :right, self, true
       end
 
-      # peers does NOT include self; a better name is welcome
-      def peers_rightward
+      def row_except_self_rightward
         LinkEnumerator.new :right, self
       end
 
-      def peers_leftward
+      def row_except_self_leftward
         LinkEnumerator.new :left, self
       end
 
-      alias :peers :peers_rightward
+      alias :row_except_self :row_except_self_rightward
 
       def cover
-        peers_rightward.each do |node|
+        row_except_self_rightward.each do |node|
           node.column.cover
         end
       end
 
       def uncover
-        peers_leftward.each do |node|
+        row_except_self_leftward.each do |node|
           node.column.uncover
         end
       end
