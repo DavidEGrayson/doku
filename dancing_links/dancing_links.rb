@@ -320,7 +320,7 @@ module DancingLinks
           node = column.down
         else
           # Uncover columns until we find one with a node we haven't tried.
-          node = backtrack_and_pick_node(nodes)
+          node = backtrack!(nodes)
           return if node.nil?  # Tried everything
         end
 
@@ -331,29 +331,7 @@ module DancingLinks
       end
     end
 
-    # This is used by each_exact_cover.
-    # Picks the next node to try by back-tracking until we get
-    # to a column where we haven't tried all the nodes.
     protected
-    def backtrack_and_pick_node(nodes)
-      while true
-        return nil if nodes.empty?  # backtracked back to 0, so we are done
-        
-        # We tried nodes.last and it didn't work, so
-        # pop it off and uncover the corresponding columns.
-        node = nodes.pop
-        node.uncover
-        
-        # Try the next node in this column.
-        x = node.down
-
-        return x unless x.is_a? Column
-        
-        # Our downwards iteration has gone full-circle
-        # back to the column object where it started.
-        x.uncover   # Uncover the column.
-      end
-    end
 
     def choose_appropriate_column
       return nil if empty?
@@ -378,6 +356,30 @@ module DancingLinks
           smallest_column, min_size = column, column.size
           return smallest_column if min_size == 0
         end
+      end
+    end
+
+    # This is used by each_exact_cover.
+    # Picks the next node to try by back-tracking until we get
+    # to a column where we haven't tried all the nodes.
+    # Returns nil if we are done searching the entire solution space.
+    def backtrack!(nodes)
+      while true
+        return nil if nodes.empty?  # backtracked back to 0, so we are done
+        
+        # We tried nodes.last and it didn't work, so
+        # pop it off and uncover the corresponding columns.
+        node = nodes.pop
+        node.uncover
+        
+        # Try the next node in this column.
+        x = node.down
+
+        return x unless x.is_a? Column
+        
+        # Our downwards iteration has gone full-circle
+        # back to the column object where it started.
+        x.uncover   # Uncover the column.
       end
     end
 
