@@ -1,3 +1,3 @@
 watch('.*\.rb') do |md|
-  system "clear && date && rspec --color spec.rb"
+  system "clear && date && rake"
 end
