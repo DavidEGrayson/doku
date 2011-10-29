@@ -26,6 +26,10 @@ describe "Puzzle instance" do
     @puzzle[1].should == nil
   end
 
+  it "has an each method that excludes nil values" do
+    TestPuzzle.new(2 => nil).each { raise }
+  end
+
   it "only allows squares as keys" do
     lambda { @puzzle[0] }.should raise_error IndexError
     lambda { @puzzle[0] = false }.should raise_error IndexError
@@ -41,15 +45,6 @@ describe "Puzzle instance" do
   end
 
   describe "comparison operators say" do
-    it "A <= B iff square=>glyph pairs in A are a subset of those in B" do
-      @puzzle.should_not <= TestPuzzle.new
-      TestPuzzle.new.should <= @puzzle
-
-      @puzzle.should <= @puzzle
-
-      @puzzle.should <= TestPuzzle.new(1 => true, 3 => false)
-    end
-
     it "A == B iff the square=>glyph pairs in A and B are the same" do
       @puzzle.should_not == TestPuzzle.new
       TestPuzzle.new.should_not == @puzzle.should
@@ -59,6 +54,19 @@ describe "Puzzle instance" do
       puzzle2.should == @puzzle
 
       (TestPuzzle.new(1 => true) != @puzzle).should == false
+    end
+
+    it "A eql? B is the same as A == B" do
+      TestPuzzle.instance_method(:==).should == TestPuzzle.instance_method(:eql?)
+    end
+
+    it "A <= B iff square=>glyph pairs in A are a subset of those in B" do
+      @puzzle.should_not <= TestPuzzle.new
+      TestPuzzle.new.should <= @puzzle
+
+      @puzzle.should <= @puzzle
+
+      @puzzle.should <= TestPuzzle.new(1 => true, 3 => false)
     end
 
     it "A < B if and only if A != B and A <= B" do
@@ -140,6 +148,13 @@ describe "Puzzle instance" do
     end
 
     it_should_behave_like "copied puzzle"
+  end
+
+  it "equality and hash codes are not affected by nil values" do
+    puzzle2 = TestPuzzle.new(1 => true, 3 => nil)
+    @puzzle[2] = nil
+    puzzle2.should == @puzzle
+    puzzle2.hash.should == @puzzle.hash
   end
 
 end

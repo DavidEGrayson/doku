@@ -30,43 +30,27 @@ module Solver
   end
 
   def self.puzzle_to_sparse_matrix(puzzle)
-    # Compute the universe (square and every group/glyph combo).
-    universe = puzzle.squares.dup
-    ggs = {}
-    puzzle.groups.each do |group|
-      ggs[group] = l = {}
-      puzzle.glyphs.each do |glyph|
-        universe << l[glyph] = GroupAndGlyph.new(group, glyph)
-      end
-    end
-
     # Compute the sets (every possible glyph/square combo).
     sets = {}
-    sgs = {}
     puzzle.squares.each do |square|
-      sgs[square] = l = {}
-      puzzle.glyphs.each do |glyph|
-        set = [square]
-        puzzle.groups.each do |group|
-          if group.include? square
-            set << ggs[group][glyph]
-          end
-        end
+      groups_with_square = puzzle.groups.select { |g| g.include? square }
 
-        sets[l[glyph] = SquareAndGlyph.new(square, glyph)] = set
+      puzzle.glyphs.each do |glyph|
+        sets[SquareAndGlyph.new(square, glyph)] = [square] +
+          groups_with_square.collect do |group|
+            GroupAndGlyph.new group, glyph
+          end
       end
     end
 
     # Create the sparse matrix.  This is a generic matrix
     # that doesn not take in to account square.given_glyph.
-    sm = DancingLinks::SparseMatrix.from_sets sets, universe
+    sm = DancingLinks::SparseMatrix.from_sets sets
 
     # Take into account square.given_glyph by covering certain
     # rows (removing the row and all columns it touches).
-    puzzle.squares.each do |square|
-      if glyph = puzzle[square]
-        sm.remove_row sgs[square][glyph]
-      end
+    puzzle.each do |square, glyph|
+      sm.remove_row SquareAndGlyph.new(square,glyph)
     end
 
     return sm

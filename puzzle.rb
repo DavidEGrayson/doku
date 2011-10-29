@@ -67,7 +67,14 @@ class Puzzle
   def []=(square, glyph)
     raise IndexError, "Key must be a square in this puzzle." if !squares.include?(square)
     raise ArgumentError, "Value must be a glyph in this puzzle or nil." if !glyph.nil? && !glyphs.include?(glyph)
-    @glyph_state[square] = glyph
+
+    # Do NOT store nils as values in the hash, because it
+    # will mess us up when comparing two puzzles and in #each
+    if glyph == nil
+      @glyph_state.delete square
+    else
+      @glyph_state[square] = glyph
+    end
   end
 
   def each(&block)
@@ -78,12 +85,18 @@ class Puzzle
     glyph_state.inspect
   end
 
-  def <= (puzzle)
-    same_class_as?(puzzle) and glyph_state_subset_of?(puzzle)
+  def hash
+    @glyph_state.hash
   end
 
-  def == (puzzle)
+  def eql? (puzzle)
     same_class_as?(puzzle) and glyph_state == puzzle.glyph_state
+  end
+
+  alias == eql?
+
+  def <= (puzzle)
+    same_class_as?(puzzle) and glyph_state_subset_of?(puzzle)
   end
 
   def < (puzzle)
