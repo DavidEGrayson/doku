@@ -145,12 +145,14 @@ module Doku
       s = if args.is_a? Hash
             squares.select { |sq| sq.matches? args }
           else
-            args.dup
+            args
           end
 
-      raise ArgumentError, "Expected groups to be of size #{glyphs.size} but got one of size #{s.size}.  squares = #{s.inspect}" if s.size != glyphs.size 
+      group = Set.new s
+    
+      raise ArgumentError, "Expected groups to be of size #{glyphs.size} but got one of size #{group.size}.  squares = #{group.inspect}" if group.size != glyphs.size 
       @groups ||= []
-      @groups << Set.new(s)
+      @groups << group unless @groups.include?(group)
     end
 
     # There are several ways to infer new groups from the ones
@@ -168,7 +170,7 @@ module Doku
             break if groupB == groupA
 
             g = groupA + groupB - groupC
-            define_group g if g.size == glyphs.size and !groups.include?(g)
+            define_group g if g.size == glyphs.size
           end
         end
       end
