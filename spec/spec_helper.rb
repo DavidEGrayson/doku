@@ -1,3 +1,7 @@
-%w{grid group hexadoku puzzle sudoku solver}.each do |file|
+%w{hexadoku sudoku}.each do |file|
   require_relative "../#{file}.rb"
 end
+
+Sudoku = Doku::Sudoku
+Hexadoku = Doku::Hexadoku
+Hexamurai = Doku::Hexamurai

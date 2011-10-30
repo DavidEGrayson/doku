@@ -1,6 +1,6 @@
 # From elector October 2011.
 
-$puzzle = Hexadoku.new <<END
+$puzzle = Doku::Hexadoku.new <<END
 2A.7|.C..|9D64|8...
 ..3.|A..D|7...|.2F.
 .1..|..0.|8...|.4AB

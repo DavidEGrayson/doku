@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-class TestPuzzle < Puzzle
+class TestPuzzle < Doku::Puzzle
   has_squares [1,2,3,4]
   has_glyphs  [true,false]
   

@@ -1,6 +1,6 @@
 # From Elektor 2011-07
 
-$puzzle = Hexamurai.new <<END
+$puzzle = Doku::Hexamurai.new <<END
         |........|.0.17...|
         |..213...|5.B4....|
         |..0.....|......2.|
@@ -38,7 +38,7 @@ C.......|4.......|......B.|9.40.178
         |........|0......2|
 END
 
-$solution = Hexamurai.new <<END
+$solution = Doku::Hexamurai.new <<END
         |39DEA62B|80C1745F|
         |87213FDC|5EB4906A|
         |450A79E1|63DF8B2C|

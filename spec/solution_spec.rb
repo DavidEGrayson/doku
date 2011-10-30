@@ -118,7 +118,7 @@ END
     end
 
     it 'can not tell instantly there is no solution, in this case' do
-      sm = Solver.puzzle_to_sparse_matrix(@puzzle)
+      sm = @puzzle.to_sparse_matrix
       sc = sm.columns.min_by(&:size)
       sc.size.should > 0
     end
