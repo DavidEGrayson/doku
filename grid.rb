@@ -8,6 +8,24 @@ module Doku
       klass.extend ClassMethods
     end
 
+    def self.parse_grid_string(string)
+      y = 0
+      string.lines.each_with_index do |line, line_number|
+        line.chomp!
+        next if (line.chars.to_a - Separators).empty?
+
+        x = 0
+        line.chars.each_with_index do |char, char_number|
+          next if Separators.include?(char)
+
+          yield char, char_number, line_number, x, y
+
+          x += 1
+        end
+        y += 1
+      end
+    end
+
     module ClassMethods
       def template
         raise "template not defined for #{self}" if !defined?(@template)
@@ -51,22 +69,10 @@ module Doku
       # Using the template provided for the puzzle, this function
       # defines objects to represent each of the different squares.
       def define_squares_from_template
-        y = 0
-        template.lines.each_with_index do |line, line_number|
-          line.chomp!
-          next if (line.chars.to_a - Separators).empty?
-
-          x = 0
-          line.chars.each_with_index do |char, char_number|
-            next if Separators.include?(char)
-            
-            if char == '.'
-              define_square_on_grid x, y, line_number, char_number
-            end
-
-            x += 1
+        PuzzleOnGrid.parse_grid_string(template) do |char, char_number, line_number, x, y|
+          if char == '.'
+            define_square_on_grid x, y, line_number, char_number
           end
-          y += 1
         end
       end
     end
@@ -90,30 +96,18 @@ module Doku
     end
 
     def parse_initial_grid_string(grid_string)
-      y = 0
-      grid_string.lines.each_with_index do |line, line_number|
-        line.chomp!
-        next if (line.chars.to_a - Separators).empty?
+      PuzzleOnGrid.parse_grid_string(grid_string) do |char, char_number, line_number, x, y|
+        square = self.class.square(x, y)
 
-        x = 0
-        line.chars.each_with_index do |char, char_number|
-          next if Separators.include?(char)
-
-          square = self.class.square(x, y)
-
-          if square.nil?
-            raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected space." if char != ' '
-          elsif char == '.'
-            # No glyph specified for this square.
-          elsif glyph_chars.include?(char)
-            self[square] = glyph_parse(char)
-          else
-            raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected period (.) or glyph (#{glyph_chars})." if square.nil?
-          end
-
-          x += 1
+        if square.nil?
+          raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected space." if char != ' '
+        elsif char == '.'
+          # No glyph specified for this square.
+        elsif glyph_chars.include?(char)
+          self[square] = glyph_parse(char)
+        else
+          raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected period (.) or glyph (#{glyph_chars})." if square.nil?
         end
-        y += 1
       end
     end
 
