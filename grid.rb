@@ -73,7 +73,7 @@ module Doku
 
     def initialize(grid_string=nil)
       super()
-      parse_grid_string grid_string if grid_string
+      parse_initial_grid_string grid_string if grid_string
     end
 
     def glyph_chars
@@ -89,9 +89,7 @@ module Doku
       glyphs[glyph_chars.index char]
     end
 
-    def parse_grid_string(grid_string)
-      @squares = []
-
+    def parse_initial_grid_string(grid_string)
       y = 0
       grid_string.lines.each_with_index do |line, line_number|
         line.chomp!
@@ -139,7 +137,9 @@ module Doku
       self[square]
     end
 
-    alias :to_s :to_grid_string
+    def to_s
+      to_grid_string
+    end
   end
 
   class SquareOnGrid
