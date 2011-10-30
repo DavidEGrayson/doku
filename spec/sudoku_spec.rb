@@ -1,6 +1,6 @@
 require_relative 'spec_helper'
 
-describe "Sudoku puzzle" do
+describe Doku::Sudoku do
   it 'has 81 squares' do
     Sudoku.squares.size.should == 81
   end

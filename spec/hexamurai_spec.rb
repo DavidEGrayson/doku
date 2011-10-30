@@ -1,8 +1,6 @@
 require_relative 'spec_helper'
 
-Hexamurai = Doku::Hexamurai
-
-describe 'Hexamurai class' do
+describe Doku::Hexamurai do
   it 'has 768 squares' do
     Hexamurai.squares.size.should == 768
   end
