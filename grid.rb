@@ -20,7 +20,6 @@ module Doku
       end
       
       def square(x, y)
-        squares  # Lazily define the squares if necessary.
         @square_index[x][y]
       end
 
@@ -72,9 +71,9 @@ module Doku
       end
     end
 
-    def initialize(grid_string)
+    def initialize(grid_string=nil)
       super()
-      parse_grid_string grid_string
+      parse_grid_string grid_string if grid_string
     end
 
     def glyph_chars
@@ -127,6 +126,18 @@ module Doku
         lines[square.line_number][square.char_number] = glyph_char glyph
       end
       lines.join "\n"
+    end
+
+    def set(x, y, glyph)
+      square = self.class.square(x, y)
+      raise ArgumentError, "Invalid coordinates #{x},#{y}." if square.nil?
+      self[square] = glyph
+    end
+
+    def get(x, y)
+      square = self.class.square(x, y)
+      raise ArgumentError, "Invalid coordinates #{x},#{y}." if square.nil?
+      self[square]
     end
 
     alias :to_s :to_grid_string
