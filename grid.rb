@@ -122,7 +122,6 @@ module Doku
     def to_grid_string
       lines = self.class.template.split("\n")
       each do |square, glyph|
-        next if glyph.nil?
         lines[square.line_number][square.char_number] = glyph_char glyph
       end
       lines.join "\n"
