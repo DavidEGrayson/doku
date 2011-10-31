@@ -30,22 +30,19 @@ module Doku
 ....|....|....|....
 END
 
-    def self.define_groups_for_hexadoku(start_x, start_y)
-      # Define row and column groups.
-      0.upto(15).each do |n|
-        define_group x:(start_x+n), y:(start_y...(start_y+16))
-        define_group x:(start_x...(start_x+16)), y:(start_y+n)
-      end
-      
-      # Define the 4x4 groups.
-      start_x.step(start_x+15,4).each do |x|
-        start_y.step(start_y+15,4).each do |y|
-          define_group x:x...(x+4), y:y...(y+4)
-        end
+    # Define row and column groups.
+    0.upto(15).each do |n|
+      define_row_group 0, n
+      define_column_group n, 0
+    end
+    
+    # Define the 4x4 groups.
+    0.step(12,4).each do |x|
+      0.step(12,4).each do |y|
+        define_square_group x, y
       end
     end
-
-    define_groups_for_hexadoku 0, 0
+    
   end
 
 end

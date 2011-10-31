@@ -23,13 +23,13 @@ module Doku
 END
     
     0.upto(8) do |n|
-      define_group x:n
-      define_group y:n
+      define_row_group 0, n
+      define_column_group n, 0
     end
     
-    0.step(8,3).each do |start_x|
-      0.step(8,3).each do |start_y|
-        define_group(x:start_x...(start_x+3), y:start_y...(start_y+3))
+    0.step(6,3).each do |x|
+      0.step(6,3).each do |y|
+        define_square_group x, y
       end
     end
   end
