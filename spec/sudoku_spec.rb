@@ -15,6 +15,8 @@ describe Doku::Sudoku do
   end
 
   it 'has methods for getting and setting glyphs by coordinates' do
+    # (just like any puzzle class that includes the PuzzleOnGrid module)
+
     p = Sudoku.new
     p.get(0, 1).should == nil
     p.set(0, 1, 4)

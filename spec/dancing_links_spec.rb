@@ -1,4 +1,4 @@
-require_relative 'dancing_links'
+require_relative 'spec_helper'
 
 describe DancingLinks::SparseMatrix do
   context "when created from scratch" do
@@ -6,8 +6,9 @@ describe DancingLinks::SparseMatrix do
       @sm = DancingLinks::SparseMatrix.new
     end
 
-    it "has no columns" do
+    it "has no columns (i.e. it is empty)" do
       @sm.columns.to_a.size.should == 0
+      @sm.should be_empty
     end
   end
 

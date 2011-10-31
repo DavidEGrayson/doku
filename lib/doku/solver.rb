@@ -1,4 +1,4 @@
-require_relative 'dancing_links/dancing_links'
+require_relative 'dancing_links'
 
 module Doku
   module SolvableWithDancingLinks
