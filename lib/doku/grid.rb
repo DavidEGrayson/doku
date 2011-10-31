@@ -75,6 +75,22 @@ module Doku
           end
         end
       end
+
+      # Assumption: The glyphs have already been defined.
+      def define_row_group(leftmost_x, y)
+        define_group :x => leftmost_x...(leftmost_x+glyphs.size), :y => y
+      end
+
+      # Assumption: The glyphs have already been defined.
+      def define_column_group(x, top_y)
+        define_group :x => x, :y => top_y...(top_y+glyphs.size)
+      end
+
+      # Assumption: The glyphs have already been defined.
+      def define_square_group(leftmost_x, top_y)
+        s = Math.sqrt(glyphs.size)
+        define_group :x => leftmost_x...(leftmost_x+s), :y => top_y...(top_y+s)
+      end
     end
 
     def initialize(grid_string=nil)

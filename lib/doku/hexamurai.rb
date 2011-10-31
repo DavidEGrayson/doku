@@ -1,9 +1,12 @@
-require_relative 'hexadoku'
+require_relative 'puzzle'
+require_relative 'grid'
 
 module Doku
-  class Hexamurai < Hexadoku
-    has_glyphs Hexadoku.glyphs
-    has_glyph_chars Hexadoku.glyph_chars
+  class Hexamurai < Puzzle
+    include PuzzleOnGrid
+
+    has_glyphs (0..15).to_a
+    has_glyph_chars glyphs.collect { |s| "%X"%[s] }
     
     has_template <<END
         |........|........|
@@ -43,12 +46,24 @@ module Doku
         |........|........|
 END
 
-    define_groups_for_hexadoku 8, 8
-    
-    define_groups_for_hexadoku 8, 0
-    define_groups_for_hexadoku 0, 8
-    define_groups_for_hexadoku 16, 8
-    define_groups_for_hexadoku 8, 16
+    0.upto(31) do |n|
+      define_row_group 8, n
+      define_column_group n, 8
+    end
+
+    0.upto(15) do |n|
+      define_row_group 0, n+8
+      define_row_group 16, n+8
+      define_column_group n+8, 0
+      define_column_group n+8, 16
+    end
+
+    0.step(28, 4) do |n|
+      8.step(20, 4) do |m|
+        define_square_group n, m
+        define_square_group m, n
+      end
+    end
 
     infer_groups
   end
