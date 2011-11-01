@@ -130,15 +130,11 @@ module Doku
     end
 
     def set(x, y, glyph)
-      square = SquareOnGrid.new x, y
-      raise ArgumentError, "Invalid coordinates #{x},#{y}." if square.nil?
-      self[square] = glyph
+      self[SquareOnGrid.new(x, y)] = glyph
     end
 
     def get(x, y)
-      square = SquareOnGrid.new x, y
-      raise ArgumentError, "Invalid coordinates #{x},#{y}." if square.nil?
-      self[square]
+      self[SquareOnGrid.new(x, y)]
     end
 
     def to_s
