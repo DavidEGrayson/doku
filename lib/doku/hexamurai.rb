@@ -47,21 +47,21 @@ module Doku
 END
 
     0.upto(31) do |n|
-      define_row_group 8, n
-      define_column_group n, 8
+      define_group row(8, n)
+      define_group column(n, 8)
     end
 
     0.upto(15) do |n|
-      define_row_group 0, n+8
-      define_row_group 16, n+8
-      define_column_group n+8, 0
-      define_column_group n+8, 16
+      define_group row(0, n+8)
+      define_group row(16, n+8)
+      define_group column(n+8, 0)
+      define_group column(n+8, 16)
     end
 
     0.step(28, 4) do |n|
       8.step(20, 4) do |m|
-        define_square_group n, m
-        define_square_group m, n
+        define_group square_group(n, m)
+        define_group square_group(m, n)
       end
     end
 

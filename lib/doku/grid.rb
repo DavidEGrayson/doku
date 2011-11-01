@@ -45,6 +45,10 @@ module Doku
         squares.select { |sq| sq.matches? conditions }
       end
 
+      def square_group(leftmost_x, top_y, size=Math.sqrt(glyphs.size))
+        squares_matching :x => leftmost_x...(leftmost_x+size), :y => top_y...(top_y+size)
+      end
+
       def row(leftmost_x, y, size=glyphs.size)
         squares_matching :x => leftmost_x...(leftmost_x+size), :y => y
       end
@@ -86,22 +90,6 @@ module Doku
             define_square_on_grid x, y, line_number, char_number
           end
         end
-      end
-
-      # Assumption: The glyphs have already been defined.
-      def define_row_group(leftmost_x, y)
-        define_group(squares_matching :x => leftmost_x...(leftmost_x+glyphs.size), :y => y)
-      end
-
-      # Assumption: The glyphs have already been defined.
-      def define_column_group(x, top_y)
-        define_group(squares_matching :x => x, :y => top_y...(top_y+glyphs.size))
-      end
-
-      # Assumption: The glyphs have already been defined.
-      def define_square_group(leftmost_x, top_y)
-        s = Math.sqrt(glyphs.size)
-        define_group(squares_matching :x => leftmost_x...(leftmost_x+s), :y => top_y...(top_y+s))
       end
     end
 

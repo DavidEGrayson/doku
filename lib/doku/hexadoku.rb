@@ -32,14 +32,14 @@ END
 
     # Define row and column groups.
     0.upto(15).each do |n|
-      define_row_group 0, n
-      define_column_group n, 0
+      define_group row(0, n)
+      define_group column(n, 0)
     end
     
     # Define the 4x4 groups.
     0.step(12,4).each do |x|
       0.step(12,4).each do |y|
-        define_square_group x, y
+        define_group square_group(x, y)
       end
     end
     

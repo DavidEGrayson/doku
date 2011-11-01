@@ -11,7 +11,8 @@ describe Doku::Hexamurai do
   end
 
   it 'has 16 squares in the first column of the top hexadoku' do
-    first_row = Hexamurai.squares.select { |s| s.matches? x:8, y:(0..15) }
+    column = Hexamurai.squares_matching :x => 8, :y => (0..15)
+    column.size.should == 16
   end
 
   it 'has the right number of groups' do
