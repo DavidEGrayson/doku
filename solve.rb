@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH << 'lib'
+require 'doku'
+
 if ARGV.size != 1
   puts "Usage: solve.rb path_to_puzzle.rb"
   puts "Example: solve.rb puzzles/elektor/2011-11.rb"
@@ -7,8 +10,6 @@ if ARGV.size != 1
   exit 1
 end
 
-require_relative 'sudoku'
-require_relative 'hexadoku'
 require_relative ARGV[0]
 
 puts $puzzle.solve

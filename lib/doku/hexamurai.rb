@@ -65,7 +65,12 @@ END
       end
     end
 
-    infer_groups
+    # Inferred groups
+    8.upto(23) do |n|
+      define_group row(0, n, 8) + row(24, n, 8)
+      define_group column(n, 0, 8) + column(n, 24, 8)
+    end
+
   end
 end
 

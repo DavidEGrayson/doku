@@ -17,11 +17,11 @@ describe Doku::Hexamurai do
   it 'has the right number of groups' do
     # A hexadoku has 3*16 groups (16 columns, 16 rows, 16 boxes)
     # There are 5 hexadokus.
-    # The reckoning above counted the 32 rows and columns of the 
-    # center hexadoku twice, and counted the 16 boxes of the
-    # center hexaodoku thrice, so subtract 64.
+    # The reckoning above counted the 16 rows and 16 columns of the 
+    # center hexadoku twice (-32), and counted the 16 boxes of the
+    # center hexaodoku thrice (-32), so subtract 64.
     # There are 2*16 inferred groups (16 columns, 16 rows).
-    Hexamurai.groups.size.should == 5*3*16 - 64 + 2*16
+    Hexamurai.groups.size.should == (5*3*16 - 64 + 2*16)
   end
 
   it 'has valid line and char numbers' do
