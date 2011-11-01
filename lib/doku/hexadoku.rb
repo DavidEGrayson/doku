@@ -32,8 +32,8 @@ END
 
     # Define row and column groups.
     0.upto(15).each do |n|
-      define_group row(0, n)
-      define_group column(n, 0)
+      define_group row(n)
+      define_group column(n)
     end
     
     # Define the 4x4 groups.

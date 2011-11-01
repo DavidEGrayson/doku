@@ -47,13 +47,13 @@ module Doku
 END
 
     0.upto(31) do |n|
-      define_group row(8, n)
+      define_group row(n, 8)
       define_group column(n, 8)
     end
 
     0.upto(15) do |n|
-      define_group row(0, n+8)
-      define_group row(16, n+8)
+      define_group row(n+8, 0)
+      define_group row(n+8, 16)
       define_group column(n+8, 0)
       define_group column(n+8, 16)
     end
@@ -67,7 +67,7 @@ END
 
     # Inferred groups
     8.upto(23) do |n|
-      define_group row(0, n, 8) + row(24, n, 8)
+      define_group row(n, 0, 8) + row(n, 24, 8)
       define_group column(n, 0, 8) + column(n, 24, 8)
     end
 

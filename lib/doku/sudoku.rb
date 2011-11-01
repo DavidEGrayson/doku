@@ -23,8 +23,8 @@ module Doku
 END
     
     0.upto(8) do |n|
-      define_group row(0, n)
-      define_group column(n, 0)
+      define_group row(n)
+      define_group column(n)
     end
     
     0.step(6,3).each do |x|

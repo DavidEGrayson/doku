@@ -49,11 +49,11 @@ module Doku
         squares_matching :x => leftmost_x...(leftmost_x+size), :y => top_y...(top_y+size)
       end
 
-      def row(leftmost_x, y, size=glyphs.size)
+      def row(y, leftmost_x=0, size=glyphs.size)
         squares_matching :x => leftmost_x...(leftmost_x+size), :y => y
       end
 
-      def column(x, top_y, size=glyphs.size)
+      def column(x, top_y=0, size=glyphs.size)
         squares_matching :x => x, :y => top_y...(top_y+size)
       end
 
