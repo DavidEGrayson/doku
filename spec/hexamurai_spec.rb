@@ -28,9 +28,9 @@ describe Doku::Hexamurai do
   it 'has valid line and char numbers' do
     lines = Hexamurai.template.split("\n")
     Hexamurai.squares.each do |square|
-      line = lines[square.line_number]
+      line = lines[Hexamurai.line_number(square)]
       line.should_not be_nil
-      line.size.should > square.char_number
+      line.size.should > Hexamurai.char_number(square)
     end
   end
 end

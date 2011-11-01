@@ -2,8 +2,6 @@ module Doku
   module PuzzleOnGrid
     Separators = %w{- + |}
 
-    attr_accessor :initial_view
-
     def self.included(klass)
       klass.extend ClassMethods
     end
@@ -27,6 +25,14 @@ module Doku
     end
 
     module ClassMethods
+      def line_number(square)
+        @line_number[square.y]
+      end
+
+      def char_number(square)
+        @char_number[square.x]
+      end
+
       def template
         raise "template not defined for #{self}" if !defined?(@template)
         @template
@@ -37,10 +43,6 @@ module Doku
         @glyph_chars
       end
       
-      def square(x, y)
-        @square_index[x][y]
-      end
-
       def squares_matching(conditions)
         squares.select { |sq| sq.matches? conditions }
       end
@@ -59,6 +61,10 @@ module Doku
 
       private
 
+      def square_on_grid(x, y)  # TODO: remove
+        SquareOnGrid.new(x, y)
+      end
+
       def has_template(string)
         @template = string.freeze
         define_squares_from_template
@@ -68,18 +74,13 @@ module Doku
         @glyph_chars = chars
       end
 
-      def define_square_on_grid(x, y, line_number, char_number)
-        square = SquareOnGrid.new
-        square.x = x
-        square.y = y
-        square.line_number = line_number
-        square.char_number = char_number
+      def define_square_on_grid(x, y, line_num, char_num)
+        define_square SquareOnGrid.new x, y
 
-        @square_index ||= Hash.new({})
-        @square_index[x] = {} unless @square_index.has_key?(x)
-        @square_index[x][y] = square
-
-        define_square square
+        @line_number ||= []
+        @char_number ||= []
+        @line_number[y] = line_num
+        @char_number[x] = char_num
       end
 
       # Using the template provided for the puzzle, this function
@@ -113,7 +114,7 @@ module Doku
 
     def parse_initial_grid_string(grid_string)
       PuzzleOnGrid.parse_grid_string(grid_string) do |char, char_number, line_number, x, y|
-        square = self.class.square(x, y)
+        square = SquareOnGrid.new(x, y)
 
         if square.nil?
           raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected space." if char != ' '
@@ -130,19 +131,21 @@ module Doku
     def to_grid_string
       lines = self.class.template.split("\n")
       each do |square, glyph|
-        lines[square.line_number][square.char_number] = glyph_char glyph
+        line_number = self.class.line_number(square)
+        char_number = self.class.char_number(square)
+        lines[line_number][char_number] = glyph_char glyph
       end
       lines.join "\n"
     end
 
     def set(x, y, glyph)
-      square = self.class.square(x, y)
+      square = SquareOnGrid.new x, y
       raise ArgumentError, "Invalid coordinates #{x},#{y}." if square.nil?
       self[square] = glyph
     end
 
     def get(x, y)
-      square = self.class.square(x, y)
+      square = SquareOnGrid.new x, y
       raise ArgumentError, "Invalid coordinates #{x},#{y}." if square.nil?
       self[square]
     end
@@ -152,12 +155,7 @@ module Doku
     end
   end
 
-  class SquareOnGrid
-    attr_accessor :x
-    attr_accessor :y
-    attr_accessor :line_number
-    attr_accessor :char_number
-
+  class SquareOnGrid < Struct.new(:x, :y)
     def matches?(args)
       args.each do |property, values| 
         return false unless values === send(property)
