@@ -45,12 +45,12 @@ module Doku
     end
 
     def [](square)
-      raise IndexError, "Key must be a square in this puzzle." if !squares.include?(square)
+      raise IndexError, "Square not found in #{self.class.name}: #{square}." if !squares.include?(square)
       @glyph_state[square]
     end
 
     def []=(square, glyph)
-      raise IndexError, "Key must be a square in this puzzle." if !squares.include?(square)
+      raise IndexError, "Square not found in #{self.class}: #{square}." if !squares.include?(square)
       raise ArgumentError, "Value must be a glyph in this puzzle or nil." if !glyph.nil? && !glyphs.include?(glyph)
 
       # Do NOT store nils as values in the hash, because it

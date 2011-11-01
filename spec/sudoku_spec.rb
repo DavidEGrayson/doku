@@ -1,6 +1,10 @@
 require_relative 'spec_helper'
 
 describe Doku::Sudoku do
+  before do
+    @puzzle = Sudoku.new
+  end
+
   it 'has 81 squares' do
     Sudoku.squares.size.should == 81
   end
@@ -17,14 +21,13 @@ describe Doku::Sudoku do
   it 'has methods for getting and setting glyphs by coordinates' do
     # (just like any puzzle class that includes the PuzzleOnGrid module)
 
-    p = Sudoku.new
-    p.get(0, 1).should == nil
-    p.set(0, 1, 4)
-    p.set(5, 7, 9)
-    p.set(6, 6, 1)
-    p.set(6, 6, nil)
-    p.get(0, 1).should == 4
-    p.to_s.should == <<END.strip
+    @puzzle.get(0, 1).should == nil
+    @puzzle.set(0, 1, 4)
+    @puzzle.set(5, 7, 9)
+    @puzzle.set(6, 6, 1)
+    @puzzle.set(6, 6, nil)
+    @puzzle.get(0, 1).should == 4
+    @puzzle.to_s.should == <<END.strip
 ...|...|...
 4..|...|...
 ...|...|...
@@ -37,6 +40,12 @@ describe Doku::Sudoku do
 ...|..9|...
 ...|...|...
 END
+  end
+
+  it "the get method has a good error message" do
+    msg = "Square not found in Doku::Sudoku: Square(19, david)."
+    lambda { @puzzle.get(19, 'david') }.should raise_error IndexError, msg
+    lambda { @puzzle.set(19, 'david', 10) }.should raise_error IndexError, msg
   end
 end
 
