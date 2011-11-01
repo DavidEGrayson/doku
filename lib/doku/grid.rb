@@ -2,8 +2,6 @@ module Doku
   module PuzzleOnGrid
     Separators = %w{- + |}
 
-    attr_accessor :initial_view
-
     def self.included(klass)
       klass.extend ClassMethods
     end
