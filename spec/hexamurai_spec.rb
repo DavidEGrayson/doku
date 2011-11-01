@@ -28,9 +28,10 @@ describe Doku::Hexamurai do
   it 'has valid line and char numbers' do
     lines = Hexamurai.template.split("\n")
     Hexamurai.squares.each do |square|
-      line = lines[Hexamurai.line_number(square)]
+      line_number, char_number = Hexamurai.coordinates_in_grid_string(square)
+      line = lines[line_number]
       line.should_not be_nil
-      line.size.should > Hexamurai.char_number(square)
+      line.size.should > char_number
     end
   end
 end

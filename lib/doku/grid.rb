@@ -25,12 +25,8 @@ module Doku
     end
 
     module ClassMethods
-      def line_number(square)
-        @line_number[square.y]
-      end
-
-      def char_number(square)
-        @char_number[square.x]
+      def coordinates_in_grid_string(square)
+        [@line_number[square.y], @char_number[square.x]]
       end
 
       def template
@@ -60,10 +56,6 @@ module Doku
       end
 
       private
-
-      def square_on_grid(x, y)  # TODO: remove
-        SquareOnGrid.new(x, y)
-      end
 
       def has_template(string)
         @template = string.freeze
@@ -131,8 +123,7 @@ module Doku
     def to_grid_string
       lines = self.class.template.split("\n")
       each do |square, glyph|
-        line_number = self.class.line_number(square)
-        char_number = self.class.char_number(square)
+        line_number, char_number = self.class.coordinates_in_grid_string square
         lines[line_number][char_number] = glyph_char glyph
       end
       lines.join "\n"
