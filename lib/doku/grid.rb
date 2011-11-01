@@ -151,7 +151,7 @@ module Doku
     end
 
     def to_s
-      "Square(#@x, #@y)"
+      "Square(#{x}, #{y})"
     end
   end
 end
