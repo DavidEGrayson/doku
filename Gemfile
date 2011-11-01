@@ -11,4 +11,5 @@ group :development do
   gem "rcov", ">= 0"
   gem "yard"
   gem "watchr"
+  gem "ruby-prof"
 end
