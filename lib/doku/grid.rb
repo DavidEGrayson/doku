@@ -30,12 +30,10 @@ module Doku
       end
 
       def template
-        raise "template not defined for #{self}" if !defined?(@template)
         @template
       end
 
       def glyph_chars
-        raise "glyph_chars not defined for #{self}" if !defined?(@glyph_chars)
         @glyph_chars
       end
       
