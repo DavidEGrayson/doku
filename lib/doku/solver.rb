@@ -22,22 +22,9 @@ module Doku
     end
 
     def to_sparse_matrix
-      # Compute the sets (every possible glyph/square combo).
-      sets = {}
-      squares.each do |square|
-        groups_with_square = groups.select { |g| g.include? square }
-        
-        glyphs.each do |glyph|
-          sets[SquareAndGlyph.new(square, glyph)] = [square] +
-            groups_with_square.collect do |group|
-            GroupAndGlyph.new group, glyph
-          end
-        end
-      end
-      
       # Create the sparse matrix.  This is a generic matrix
       # that doesn not take in to account square.given_glyph.
-      sm = DancingLinks::SparseMatrix.from_sets sets
+      sm = DancingLinks::SparseMatrix.from_sets sets_for_exact_cover_problem
       
       # Take into account square.given_glyph by covering certain
       # rows (removing the row and all columns it touches).
@@ -47,7 +34,7 @@ module Doku
 
       sm
     end
-    
+
     # Convert the exact cover to a new instance of the puzzle.
     def exact_cover_to_solution(exact_cover)
       solution = dup
@@ -56,6 +43,24 @@ module Doku
       end
 
       solution
+    end
+
+    private
+
+    def sets_for_exact_cover_problem
+      sets = {}
+      squares.each do |square|
+        groups_with_square = groups.select { |g| g.include? square }
+        
+        glyphs.each do |glyph|
+          sets[SquareAndGlyph.new(square, glyph)] = [square] +
+            groups_with_square.collect do |group|
+              GroupAndGlyph.new group, glyph
+            end
+        end
+      end
+
+      sets
     end
     
     class SquareAndGlyph < Struct.new(:square, :glyph)
