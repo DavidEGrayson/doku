@@ -18,17 +18,14 @@ module Doku
     end
 
     def self.glyphs
-      raise "glyphs not defined for #{self}" if !defined?(@glyphs)
       @glyphs
     end
 
     def self.squares
-      raise "squares not defined for #{self}" if !defined?(@glyphs)
       @squares
     end
 
     def self.groups
-      raise "groups not defined for #{self}" if !defined?(@groups)
       @groups
     end
 
@@ -53,8 +50,8 @@ module Doku
       raise IndexError, "Square not found in #{self.class}: #{square}." if !squares.include?(square)
       raise ArgumentError, "Value must be a glyph in this puzzle or nil." if !glyph.nil? && !glyphs.include?(glyph)
 
-      # Do NOT store nils as values in the hash, because it
-      # will mess us up when comparing two puzzles and in #each
+      # Do NOT store nils as values in the hash, because we
+      # don't want them to affect equality comparisons.
       if glyph == nil
         @glyph_state.delete square
       else
@@ -66,19 +63,17 @@ module Doku
       @glyph_state.each(&block)
     end
 
-    def glyph_state_to_string(glyph_state)
-      glyph_state.inspect
-    end
-
     def hash
       @glyph_state.hash
     end
 
-    def eql? (puzzle)
+    def eql?(puzzle)
       self.class == puzzle.class and glyph_state == puzzle.glyph_state
     end
 
-    alias == eql?
+    def == (puzzle)
+      eql? puzzle
+    end
 
     def <= (puzzle)
       self.class == puzzle.class and glyph_state_subset_of?(puzzle)
@@ -102,8 +97,7 @@ module Doku
 
     def valid?
       groups.each do |group|
-        gs = group.collect { |square| self[square] }
-        gs.delete nil
+        gs = group.map { |square| self[square] } - [nil]
         return false if gs.uniq.length != gs.length
       end
       return true
