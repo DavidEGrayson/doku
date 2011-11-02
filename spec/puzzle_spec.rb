@@ -57,7 +57,12 @@ describe "Puzzle instance" do
     end
 
     it "A eql? B is the same as A == B" do
-      TestPuzzle.instance_method(:==).should == TestPuzzle.instance_method(:eql?)
+      @puzzle.should_not eql TestPuzzle.new
+      TestPuzzle.new.should_not eql @puzzle.should
+
+      puzzle2 = TestPuzzle.new(1 => true)
+      @puzzle.should eql puzzle2
+      puzzle2.should eql @puzzle
     end
 
     it "A <= B iff square=>glyph pairs in A are a subset of those in B" do
