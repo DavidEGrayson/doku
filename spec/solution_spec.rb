@@ -39,6 +39,13 @@ END
 648|512|793
 END
     end
+
+    it "can also find the solution using Donald Knuth's recursive DLX" do
+      sm = @puzzle.to_sparse_matrix
+      exact_cover = sm.find_exact_cover_recursive
+      solution = @puzzle.exact_cover_to_solution exact_cover
+      solution.should == @solution
+    end
   end
 
   context 'given a sudoku puzzle with multiple solutions' do

@@ -268,7 +268,7 @@ module DancingLinks
         return nodes.collect &:row_id
       end
 
-      c = choose_smallest_column
+      c = choose_column
       c.cover
 
       c.nodes_downward.each do |r|
@@ -294,6 +294,7 @@ module DancingLinks
 
     def find_exact_cover
       each_exact_cover { |ec| return ec }
+      return nil
     end
 
     def exact_covers

@@ -29,8 +29,8 @@ This gem allows you to represent Sudoku-like puzzles
 (Sudoku, Hexadoku, and Hexamurai) as objects and find
 solutions for them.
 
-This gem contains a reusable implementation of the Dancing Links
-algorithm by Donald Knuth.
+This gem contains a reusable, pure ruby implementation of the
+Dancing Links algorithm by Donald Knuth.
 END
   gem.email = "davidegrayson@gmail.com"
   gem.authors = ["David Grayson"]
