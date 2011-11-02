@@ -314,7 +314,7 @@ module DancingLinks
           yield nodes.collect &:row_id
         end
 
-        if column = choose_appropriate_column
+        if column = choose_column
           # Cover a new column and pick the first node in it.
           column.cover
           node = column.down
@@ -333,7 +333,7 @@ module DancingLinks
 
     protected
 
-    def choose_appropriate_column
+    def choose_column
       return nil if empty?
       column = smallest_column
       return nil if column.empty?
