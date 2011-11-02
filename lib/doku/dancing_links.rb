@@ -362,7 +362,8 @@ module DancingLinks
 
     # This is used by each_exact_cover.
     # Picks the next node to try by back-tracking until we get
-    # to a column where we haven't tried all the nodes.
+    # to a column where we haven't tried all the nodes, uncovering
+    # nodes and columns as it goes.
     # Returns nil if we are done searching the entire solution space.
     def backtrack!(nodes)
       while true
