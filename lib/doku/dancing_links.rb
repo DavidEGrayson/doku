@@ -268,7 +268,7 @@ module DancingLinks
         return nodes.collect &:row_id
       end
 
-      c = choose_column
+      c = smallest_column
       c.cover
 
       c.nodes_downward.each do |r|

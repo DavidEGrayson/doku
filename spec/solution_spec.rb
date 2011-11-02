@@ -48,7 +48,7 @@ END
     end
   end
 
-  context 'given a sudoku puzzle with multiple solutions' do
+  context 'given a sudoku puzzle with two solutions' do
     before do
       @puzzle = Sudoku.new <<END
 ...|..8|...
@@ -65,7 +65,7 @@ END
 END
     end
 
-    it 'finds multiple solutions' do
+    it 'finds two solutions' do
       solutions = @puzzle.solutions.to_a
       solutions.size.should == 2
 
@@ -128,6 +128,11 @@ END
       sm = @puzzle.to_sparse_matrix
       sc = sm.columns.min_by(&:size)
       sc.size.should > 0
+    end
+
+    it 'finds no solutions using the recursive algorithm' do
+      sm = @puzzle.to_sparse_matrix
+      sm.find_exact_cover_recursive.should == nil
     end
   end
 
