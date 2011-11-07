@@ -1,5 +1,6 @@
-require_relative 'solver'
 require 'set'
+require 'backports' unless defined?(require_relative)
+require_relative 'solver'
 
 module Doku
   class Puzzle

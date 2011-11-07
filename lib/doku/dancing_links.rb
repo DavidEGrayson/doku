@@ -1,3 +1,5 @@
+require 'backports' unless defined?(Enumerator)
+
 module DancingLinks
   # The data structures used here are too complicated
   # and interconnected for Ruby to efficiently inspect them.

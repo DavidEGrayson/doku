@@ -1,3 +1,4 @@
+require 'backports' unless defined? require_relative
 require_relative 'spec_helper'
 
 describe Doku::Hexamurai do
@@ -6,7 +7,7 @@ describe Doku::Hexamurai do
   end
 
   it 'has 16 squares in the first row' do
-    first_row = Hexamurai.squares.select { |s| s.matches?(y:0) }
+    first_row = Hexamurai.squares.select { |s| s.matches?(:y => 0) }
     first_row.size.should == 16
   end
 

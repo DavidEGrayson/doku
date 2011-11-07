@@ -1,7 +1,12 @@
 source "http://rubygems.org"
 
-# This gem does not depend on other gems if you just
-# want to use it.
+# This gem uses new features of ruby:
+#   require_relative
+#   Enumerator
+# 
+# To get access to these features in older versions, we use the
+# backports gem:
+gem "backports", :platforms => :ruby_18
 
 # For development gem, these gems are recommended:
 group :development do

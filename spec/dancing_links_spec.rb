@@ -1,3 +1,4 @@
+require 'backports' unless defined? require_relative
 require_relative 'spec_helper'
 
 describe DancingLinks::SparseMatrix do

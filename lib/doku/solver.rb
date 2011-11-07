@@ -1,3 +1,4 @@
+require 'backports' unless defined?(require_relative) and defined?(Enumerator)
 require_relative 'dancing_links'
 
 module Doku
