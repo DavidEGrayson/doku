@@ -89,11 +89,19 @@ module Doku
       self.class.groups
     end
 
+    # Gets the glyph assigned to the given square.
+    # @param square Must be one of the {Puzzle.squares} for this puzzle.
+    # @return The glyph that is assigned to the given square
+    #   (one of the {Puzzle.glyphs} defined for this puzzle),
+    #   or nil if no glyph is assigned.
     def [](square)
       raise IndexError, "Square not found in #{self.class.name}: #{square}." if !squares.include?(square)
       @glyph_state[square]
     end
 
+    # Sets the glyph assigned to the given square.
+    # @param square Must be one of the {Puzzle.squares} for this puzzle.
+    # @param glyph Must be one of the {Puzzle.glyphs} for this puzzle, or nil.
     def []=(square, glyph)
       raise IndexError, "Square not found in #{self.class}: #{square}." if !squares.include?(square)
       raise ArgumentError, "Value must be a glyph in this puzzle or nil." if !glyph.nil? && !glyphs.include?(glyph)
@@ -107,18 +115,28 @@ module Doku
       end
     end
 
+    # This method allows you to iterate over every square that has a
+    # glyph assigned to it.
+    #
+    # @yield [square, glyph]
+    # @yieldparam square A square that has a glyph assigned to it.
+    # @yieldparam glyph The glyph that is assigned to the square.
     def each(&block)
       @glyph_state.each(&block)
     end
 
+    # @return [Fixnum] Returns a hash code based on the glyph assignments.
     def hash
       @glyph_state.hash
     end
 
+    # Two puzzles are equal if they have the same class and glyph assignments. 
+    # @return [Boolean] True if and only if the two puzzles are equal.
     def eql?(puzzle)
       self.class == puzzle.class and glyph_state == puzzle.glyph_state
     end
 
+    # Same as {#eql?}.
     def == (puzzle)
       eql? puzzle
     end
