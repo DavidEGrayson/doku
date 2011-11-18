@@ -3,41 +3,88 @@ require 'backports' unless defined?(require_relative)
 require_relative 'solver'
 
 module Doku
+
+  # @abstract Make a subclass of this class to define your own type of
+  #   Sudoku-like puzzle or use the {Sudoku}, {Hexadoku}, or {Hexamurai}
+  #   subclasses.
+  #
+  # This in abstract class for creating classes that represent
+  # Sudoku-like puzzles.
+  #
+  # Every subclass of {Doku::Puzzle} represents a Sudoku-like puzzle consisting
+  # of a set of glyphs, a set of squares, and a set of groups of squares.
+  # For example, the {Doku::Sudoku} subclass represents the famous 9x9 puzzle,
+  # Sudoku.
+  #
+  # Every instance of a subclass of Puzzle represents a particular state
+  # of that type of puzzle, i.e. a record of which glyph is assigned
+  # to each square.
   class Puzzle
     include SolvableWithDancingLinks
 
     attr_reader :glyph_state
 
+    # Creates a new instance of the puzzle.
+    #
+    # @param [Hash] glyph_state The state of the puzzle, represented as a hash where the keys are squares and the values are nil or glyphs in the context of this puzzle class.  For example, this represents what numbers have been written in the boxes of a Sudoku puzzle.
     def initialize(glyph_state = {})
       @glyph_state = {}
       # We initialize glyph_state this way so that the data gets validated.
       glyph_state.each { |square, glyph| self[square] = glyph }
     end
 
-    def initialize_copy(source)
-      @glyph_state = @glyph_state.dup
+    class << self
+      
+      # Returns an array of all the valid glyphs for this class of puzzle.
+      # A glyph can be any type of Ruby object, and it is meant to
+      # represent a symbol which can be drawn inside a square in a
+      # Sudoku-like puzzle.
+      #
+      # For example, the glyphs for Doku::Sudoku are the Ruby integers 1, 2, 3,
+      # 4, 5, 6, 7, 8, and 9.
+      #
+      # The glyphs, squares, and groups, are defined at the class level, in the subclasses of Doku::Puzzle.
+      # @return [Array] Array of objects representing glyphs.
+      attr_reader :glyphs
+
+      # Returns an array of all the valid squares in this class of puzzle.
+      # A square can be any type of Ruby object, and it is meant to
+      # represent a square in which glyphs are drawn in a Sudoku-like puzzle.
+      # 
+      # For example, there are 81 squares defined in the Doku::Sudoku class,
+      # one for each square on the 9x9 Sudoku grid.
+      #
+      # The glyphs, squares, and groups, are defined at the class level, in the subclasses of Doku::Puzzle.
+      # @return [Array] Array of objects representing squares.
+      attr_reader :squares
+
+      # Returns an array of all the groups for this class of puzzle.
+      # A group should be a Set object that contains some squares.
+      # A group represents a constraint on solutions to the puzzle:
+      # every glyph must appear exactly once in every group.
+      #
+      # For example, the groups of the Doku::Sudoku represent the
+      # nie columns, nine rows, and nine 3x3 boxes of Sudoku.
+      #
+      # The glyphs, squares, and groups, are defined at the class level, in the subclasses of Doku::Puzzle.
+      # @return [Array] Array of glyphs.
+      attr_reader :groups
     end
 
-    def self.glyphs
-      @glyphs
-    end
-
-    def self.squares
-      @squares
-    end
-
-    def self.groups
-      @groups
-    end
-
+    # Shortcut for calling the {Puzzle.glyphs} class method.
+    # @return [Array] Array of glyphs.
     def glyphs
       self.class.glyphs
     end
 
+    # Shortcut for calling the {Puzzle.squares} class method.
+    # @return [Array] Array of squares.
     def squares
       self.class.squares
     end
 
+    # Shortcut for calling the {Puzzle.groups} class method.
+    # @return [Array] Array of groups.
     def groups
       self.class.groups
     end
@@ -113,6 +160,10 @@ module Doku
     end
 
     private
+
+    def initialize_copy(source)
+      @glyph_state = @glyph_state.dup
+    end
 
     def self.has_glyphs(glyphs)
       @glyphs = glyphs

@@ -6,10 +6,9 @@ begin
   require 'rspec/core/rake_task'
   require 'yard'
 rescue LoadError => e
-  $stderr.puts "Run `bundle install` to install missing gems."
+  $stderr.puts "Run `gem install bundler && bundle install` to install missing gems."
   exit 1
 end
-
 
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
@@ -18,11 +17,10 @@ Jeweler::Tasks.new do |gem|
   gem.license = "MIT"
   gem.files = %w{.document *.txt *.rdoc VERSION
     Gemfile Rakefile
-    lib/*.rb
-  } +
-    FileList['spec/*.rb'] +
-    FileList['lib/ruby-usb-pro/*.rb'] +
-    FileList['lib/ruby-usb-pro/**/*.rb']
+    lib/doku.rb
+    lib/doku/*.rb
+    spec/*.rb
+  }
 
   gem.summary = "Ruby library for solving sudoku, hexadoku, and similar puzzles."
   gem.description = <<END
