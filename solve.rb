@@ -12,4 +12,7 @@ end
 
 require_relative ARGV[0]
 
-puts $puzzle.solve
+$puzzle.solutions.each do |s|
+  puts s
+  puts
+end
