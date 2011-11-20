@@ -66,32 +66,13 @@ describe "Puzzle instance" do
       puzzle2.should eql @puzzle
     end
 
-    it "A <= B iff square=>glyph pairs in A are a subset of those in B" do
-      @puzzle.should_not <= TestPuzzle.new
-      TestPuzzle.new.should <= @puzzle
+    it "A.subset?(B) iff square=>glyph pairs in A are a subset of those in B" do
+      @puzzle.should_not be_a_subset TestPuzzle.new
+      TestPuzzle.new.should be_a_subset @puzzle
 
-      @puzzle.should <= @puzzle
+      @puzzle.should be_a_subset @puzzle
 
-      @puzzle.should <= TestPuzzle.new(1 => true, 3 => false)
-    end
-
-    it "A < B if and only if A != B and A <= B" do
-      TestPuzzle.new.should < @puzzle
-      @puzzle.should_not < TestPuzzle.new
-    end
-
-    it "A >= B if and only if B <= A" do
-      TestPuzzle.new.should_not >= @puzzle
-      @puzzle.should >= TestPuzzle.new
-
-      @puzzle.should >= @puzzle
-
-      TestPuzzle.new(1 => true, 3 => false).should >= @puzzle
-    end
-
-    it "A > B if and only if B < A" do
-      @puzzle.should > TestPuzzle.new
-      TestPuzzle.new.should_not > @puzzle
+      @puzzle.should be_a_subset TestPuzzle.new(1 => true, 3 => false)
     end
   end
 

@@ -131,7 +131,7 @@ module Doku
     end
 
     # Two puzzles are equal if they have the same class and glyph assignments. 
-    # @return [Boolean] True if and only if the two puzzles are equal.
+    # @return [Boolean] True if the two puzzles are equal.
     def eql?(puzzle)
       self.class == puzzle.class and glyph_state == puzzle.glyph_state
     end
@@ -141,30 +141,30 @@ module Doku
       eql? puzzle
     end
 
-    def <= (puzzle)
-      self.class == puzzle.class and glyph_state_subset_of?(puzzle)
-    end
-
-    def < (puzzle)
-      self != puzzle and self <= puzzle
-    end
-
-    def >= (puzzle)
-      puzzle <= self
-    end
-
-    def > (puzzle)
-      puzzle < self
+    # Returns true if the puzzle's glyphs assignments are a subset
+    # of the given puzzle's glyph assignments and the two puzzles are
+    # the same class.
+    #
+    # Every puzzle is a subset of itself.
+    #
+    # For example, if you find a Sudoku puzzle and start working on it,
+    # you have changed the original puzzle into a new puzzle.
+    # The original puzzle will be a subset of the new puzzle,
+    # assuming you didn't erase any numbers.
+    #
+    # @return [Boolean] True if this puzzle is a subset of the given puzzle.
+    def subset?(puzzle)
+      self.class == puzzle.class and glyph_assignment_subset?(puzzle)
     end
 
     def filled?
-      (squares - glyph_state.keys).empty?
+      squares.size == glyph_state.keys.size
     end
 
     def valid?
       groups.each do |group|
         gs = group.map { |square| self[square] } - [nil]
-        return false if gs.uniq.length != gs.length
+        return false if gs.uniq.size != gs.size
       end
       return true
     end
@@ -174,7 +174,7 @@ module Doku
     end
 
     def solution_for?(puzzle)
-      solution? and puzzle <= self
+      solution? and puzzle.subset?(self)
     end
 
     private
@@ -198,7 +198,7 @@ module Doku
       @squares = squares.uniq
     end
 
-    def glyph_state_subset_of?(puzzle)
+    def glyph_assignment_subset?(puzzle)
       glyph_state.each_pair do |square, glyph|
         return false if puzzle[square] != glyph
       end
