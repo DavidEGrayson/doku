@@ -4,9 +4,9 @@ require_relative 'solver'
 
 module Doku
 
-  # @abstract Make a subclass of this class to define your own type of
-  #   Sudoku-like puzzle or use the {Sudoku}, {Hexadoku}, or {Hexamurai}
-  #   subclasses.
+  # @abstract Use the {Sudoku}, {Hexadoku}, or {Hexamurai}
+  #   subclasses or make a subclass to represent your own type
+  #   of Sudoku-like puzzle.
   #
   # This in abstract class for creating classes that represent
   # Sudoku-like puzzles.
