@@ -17,4 +17,6 @@ group :development do
   gem "yard"
   gem "watchr"
   gem "ruby-prof", :platforms => :mri
+  gem "guard"
+  gem "guard-yard"
 end

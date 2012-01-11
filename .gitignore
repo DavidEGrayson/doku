@@ -4,3 +4,4 @@ pkg
 *.rbc
 .yardoc
 doc/
+.rvmrc
