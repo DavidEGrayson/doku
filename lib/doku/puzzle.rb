@@ -152,47 +152,75 @@ module Doku
     # The original puzzle will be a subset of the new puzzle,
     # assuming you didn't erase any numbers.
     #
-    # @return [Boolean] True if this puzzle is a subset of the given puzzle.
+    # @return [Boolean]
     def subset?(puzzle)
       self.class == puzzle.class and glyph_assignment_subset?(puzzle)
     end
 
+    # Returns true if this puzzle is completely filled in,
+    # which means every square has a glyph assigned to it.
+    # For example, a Sudoku puzzle is considered to be filled after
+    # you have written a number in every box, regardless of whether
+    # the numbers obey the rules of Sudoku or not.
+    # See also {#solution?} and {#solution_for?}.
+    #
+    # @return [Boolean]
     def filled?
       squares.size == glyph_state.keys.size
     end
 
+    # Returns true if this puzzle follows the rules.
+    # A puzzle is valid if no glyph appears twice in any group.
+    # For example, a Sudoku puzzle would be invalid if you
+    # wrote a "3" twice in the same column.
+    #
+    # @return [Boolean]
     def valid?
       groups.each do |group|
-        gs = group.map { |square| self[square] } - [nil]
+        gs = group.collect { |square| self[square] } - [nil]
         return false if gs.uniq.size != gs.size
       end
       return true
     end
 
+    # Returns true if the puzzle is {#filled?} and {#valid?}.
+    # @return [Boolean]
     def solution?
       filled? and valid?
     end
 
+    # Returns true if the puzzle is valid solution for the given puzzle.
+    #
+    # @return [Boolean]
     def solution_for?(puzzle)
       solution? and puzzle.subset?(self)
     end
 
     private
 
+    # This is called when the puzzle is duped or cloned.
     def initialize_copy(source)
       @glyph_state = @glyph_state.dup
     end
 
+    # This should be called inside the definition of a Puzzle subclass
+    # to define what glyphs the puzzle has.
     def self.has_glyphs(glyphs)
       @glyphs = glyphs
     end
 
+    # This should be called inside the definition of a Puzzle subclass
+    # to define what squares the puzzle has.
+    # This function defines one square at a time.  See also #has_squares.
     def self.define_square(square)
       raise ArgumentError, "square should not be nil" if square.nil?
       @squares ||= []
       @squares << square
     end
 
+    # This should be called inside the definition of a Puzzle subclass
+    # to define what squares the puzzle has.
+    # This function defines all the squares at once.  See also #define_square.
     def self.has_squares(squares)
       raise ArgumentError, "list of squares should not contain nil" if squares.include? nil
       @squares = squares.uniq
