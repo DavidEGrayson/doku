@@ -10,8 +10,8 @@ gem "backports", :platforms => :ruby_18
 
 # For development gem, these gems are recommended:
 group :development do
-  gem "rspec", "~> 2.3.0"
-  gem "bundler", "~> 1.0.0"
+  gem "rspec"
+  gem "bundler"
   gem "jeweler", "~> 1.6.2"
   gem "rcov", ">= 0", :platforms => :mri_18
   gem "yard"
@@ -19,4 +19,17 @@ group :development do
   gem "ruby-prof", :platforms => :mri
   gem "guard"
   gem "guard-yard"
+  gem "guard-rspec"
+
+  platform :mri_19 do
+    # We need the latest version of linecache19 for debugging to work.
+    # http://stackoverflow.com/questions/8251349/ruby-threadptr-data-type-error
+    gem 'linecache19', :git => 'git://github.com/mark-moseley/linecache'
+
+    # ruby-debug-base19 0.11.26 is not available on ruby gems, needs to be manually
+    # preinstalled.  See ruby1.9.3_dev_setup.sh
+    gem 'ruby-debug-base19', '>= 0.11.26'
+
+    gem 'ruby-debug19'
+  end
 end
