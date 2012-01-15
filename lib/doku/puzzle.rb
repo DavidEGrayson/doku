@@ -28,7 +28,10 @@ module Doku
 
     # Creates a new instance of the puzzle.
     #
-    # @param [Hash] glyph_state The state of the puzzle, represented as a hash where the keys are squares and the values are nil or glyphs in the context of this puzzle class.  For example, this represents what numbers have been written in the boxes of a Sudoku puzzle.
+    # @param [Hash] glyph_state The state of the puzzle, represented as a hash
+    # where the keys are squares and the values are nil or glyphs in the context
+    # of this puzzle class.  For example, this represents what numbers have been
+    # written in the boxes of a {Sudoku} puzzle.
     def initialize(glyph_state = {})
       @glyph_state = {}
       # We initialize glyph_state this way so that the data gets validated.
@@ -42,7 +45,7 @@ module Doku
       # represent a symbol which can be drawn inside a square in a
       # Sudoku-like puzzle.
       #
-      # For example, the glyphs for Doku::Sudoku are the Ruby integers 1, 2, 3,
+      # For example, the glyphs for {Sudoku} are the Ruby integers 1, 2, 3,
       # 4, 5, 6, 7, 8, and 9.
       #
       # The glyphs, squares, and groups, are defined at the class level, in the subclasses of Doku::Puzzle.
@@ -53,7 +56,7 @@ module Doku
       # A square can be any type of Ruby object, and it is meant to
       # represent a square in which glyphs are drawn in a Sudoku-like puzzle.
       # 
-      # For example, there are 81 squares defined in the Doku::Sudoku class,
+      # For example, there are 81 squares defined in the {Sudoku} class,
       # one for each square on the 9x9 Sudoku grid.
       #
       # The glyphs, squares, and groups, are defined at the class level, in the subclasses of Doku::Puzzle.
@@ -65,7 +68,7 @@ module Doku
       # A group represents a constraint on solutions to the puzzle:
       # every glyph must appear exactly once in every group.
       #
-      # For example, the groups of the Doku::Sudoku represent the
+      # For example, the groups of the {Sudoku} class represent the
       # nie columns, nine rows, and nine 3x3 boxes of Sudoku.
       #
       # The glyphs, squares, and groups, are defined at the class level, in the subclasses of Doku::Puzzle.
@@ -173,7 +176,7 @@ module Doku
 
     # Returns true if this puzzle follows the rules.
     # A puzzle is valid if no glyph appears twice in any group.
-    # For example, a Sudoku puzzle would be invalid if you
+    # For example, a {Sudoku} puzzle would be invalid if you
     # wrote a "3" twice in the same column.
     #
     # @return [Boolean]
@@ -213,7 +216,7 @@ module Doku
 
     # This should be called inside the definition of a Puzzle subclass
     # to define what squares the puzzle has.
-    # This function defines one square at a time.  See also #has_squares.
+    # This method defines one square at a time.  See also #has_squares.
     def self.define_square(square)
       raise ArgumentError, "square should not be nil" if square.nil?
       @squares ||= []
@@ -222,7 +225,7 @@ module Doku
 
     # This should be called inside the definition of a Puzzle subclass
     # to define what squares the puzzle has.
-    # This function defines all the squares at once.  See also #define_square.
+    # This method defines all the squares at once.  See also #define_square.
     def self.has_squares(squares)
       raise ArgumentError, "list of squares should not contain nil" if squares.include? nil
       @squares = squares.uniq

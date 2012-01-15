@@ -8,9 +8,6 @@ module Doku
   # hex digits 0 through F.
   # Each instance of this class represents a particular arrangement of
   # numbers written in the boxes.
-  #
-  # For information on using this class, see the documentation of the
-  # {Doku::PuzzleOnGrid PuzzleOnGrid} module, which this class includes.
   class Hexadoku < Puzzle
     include PuzzleOnGrid
 

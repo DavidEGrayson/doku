@@ -8,9 +8,6 @@ module Doku
   # The {http://www.elektor.com/magazines/2011/july-047-august/hexamurai.1852786.lynkx Hexamurai puzzle appeared in the July/August issue of Elektor magazine}.
   # Each instance of this class represents a particular arrangement of
   # numbers written in the boxes.
-  #
-  # For information on using this class, see the documentation of the
-  # {Doku::PuzzleOnGrid PuzzleOnGrid} module, which this class includes.
   class Hexamurai < Puzzle
     include PuzzleOnGrid
 
