@@ -3,7 +3,12 @@ require_relative 'puzzle'
 require_relative 'grid'
 
 module Doku
-  # See my [About](/about/) page for details.  
+  # This class represents {http://en.wikipedia.org/wiki/Sudoku Sudoku}.
+  # Each instance of this class represents a particular arrangement of
+  # numbers written in the boxes.
+  #
+  # For information on using this class, see the documentation of the
+  # {Doku::PuzzleOnGrid PuzzleOnGrid} module, which this class includes.
   class Sudoku < Puzzle
     include PuzzleOnGrid
 

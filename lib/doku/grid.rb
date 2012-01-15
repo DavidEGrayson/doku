@@ -1,7 +1,22 @@
 module Doku
+  # This module is meant to be included in subclasses of {Puzzle} where the
+  # squares are arranged in a grid.
+  #
+  # The {Puzzle} class contains only very abstract code, dealing with
+  # the abstract concepts of {Puzzle.squares squares},
+  # {Puzzle.glyphs glyphs}, and {Puzzle.groups groups}.
+  # The {Puzzle} class can represent a wide variety of puzzles, including
+  # three-dimensional puzzles or puzzles that don't have any particular
+  # spatial arrangement.
+  # However, most of the puzzles we are interested in studying are arranged
+  # in a grid, and this module contains code that makes it easy to define
+  # and work with those puzzles.
   module PuzzleOnGrid
-    Separators = %w{- + |}
+    # These are the separators that can appear in the {ClassMethods#template template} string
+    # to make it more readable.
+    Separators = ['-', '+', '|']
 
+    private
     def self.included(klass)
       klass.extend ClassMethods
     end
@@ -23,6 +38,7 @@ module Doku
         y += 1
       end
     end
+    public
 
     module ClassMethods
       def coordinates_in_grid_string(square)

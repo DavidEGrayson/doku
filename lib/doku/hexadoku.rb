@@ -3,11 +3,19 @@ require_relative 'puzzle'
 require_relative 'grid'
 
 module Doku
+  # This class represents Hexadoku, otherwise known as 16x16 {Sudoku}.
+  # This is a more complex version of Sudoku with a 16x16 grid, using
+  # hex digits 0 through F.
+  # Each instance of this class represents a particular arrangement of
+  # numbers written in the boxes.
+  #
+  # For information on using this class, see the documentation of the
+  # {Doku::PuzzleOnGrid PuzzleOnGrid} module, which this class includes.
   class Hexadoku < Puzzle
     include PuzzleOnGrid
 
     has_glyphs (0..15).to_a
-    has_glyph_chars glyphs.collect { |s| "%X"%[s] }
+    has_glyph_chars glyphs.collect { |s| '%X'%[s] }
 
     has_template <<END
 ....|....|....|....

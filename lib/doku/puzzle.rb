@@ -22,6 +22,8 @@ module Doku
   class Puzzle
     include SolvableWithDancingLinks
 
+    # A hash that associates squares to glyphs, representing
+    # the arrangement of glyphs in the puzzle.
     attr_reader :glyph_state
 
     # Creates a new instance of the puzzle.
