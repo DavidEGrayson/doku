@@ -3,6 +3,7 @@ require_relative 'puzzle'
 require_relative 'grid'
 
 module Doku
+  # See my [About](/about/) page for details.  
   class Sudoku < Puzzle
     include PuzzleOnGrid
 

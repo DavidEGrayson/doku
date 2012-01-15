@@ -19,7 +19,7 @@ group :development do
   gem "ruby-prof", :platforms => :mri
   gem "guard"
   gem "guard-yard"
-  gem "guard-rspec"
+  # gem "guard-rspec"
 
   platform :mri_19 do
     # We need the latest version of linecache19 for debugging to work.
