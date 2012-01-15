@@ -42,7 +42,7 @@ END
     end
 
     it "can also find the solution using Donald Knuth's recursive DLX" do
-      sm = @puzzle.to_sparse_matrix
+      sm = @puzzle.to_link_matrix
       exact_cover = sm.find_exact_cover_recursive
       solution = @puzzle.exact_cover_to_solution exact_cover
       solution.should == @solution
@@ -126,13 +126,13 @@ END
     end
 
     it 'can not tell instantly there is no solution, in this case' do
-      sm = @puzzle.to_sparse_matrix
+      sm = @puzzle.to_link_matrix
       sc = sm.columns.min_by(&:size)
       sc.size.should > 0
     end
 
     it 'finds no solutions using the recursive algorithm' do
-      sm = @puzzle.to_sparse_matrix
+      sm = @puzzle.to_link_matrix
       sm.find_exact_cover_recursive.should == nil
     end
   end

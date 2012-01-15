@@ -3,7 +3,7 @@ require 'backports' unless defined?(Enumerator)
 module DancingLinks
   # The data structures used here are too complicated
   # and interconnected for Ruby to efficiently inspect them.
-  # Without this module, even a 7x6 Sparse Matrix takes
+  # Without this module, even a 7x6 link matrix takes
   # many many seconds to inspect.
   module Uninspectable
     def inspect
@@ -83,8 +83,8 @@ module DancingLinks
     end
   end
 
-  # SparseMatrix object is the Root object from Knuth.
-  class SparseMatrix
+  # LinkMatrix object is the Root object from Knuth.
+  class LinkMatrix
 
     # The Column Header object from Knuth.
     class Column
@@ -205,26 +205,27 @@ module DancingLinks
     end
 
     # The column_ids argument is optional.  If provided,
-    # it will define the order of the first columns of the sparse
+    # it will define the order of the first columns of the link
     # matrix.  If the rows contain elements not present in column_ids,
     # that is OK.
     def self.from_sets(rows, column_ids=[])
-      sparse_matrix = new
+      matrix = new
       column_ids.each do |column_id|
-        sparse_matrix.find_or_create_column column_id
+        matrix.find_or_create_column column_id
       end
 
+      # TODO: fix to allow Sets or any other enumerable to be passed in too
       if rows.is_a? Array
         rows.each do |column_ids|
-          sparse_matrix.add_row column_ids
+          matrix.add_row column_ids
         end
       else
         rows.each do |row_id, column_ids|
-          sparse_matrix.add_row column_ids, row_id
+          matrix.add_row column_ids, row_id
         end
       end
 
-      sparse_matrix
+      matrix
     end
 
     # row is an Enumerable of column_ids.

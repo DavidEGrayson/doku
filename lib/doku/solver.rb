@@ -17,15 +17,15 @@ module Doku
     end
 
     def each_solution
-      to_sparse_matrix.each_exact_cover do |exact_cover|
+      to_link_matrix.each_exact_cover do |exact_cover|
         yield exact_cover_to_solution exact_cover
       end
     end
 
-    def to_sparse_matrix
-      # Create the sparse matrix.  This is a generic matrix
+    def to_link_matrix
+      # Create the link matrix.  This is a generic matrix
       # that doesn not take in to account square.given_glyph.
-      sm = DancingLinks::SparseMatrix.from_sets sets_for_exact_cover_problem
+      sm = DancingLinks::LinkMatrix.from_sets sets_for_exact_cover_problem
       
       # Take into account square.given_glyph by covering certain
       # rows (removing the row and all columns it touches).
