@@ -105,6 +105,16 @@ module Doku
         squares_matching :x => x, :y => top_y...(top_y+size)
       end
 
+      # @return (String) The character that represents the given {Puzzle.glyphs glyph}.
+      def glyph_char(glyph)
+        glyph_chars.at(glyphs.index(glyph) || (raise ArgumentError, "Invalid glyph #{glyph}."))
+      end
+
+      # @return The {Puzzle.glyphs glyph} represented by the given character.
+      def glyph_parse(char)
+        glyphs.at(glyph_chars.index(char.upcase) || (raise ArgumentError, "Invalid character '#{char}'."))
+      end
+
       private
 
       # This is called in the class definition to define the {#template} string,
@@ -115,8 +125,10 @@ module Doku
       end
 
       # This is called in the class definition to define the {#glyph_chars}.
+      # This function converts the characters to upper case to make it
+      # easier to parse strings provided by the user in a case insensitive way.
       def has_glyph_chars(chars)
-        @glyph_chars = chars
+        @glyph_chars = chars.collect &:upcase
       end
 
       def define_square_on_grid(x, y, line_num, char_num)
@@ -153,29 +165,13 @@ module Doku
       parse_initial_grid_string grid_string if grid_string
     end
 
-    # Shortcut for calling the {ClassMethods#glyph_chars glyph_chars} class method.
-    # @return [Array] Array of characters representing {Puzzle.glyphs glyphs}.
-    def glyph_chars
-      self.class.glyph_chars
-    end
-
-    # @return (String) The character that represents the given {Puzzle.glyphs glyph}.
-    def glyph_char(glyph)
-      glyph_chars[glyphs.index glyph]
-    end
-
-    # @return The {Puzzle.glyphs glyph} represented by the given character.
-    def glyph_parse(char)
-      glyphs[glyph_chars.index char]
-    end
-
     # @return (String) A multi-line string representation of the puzzle suitable
     #   for displaying, based on the {ClassMethods.template template}.
     def to_grid_string
       lines = self.class.template.split("\n")
       each do |square, glyph|
         line_number, char_number = self.class.coordinates_in_grid_string square
-        lines[line_number][char_number] = glyph_char glyph
+        lines[line_number][char_number] = self.class.glyph_char glyph
       end
       lines.join "\n"
     end
@@ -206,17 +202,19 @@ module Doku
 
     private
     def parse_initial_grid_string(grid_string)
-      PuzzleOnGrid.parse_grid_string(grid_string) do |char, char_number, line_number, x, y|
+      PuzzleOnGrid.parse_grid_string(grid_string) do |original_char, char_number, line_number, x, y|
         square = SquareOnGrid.new(x, y)
 
-        if square.nil?
+        char = original_char.upcase
+
+        if !squares.include?(square)
           raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected space." if char != ' '
         elsif char == '.'
           # No glyph specified for this square.
-        elsif glyph_chars.include?(char)
-          self[square] = glyph_parse(char)
+        elsif self.class.glyph_chars.include?(char)
+          self[square] = self.class.glyph_parse(char)
         else
-          raise "Line #{line_number}, character #{char_number}: Invalid character.  Expected period (.) or glyph (#{glyph_chars})." if square.nil?
+          raise ArgumentError, "Line #{line_number}, character #{char_number}: Invalid character '#{original_char}'.  Expected period (.) or glyph (#{self.class.glyph_chars.join ','})."
         end
       end
     end

@@ -12,7 +12,7 @@ module Doku
     include PuzzleOnGrid
 
     has_glyphs (0..15).to_a
-    has_glyph_chars glyphs.collect { |s| '%X'%[s] }
+    has_glyph_chars glyphs.collect { |s| '%x'%[s] }
 
     has_template <<END
 ....|....|....|....
