@@ -13,6 +13,5 @@ end
 require_relative ARGV[0]
 
 $puzzle.solutions.each do |s|
-  puts s
-  puts
+  puts s + "\n"
 end
