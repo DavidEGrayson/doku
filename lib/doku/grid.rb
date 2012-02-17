@@ -50,7 +50,7 @@ module Doku
 
     module ClassMethods
       # @return (Array) Array with the line number and character number
-      # of the given square in the {#template} string.
+      #   of the given square in the {#template} string.
       def coordinates_in_grid_string(square)
         [@line_number[square.y], @char_number[square.x]]
       end
@@ -110,7 +110,7 @@ module Doku
         glyph_chars.at(glyphs.index(glyph) || (raise ArgumentError, "Invalid glyph #{glyph}."))
       end
 
-      # @return The {Puzzle.glyphs glyph} represented by the given character.
+      # @return (Object) The {Puzzle.glyphs glyph} represented by the given character.
       def glyph_parse(char)
         glyphs.at(glyph_chars.index(char.upcase) || (raise ArgumentError, "Invalid character '#{char}'."))
       end
@@ -140,7 +140,7 @@ module Doku
         @char_number[x] = char_num
       end
 
-      # Using the template provided for the puzzle, this method
+      # Using the {#template} provided for the puzzle, this method
       # defines objects to represent each of the different squares.
       def define_squares_from_template
         PuzzleOnGrid.parse_grid_string(template) do |char, char_number, line_number, x, y|
@@ -166,7 +166,7 @@ module Doku
     end
 
     # @return (String) A multi-line string representation of the puzzle suitable
-    #   for displaying, based on the {ClassMethods.template template}.
+    #   for displaying, based on the {ClassMethods#template template}.
     def to_grid_string
       lines = self.class.template.split("\n")
       each do |square, glyph|
@@ -189,7 +189,7 @@ module Doku
     # Gets the glyph assignment for a given square.
     # @param x (Integer) The x coordinate of the square.
     # @param x (Integer) The y coordinate of the square.
-    # @return The {Puzzle.glyphs glyph} assigned to that square, or nil if
+    # @return (Object) The {Puzzle.glyphs glyph} assigned to that square, or nil if
     #   none is assigned.
     def get(x, y)
       self[SquareOnGrid.new(x, y)]

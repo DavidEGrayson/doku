@@ -8,6 +8,7 @@ module Doku
   # numbers written in the boxes.
   class Sudoku < Puzzle
     include PuzzleOnGrid
+    extend PuzzleOnGrid::ClassMethods # improves generated docs
 
     has_glyphs (1..9).to_a
     has_glyph_chars glyphs.collect &:to_s

@@ -3,21 +3,37 @@ require 'backports' unless defined?(Enumerator)
 module DancingLinks
   # The data structures used here are too complicated
   # and interconnected for Ruby to efficiently inspect them.
-  # Without this module, even a 7x6 link matrix takes
+  # Without this module, even a 7x6 {LinkMatrix} takes
   # many many seconds to inspect.
   module Uninspectable
+    # Simply calls to_s.
+    # @return (String)
     def inspect
       to_s
     end
   end
 
+  # This is a class that lets us concisely enumerate a certain
+  # set of objects by traveling either up, down, left, or right
+  # from a starting object until we wrap around and reach that same node.
+  # Since this class includes the Enumerable class, it has several fancy
+  # methods available with it such as "max_by", "collect", or "to_a".
   class LinkEnumerator
     include Enumerable
 
+    # @param link (Symbol) The link to follow.  Should be :up, :down, :left, or :right.
+    # @param start (Object) The starting object.  Typically a {LinkMatrix::Node}, {LinkMatrix::Column} (column header), or {LinkMatrix} (root node).
+    # @param include_start (Boolean) True if we want to include the starting object in this enumeration.
     def initialize(link, start, include_start=false)
       @link, @start, @include_start = link, start, include_start
     end
 
+    # Iterates through objects by starting at the starting object
+    # and going in the specified direction until the start point is
+    # found again.
+    # The starting object will be yielded first, if this LinkEnumerator
+    # was configured to yield it {#initialize}.
+    # @yield (obj)
     def each
       yield @start if @include_start
 
@@ -30,89 +46,135 @@ module DancingLinks
     end
   end
 
+  # This module is mixed into objects to give them their "left"
+  # and "right" links, and to give some convenient methods for
+  # changing those links.
+  # Every class this module is added to gains to attr_accessors:
+  # left and right.
   module HorizontalLinks
     include Uninspectable
 
     def self.included(klass)
       klass.instance_eval do
-        attr_accessor :left
-        attr_accessor :right
+        attr_accessor :left, :right
       end
     end
 
+    # Removes this object from the horizontal linked list by making the
+    # left and right neighbors point at each other instead of this object.
+    # This can later be undone with {#reinsert_horizontal}
     def remove_horizontal
       right.left, left.right = left, right
     end
 
+    # Reinserts this object into the horizontal linked list by making the
+    # former left and right neighors point to this object instead of each other.
+    # The former left and right neighbors are simply found by looking at the
+    # "left" and "right" links for this object, which still point to them.
+    # This undoes the effect of {#remove_horizontal}.
     def reinsert_horizontal
       left.right = right.left = self
     end
 
+    # Inserts this object to the left of the specified object in the
+    # horizontal list.
     def insert_left(obj)
       self.left, self.right = obj.left, obj
       reinsert_horizontal
     end
-
-    def insert_right(obj)
-      self.left, self.right = obj, obj.right
-      reinsert_horizontal
-    end
   end
 
+  # This module is mixed into objects to give them their "up"
+  # and "down" links, and to give some convenient methods for
+  # changing those links.
+  # Every class this module is added to gains to attr_accessors:
+  # up and down.
   module VerticalLinks
     include Uninspectable
 
     def self.included(klass)
       klass.instance_eval do
-        attr_accessor :up
-        attr_accessor :down
+        attr_accessor :up, :down
       end
     end
 
+    # Removes this object from the vertical linked list by making the
+    # up and down neighbors point at each other instead of this object.
+    # This can later be undone with {#reinsert_vertical}
     def remove_vertical
       down.up, up.down = up, down
     end
 
+    # Reinserts this object into the vertical linked list by making the
+    # former up and down neighors point to this object instead of each other.
+    # The former up and down neighbors are simply found by looking at the
+    # "up" and "down" links for this object, which still point to them.
+    # This undoes the effect of {#remove_vertical}.
+    def reinsert_vertical
+      up.down = down.up = self
+    end
+
+    # Inserts this object above the specified object in the
+    # vertical list.
     def insert_above(other)
       self.up, self.down = other.up, other
       reinsert_vertical
     end
-
-    def reinsert_vertical
-      up.down = down.up = self
-    end
   end
 
-  # LinkMatrix object is the Root object from Knuth.
+  # A LinkMatrix object is the Root object from Donald Knuth's paper on
+  # Dancing Links.  It also represents the matrix as a whole, so it has
+  # methods for building the matrix and finding exact covers.
+  # This data structure is used to efficiently implement Algorithm X,
+  # allowing us to find exact covers.
   class LinkMatrix
 
     # The Column Header object from Knuth.
+    # This object represents a requirement that needs to be satisfied
+    # at least once in the exact coer problem.
     class Column
       include HorizontalLinks, VerticalLinks
 
       # An ID object provided by the user to give meaning to the column.
-      # (the N relation from Knuth)
+      # This is the N relation from Knuth.
+      # The ID can be any object.
       attr_reader :id
 
+      # The current number of nodes in this column.
+      # If this is zero, it means the column can not be covered, given
+      # choices that have already been made.
       attr_accessor :size
 
+      # Initializes an empty column with the specified id.
+      # The ID can be any object.
       def initialize(id)
         @up = @down = self
         @id = id
         @size = 0
       end
 
+      # All the nodes in this column, starting at the top one and going down.
       def nodes_downward
         LinkEnumerator.new :down, self
       end
 
+      # All the nodes in this column, starting at the bottom one and going up.
       def nodes_upward
         LinkEnumerator.new :up, self
       end
 
       alias :nodes :nodes_downward
 
-      # From page 6 of Knuth.
+      # Covers the column.
+      # This algorithm comes from page 6 of Knuth's paper.
+      # This operation removes the column from the list of
+      # columns that needs to be covered and it removes all
+      # rows that would cover this column.
+      # This can be efficiently undone with {#uncover}.
+      #
+      # The word "cover" here means the same thing it does in
+      # the phrase "exact cover problem".  Our goal is to
+      # cover every column exactly once using this method.
       def cover
         remove_horizontal
         nodes_downward.each do |i|
@@ -122,8 +184,10 @@ module DancingLinks
           end
         end
       end
-      
-      # From page 6 of Knuth.
+    
+      # Uncovers the column.
+      # This algorithm comes from page 6 of Knuth's paper.
+      # This operation undoes the effects of {#cover}.
       def uncover
         nodes_upward.each do |i|
           i.nodes_except_self_leftward.each do |j|
@@ -134,39 +198,57 @@ module DancingLinks
         reinsert_horizontal
       end
 
+      # True if there are no more nodes in this column.
+      # @return (Boolean)
       def empty?
         size == 0   # Equivalent to (down == self)
       end
     end
 
+    # This class represents a normal node in Knuth's {#LinkMatrix}.
+    # Every node belongs to a column and a row, and it represents the
+    # fact that the row (i.e. set) "covers" the column.
     class Node
       include HorizontalLinks, VerticalLinks
 
+      # The {Column} object that this node belongs to.
       attr_accessor :column
+
+      # The user-assigned ID of the row this node belongs to.
       attr_accessor :row_id
 
-      # All nodes in the row, starting with self.
+      # All nodes in the same row, starting with self and going to the right.
       def nodes_rightward
         LinkEnumerator.new :right, self, true
       end
 
+      # All nodes in the same row, starting with self and going to the right,
+      # but not including self.
       def nodes_except_self_rightward
         LinkEnumerator.new :right, self
       end
 
+      # All nodes in the same row, starting with self and going to the left,
+      # but not including self.
       def nodes_except_self_leftward
         LinkEnumerator.new :left, self
       end
 
       alias :nodes_except_self :nodes_except_self_rightward
 
-      def cover
+      # Removes a row from the {LinkMatrix} by covering every
+      # column that it touches.  This represents choosing
+      # the row to be in our exact cover.
+      # This can be done with {#unchoose_row}.
+      def choose_row
         nodes_except_self_rightward.each do |node|
           node.column.cover
         end
       end
 
-      def uncover
+      # Undoes the effect of {#choose_row}, putting
+      # the nodes of the row back into the {LinkMatrix}.
+      def unchoose_row
         nodes_except_self_leftward.each do |node|
           node.column.uncover
         end
@@ -174,36 +256,52 @@ module DancingLinks
 
     end
 
+    # Since the LinkMatrix object is the root node, it has left and right links.
     include HorizontalLinks
 
+    # Creates a new, empty matrix with no columns and no rows.
     def initialize
       @left = @right = self
       @columns = {}   # column_id object => Column
       @rows = {} # row_id object => Node
     end
 
+    # Enumerable for all the {Column}s in the matrix.
     def columns
       LinkEnumerator.new :right, self
     end
 
+    # True if there are no more columns left in the matrix (they were all covered).
+    # @return (Boolean)
     def empty?
       right == self
     end
 
+    # Creates a new column with the specified ID and inserts it
+    # into the matrix as the right-most column.
+    # @param id (Object) Any object that uniquely identifies the column.
+    # @return (Column) Newly created column.
     def create_column(id)
       column = Column.new(id)
       column.insert_left self
       return @columns[id] = column
     end
 
+    # Retrieves a column object by its ID or returns nil if there is
+    # no column with that ID.
+    # @return (Column)
     def column(id)
       @columns[id]
     end
 
+    # Retrieves a column object by its ID or creates a new one if
+    # it didn't exist already.
+    # @return (Column)
     def find_or_create_column(id)
       @columns[id] || create_column(id)
     end
 
+    # TODO: document this
     # The column_ids argument is optional.  If provided,
     # it will define the order of the first columns of the link
     # matrix.  If the rows contain elements not present in column_ids,
@@ -233,11 +331,9 @@ module DancingLinks
     # as a new column.
     def add_row(column_ids, row_id=column_ids.dup)
       first_node = nil
-      last_node = nil
       column_ids.each do |column_id|
         column = find_or_create_column(column_id)
         node = Node.new
-        @rows[row_id] ||= node
 
         # Set the vertical links and column.
         node.column = column
@@ -246,11 +342,10 @@ module DancingLinks
         # Set the horizontal links and row_id.
         node.row_id = row_id
         if first_node.nil?
-          first_node = node.left = node.right = node
+          @rows[row_id] = first_node = node.left = node.right = node
         else
-          node.insert_right last_node
+          node.insert_left first_node
         end
-        last_node = node
 
         column.size += 1
       end

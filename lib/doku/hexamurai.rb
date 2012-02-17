@@ -10,6 +10,7 @@ module Doku
   # numbers written in the boxes.
   class Hexamurai < Puzzle
     include PuzzleOnGrid
+    extend Doku::PuzzleOnGrid::ClassMethods # improves generated docs
 
     has_glyphs (0..15).to_a
     has_glyph_chars glyphs.collect { |s| "%X"%[s] }
