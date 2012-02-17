@@ -13,5 +13,5 @@ end
 require_relative ARGV[0]
 
 $puzzle.solutions.each do |s|
-  puts s + "\n"
+  puts s.to_s + "\n"
 end
