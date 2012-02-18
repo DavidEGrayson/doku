@@ -4,7 +4,7 @@ require_relative 'spec_helper'
 describe "Puzzle#solve" do
   context 'given the sudoku puzzle' do
     before do
-      @puzzle = Sudoku.new <<END
+      @puzzle = Doku::Sudoku.new <<END
 ...|..8|...
 ..7|.35|..9
 5..|4.6|8..
@@ -51,7 +51,7 @@ END
 
   context 'given a sudoku puzzle with two solutions' do
     before do
-      @puzzle = Sudoku.new <<END
+      @puzzle = Doku::Sudoku.new <<END
 ...|..8|...
 ..7|.3.|..9
 5..|4.6|8..
@@ -70,7 +70,7 @@ END
       solutions = @puzzle.solutions.to_a
       solutions.size.should == 2
 
-      solutions.should include Sudoku.new <<END
+      solutions.should include Doku::Sudoku.new <<END
 964|278|351
 287|135|649
 531|496|872
@@ -84,7 +84,7 @@ END
 648|512|793
 END
 
-      solutions.should include Sudoku.new <<END
+      solutions.should include Doku::Sudoku.new <<END
 964|278|351
 287|531|649
 531|496|872
@@ -106,7 +106,7 @@ END
 
   context 'given a sudoku puzzle with NO solutions' do
     before do
-      @puzzle = Sudoku.new <<END
+      @puzzle = Doku::Sudoku.new <<END
 123|...|...
 456|...|...
 78.|...|...
@@ -140,7 +140,7 @@ END
   context 'given a hexadoku puzzle' do
     before do
       # Elektor Hexadoku 2011
-      @puzzle = Hexadoku.new <<END
+      @puzzle = Doku::Hexadoku.new <<END
 2A.7|.C..|9D64|8...
 ..3.|A..D|7...|.2F.
 .1..|..0.|8...|.4AB

@@ -3,16 +3,16 @@ require_relative 'spec_helper'
 
 describe Doku::Hexamurai do
   it 'has 768 squares' do
-    Hexamurai.squares.size.should == 768
+    Doku::Hexamurai.squares.size.should == 768
   end
 
   it 'has 16 squares in the first row' do
-    first_row = Hexamurai.squares.select { |s| s.matches?(:y => 0) }
+    first_row = Doku::Hexamurai.squares.select { |s| s.matches?(:y => 0) }
     first_row.size.should == 16
   end
 
   it 'has 16 squares in the first column of the top hexadoku' do
-    column = Hexamurai.squares_matching :x => 8, :y => (0..15)
+    column = Doku::Hexamurai.squares_matching :x => 8, :y => (0..15)
     column.size.should == 16
   end
 
@@ -23,13 +23,13 @@ describe Doku::Hexamurai do
     # center hexadoku twice (-32), and counted the 16 boxes of the
     # center hexaodoku thrice (-32), so subtract 64.
     # There are 2*16 inferred groups (16 columns, 16 rows).
-    Hexamurai.groups.size.should == (5*3*16 - 64 + 2*16)
+    Doku::Hexamurai.groups.size.should == (5*3*16 - 64 + 2*16)
   end
 
   it 'has valid line and char numbers' do
-    lines = Hexamurai.template.split("\n")
-    Hexamurai.squares.each do |square|
-      line_number, char_number = Hexamurai.coordinates_in_grid_string(square)
+    lines = Doku::Hexamurai.template.split("\n")
+    Doku::Hexamurai.squares.each do |square|
+      line_number, char_number = Doku::Hexamurai.coordinates_in_grid_string(square)
       line = lines[line_number]
       line.should_not be_nil
       line.size.should > char_number

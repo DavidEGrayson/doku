@@ -3,20 +3,20 @@ require_relative 'spec_helper'
 
 describe Doku::Sudoku do
   before do
-    @puzzle = Sudoku.new
+    @puzzle = Doku::Sudoku.new
   end
 
   it 'has 81 squares' do
-    Sudoku.squares.size.should == 81
+    Doku::Sudoku.squares.size.should == 81
   end
 
   it 'has 9 squares in the first row' do
-    first_row = Sudoku.squares.select { |s| s.matches?(:y => 0) }
+    first_row = Doku::Sudoku.squares.select { |s| s.matches?(:y => 0) }
     first_row.size.should == 9
   end
 
   it 'has the right number of groups' do
-    Sudoku.groups.size.should == 3*9
+    Doku::Sudoku.groups.size.should == 3*9
   end
 
   it 'has methods for getting and setting glyphs by coordinates' do

@@ -1,10 +1,10 @@
 require 'backports' unless defined? require_relative
 require_relative 'spec_helper'
 
-describe DancingLinks::LinkMatrix do
+describe Doku::DancingLinks::LinkMatrix do
   context "when created from scratch" do
     before do
-      @sm = DancingLinks::LinkMatrix.new
+      @sm = Doku::DancingLinks::LinkMatrix.new
     end
 
     it "has no columns (i.e. it is empty)" do
@@ -59,7 +59,7 @@ describe DancingLinks::LinkMatrix do
                   [  2,        7],
                   [      4,5,  7],
                  ]
-      @sm = DancingLinks::LinkMatrix.from_sets @subsets, @universe
+      @sm = Doku::DancingLinks::LinkMatrix.from_sets @subsets, @universe
     end
 
     it_should_behave_like "figure 3 from Knuth"
