@@ -7,7 +7,7 @@ describe Doku::Hexamurai do
   end
 
   it 'has 16 squares in the first row' do
-    first_row = Doku::Hexamurai.squares.select { |s| s.matches?(:y => 0) }
+    first_row = Doku::Hexamurai.squares_matching :y => 0
     first_row.size.should == 16
   end
 

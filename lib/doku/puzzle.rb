@@ -2,6 +2,9 @@ require 'set'
 require 'backports' unless defined?(require_relative)
 require_relative 'solver'
 
+# The Doku module contains everything defined by the doku gem, including
+# classes for puzzles, and a general-purpose implementation of the
+# {DancingLinks} algorithm for finding exact covers.
 module Doku
 
   # @abstract Use the {Sudoku}, {Hexadoku}, or {Hexamurai}

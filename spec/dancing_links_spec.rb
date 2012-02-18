@@ -4,12 +4,66 @@ require_relative 'spec_helper'
 describe Doku::DancingLinks::LinkMatrix do
   context "when created from scratch" do
     before do
-      @sm = Doku::DancingLinks::LinkMatrix.new
+      @m = Doku::DancingLinks::LinkMatrix.new
     end
 
     it "has no columns (i.e. it is empty)" do
-      @sm.columns.to_a.size.should == 0
-      @sm.should be_empty
+      @m.columns.to_a.size.should == 0
+      @m.should be_empty
+    end
+  end
+
+  it "can be created from a set of sets" do
+    @m = Doku::DancingLinks::LinkMatrix.from_sets(
+      Set.new([ Set.new([1, 2]), Set.new([2, 3]) ]) )
+  end
+
+  describe "find_exact_cover" do
+    it "can find one exact cover" do
+      m = Doku::DancingLinks::LinkMatrix.from_sets [[1,2], [2,3], [3,4]]
+      m.find_exact_cover.sort.should == [[1,2], [3,4]]
+    end
+
+    it "returns nil if there are no exact covers" do
+      m = Doku::DancingLinks::LinkMatrix.from_sets [[1,2], [2,3]]
+      m.find_exact_cover.should == nil
+    end
+
+    it "it finds the trivial exact cover for the trivial matrix" do
+      Doku::DancingLinks::LinkMatrix.new.find_exact_cover.should == []
+    end
+  end
+
+  describe "exact_covers" do
+    it "returns an Enumerable" do
+      Doku::DancingLinks::LinkMatrix.new.exact_covers.should be_a Enumerable
+    end
+
+    it "can find all exact covers" do
+      m = Doku::DancingLinks::LinkMatrix.from_sets [[1,2], [2,3], [3,4], [4,1]]
+      m.exact_covers.collect{|ec| ec.sort}.sort.should ==
+        [ [ [1,2], [3,4] ],
+          [ [2,3], [4,1] ] ]
+    end
+
+    it "it finds the trivial exact cover for the trivial matrix" do
+      Doku::DancingLinks::LinkMatrix.new.exact_covers.to_a.should == [[]]
+    end
+  end
+
+  describe "each_exact_cover" do
+    it "does not yield if there are no exact covers" do
+      m = Doku::DancingLinks::LinkMatrix.from_sets [[1,2], [2,3]]
+      m.each_exact_cover { |ec| true.should == false }
+    end
+
+    it "it finds the trivial exact cover for the trivial matrix" do
+      already_yielded = false
+      Doku::DancingLinks::LinkMatrix.new.each_exact_cover do |ec|
+        ec.should == []
+        already_yielded.should == false
+        already_yielded = true
+      end
     end
   end
 
@@ -57,7 +111,7 @@ describe Doku::DancingLinks::LinkMatrix do
                   [  2,3,    6  ],
                   [1,    4      ],
                   [  2,        7],
-                  [      4,5,  7],
+          Set.new([      4,5,  7]),
                  ]
       @sm = Doku::DancingLinks::LinkMatrix.from_sets @subsets, @universe
     end
@@ -72,6 +126,16 @@ describe Doku::DancingLinks::LinkMatrix do
     # TODO: test this using a matrix that has multiple exact covers
     it "can find all exact covers" do
       @sm.exact_covers.to_a.sort.should == [[[1, 4], [3, 5, 6], [2,7]]]
+    end
+
+    context "after running each_exact_cover" do
+      before do
+        # If we let each_exact_cover run all the way through, it restores
+        # the matrix to its original state.
+        @sm.each_exact_cover { }
+      end
+
+      it_should_behave_like "figure 3 from Knuth"
     end
 
     context "with one row covered" do

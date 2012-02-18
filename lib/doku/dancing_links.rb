@@ -2,6 +2,14 @@ require 'backports' unless defined?(Enumerator)
 
 module Doku; end
 
+# This module contains a general-purpose implementation of the Dancing Links
+# algorithm discovered by Donald Knuth for solving
+# {http://en.wikipedia.org/wiki/Exact_cover exact cover problems}.
+# This module is included in the Doku gem for convenience, but it really has
+# nothing to do with solving Sudoku-like puzzles; it can be applied to any
+# exact cover problem.
+# The main class in this module is {LinkMatrix}.  All the other classes and
+# modules are helpers for this class.
 module Doku::DancingLinks
   # The data structures used here are too complicated
   # and interconnected for Ruby to efficiently inspect them.
@@ -303,34 +311,58 @@ module Doku::DancingLinks
       @columns[id] || create_column(id)
     end
 
-    # TODO: document this
-    # The column_ids argument is optional.  If provided,
-    # it will define the order of the first columns of the link
-    # matrix.  If the rows contain elements not present in column_ids,
-    # that is OK.
-    def self.from_sets(rows, column_ids=[])
+    # Creates a new {LinkMatrix} to represent an
+    # {http://en.wikipedia.org/wiki/Exact_cover exact cover problem}.
+    #
+    # Every set in the exact cover problem will be represented by a row in the
+    # matrix.
+    #
+    # Every element in the universe of the exact cover problem will be represented
+    # by a column in the matrix.  The universe is inferred by taking the union
+    # of all the sets in the sets parameter, but if you want to have control over
+    # the order of the columns then you can also make a universe array and
+    # pass it in to the universe parameter.
+    #
+    # In {LinkMatrix}, every row has a row id.  The row id is used to express
+    # exact covers when they are found.
+    # You can just let all the row ids be equal to the sets themselves by
+    # making the sets parameter be an Array or Set of sets, or
+    # you can specify the row ids explicitly by if you make the sets parameter
+    # be a hash that associates row ids to sets.
+    #
+    # @param (Object) sets Either a hash associating row_ids to sets, or just
+    #   an array of sets.  A set is an Array or Set of objects in the
+    #   universe of the exact cover problem.
+    # @param universe (Array) This parameter is optional.  If provided, it
+    #   will define the order of the first columns of the link matrix.
+    #   It is OK if there are elements in the sets that are not present in
+    #   this array.
+    # @return (LinkMatrix)
+    def self.from_sets(sets, universe=[])
       matrix = new
-      column_ids.each do |column_id|
+      universe.each do |column_id|
         matrix.find_or_create_column column_id
       end
 
-      # TODO: fix to allow Sets or any other enumerable to be passed in too
-      if rows.is_a? Array
-        rows.each do |column_ids|
-          matrix.add_row column_ids
+      if sets.is_a? Hash
+        sets.each do |row_id, column_ids|
+          matrix.add_row column_ids, row_id
         end
       else
-        rows.each do |row_id, column_ids|
-          matrix.add_row column_ids, row_id
+        sets.each do |column_ids|
+          matrix.add_row column_ids
         end
       end
 
       matrix
     end
 
-    # row is an Enumerable of column_ids.
+    # Adds a row to the matrix.
     # If a column_id is not recognized, it will be added to the matrix
     # as a new column.
+    #
+    # @param column_ids (Enumerable) The column_ids that are in this row.
+    # @param row_id (Object) The id of this row.  This is used to express express exact covers and as the argument to {#remove_row}.
     def add_row(column_ids, row_id=column_ids.dup)
       first_node = nil
       column_ids.each do |column_id|
@@ -353,6 +385,9 @@ module Doku::DancingLinks
       end
     end
 
+    # Removes a row from the matrix.
+    # @param row_id (Object) The ID of the row that was specified when
+    #   {#add_row} was called.
     def remove_row(row_id)
       raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
       @rows[row_id].nodes_rightward.each do |node|
@@ -360,8 +395,16 @@ module Doku::DancingLinks
       end
     end
 
-    # Recursive method of finding the exact cover,
-    # from page 5 of Knuth.
+    # This is a recursive method that finds the first exact cover of a
+    # LinkMatrix that represents an exact cover problem, using the
+    # the algorithm described in Donald Knuth's paper "Dancing Links".
+    # This method is just here for purists who want to be sure they are using
+    # Donald Knuth's algorithm.
+    # For most uses, it is recommended to use the more flexible, non-recursive
+    # function {#each_exact_cover} and the methods based on it: {#exact_covers}
+    # and {#find_exact_cover}.
+    # @return (Array) Array of row_ids of the rows/sets that are in the cover,
+    #   or nil if no exact cover was found. 
     def find_exact_cover_recursive(nodes=[])
       if right == self
         # Success.  Matrix is empty because every column is covered.
@@ -392,11 +435,19 @@ module Doku::DancingLinks
 
     # TODO: see if recursive or non-recursive algorithm is faster.
 
+    # Searches for an exact cover.
+    # NOTE: This method mutates the LinkMatrix.
+    # @return (Array) Array of row ids of the rows/sets that are in the cover,
+    #   or nil if no exact cover was found. 
     def find_exact_cover
-      each_exact_cover { |ec| return ec }
-      return nil
+      exact_covers.first
     end
 
+    # Returns an enumerable that searches for exact covers as its elements
+    # are enumerated.
+    # NOTE: This method mutates the LinkMatrix.
+    # @return (Enumerable) Enumerable of exact covers.  Each exact cover is
+    #  an array of row ids of the rows/sets that are in the cover.
     def exact_covers
       Enumerator.new do |y|
         each_exact_cover do |ec|
@@ -405,6 +456,11 @@ module Doku::DancingLinks
       end
     end
 
+    # Searches for exact covers and yields them as it finds them.
+    # NOTE: This method mutates the LinkMatrix while it is running, but
+    #  when it is finished the matrix will be back to its original state.
+    # @yield exact_cover (Array)  Array of row_ids of the rows/sets that are
+    #   in the cover.
     def each_exact_cover
       nodes = []   # List of nodes that are currently "covered"
 
