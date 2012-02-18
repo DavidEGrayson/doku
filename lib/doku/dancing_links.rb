@@ -1,6 +1,8 @@
 require 'backports' unless defined?(Enumerator)
 
-module DancingLinks
+module Doku; end
+
+module Doku::DancingLinks
   # The data structures used here are too complicated
   # and interconnected for Ruby to efficiently inspect them.
   # Without this module, even a 7x6 {LinkMatrix} takes
@@ -240,7 +242,7 @@ module DancingLinks
       # column that it touches.  This represents choosing
       # the row to be in our exact cover.
       # This can be done with {#unchoose_row}.
-      def choose_row
+      def cover
         nodes_except_self_rightward.each do |node|
           node.column.cover
         end
@@ -248,7 +250,7 @@ module DancingLinks
 
       # Undoes the effect of {#choose_row}, putting
       # the nodes of the row back into the {LinkMatrix}.
-      def unchoose_row
+      def uncover
         nodes_except_self_leftward.each do |node|
           node.column.uncover
         end
