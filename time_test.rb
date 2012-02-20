@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # Runs a time trial.
-# The default puzzle (July 2011 Elektor) takes about an hour to solve.
+# The default puzzle is from the July 2011 Elektor magazine.
 # Another puzzle can be specified by supplying the file name.
 # You can use the recursive (Knuth style) method
 $LOAD_PATH.unshift File.join File.dirname(__FILE__), 'lib'
@@ -36,6 +36,7 @@ solution = $puzzle.send(method)
 end_times = Process.times
 
 puts solution || "NO SOLUTION FOUND"
+puts "WRONG SOLUTION FOUND" if $solution && solution != $solution
 p start_times
 p end_times
-puts "TOTAL: " + (end_times.utime - start_times.utime).to_s
+puts "TOTAL: %.2f" % [end_times.utime - start_times.utime]
