@@ -86,16 +86,16 @@ describe Doku::DancingLinks::LinkMatrix do
 
   shared_examples_for "figure 3 from Knuth" do
     it "has 7 columns" do
-      @sm.columns.to_a.size.should == 7
+      @m.columns.to_a.size.should == 7
     end
 
     it "has the expected columns" do
-      @sm.columns.collect(&:id).should == @universe
+      @m.columns.collect(&:id).should == @universe
     end
 
     it "has the expected structure" do
       # This test is not exhaustive.
-      columns = @sm.columns.to_a
+      columns = @m.columns.to_a
       columns[0].down.should_not == columns[0]
       columns[0].up.should_not == columns[0]
       columns[0].nodes.to_a.size.should == 2
@@ -112,7 +112,7 @@ describe Doku::DancingLinks::LinkMatrix do
     end
 
     it "every row has a reference to the column" do
-      @sm.columns.each do |column|
+      @m.columns.each do |column|
         column.nodes.each do |node|
           node.column.should == column
         end
@@ -130,26 +130,26 @@ describe Doku::DancingLinks::LinkMatrix do
                   [  2,        7],
           Set.new([      4,5,  7]),
                  ]
-      @sm = Doku::DancingLinks::LinkMatrix.from_sets @subsets, @universe
+      @m = Doku::DancingLinks::LinkMatrix.from_sets @subsets, @universe
     end
 
     it_should_behave_like "figure 3 from Knuth"
 
     it "can find an exact cover" do
-      result = @sm.find_exact_cover
+      result = @m.find_exact_cover
       result.collect(&:sort).sort.should == [[1, 4], [2, 7], [3, 5, 6]]
     end
 
     # TODO: test this using a matrix that has multiple exact covers
     it "can find all exact covers" do
-      @sm.exact_covers.to_a.sort.should == [[[1, 4], [3, 5, 6], [2,7]]]
+      @m.exact_covers.to_a.sort.should == [[[1, 4], [3, 5, 6], [2,7]]]
     end
 
     context "after running each_exact_cover" do
       before do
         # If we let each_exact_cover run all the way through, it restores
         # the matrix to its original state.
-        @sm.each_exact_cover { }
+        @m.each_exact_cover { }
       end
 
       it_should_behave_like "figure 3 from Knuth"
@@ -157,14 +157,14 @@ describe Doku::DancingLinks::LinkMatrix do
 
     context "with one row covered" do
       before do
-        @sm.column(@universe[3]).cover
+        @m.column(@universe[3]).cover
       end
 
       it "has only 6 columns" do
-        @sm.columns.to_a.size.should == 6
+        @m.columns.to_a.size.should == 6
       end
 
-      # @sm will now look like (minus means a covered element)
+      # @m will now look like (minus means a covered element)
       # 0 0 1 - 1 1 0
       # - - - - - - -
       # 0 1 1 - 0 1 0
@@ -172,12 +172,12 @@ describe Doku::DancingLinks::LinkMatrix do
       # 0 1 0 - 0 0 1
       # - - - - - - -
       it "has the expected column sizes" do
-        @universe.collect { |e| @sm.column(e).size }.should == [0, 2, 2, 3, 1, 2, 1]
-        @sm.columns.collect { |c| c.size }.should == [0, 2, 2, 1, 2, 1]
+        @universe.collect { |e| @m.column(e).size }.should == [0, 2, 2, 3, 1, 2, 1]
+        @m.columns.collect { |c| c.size }.should == [0, 2, 2, 1, 2, 1]
       end
 
       it "has the expected structure" do
-        columns = @sm.columns.to_a
+        columns = @m.columns.to_a
 
         # Column 0 is empty.
         columns[0].down.should == columns[0]
@@ -194,7 +194,7 @@ describe Doku::DancingLinks::LinkMatrix do
 
       context "and then uncovered" do
         before do
-          @sm.column(@universe[3]).uncover          
+          @m.column(@universe[3]).uncover          
         end
 
         it_should_behave_like "figure 3 from Knuth"
