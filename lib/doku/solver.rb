@@ -13,7 +13,7 @@ module Doku
       return nil
     end
 
-    # An enumerator that for all the solutions to the puzzle.
+    # An enumerator for all the solutions to the puzzle.
     # @return (Enumerable)
     def solutions
       Enumerator.new do |y|

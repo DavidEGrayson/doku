@@ -215,7 +215,7 @@ module Doku::DancingLinks
       end
     end
 
-    # This class represents a normal node in Knuth's {#LinkMatrix}.
+    # This class represents a normal node in Knuth's {LinkMatrix}.
     # Every node belongs to a column and a row, and it represents the
     # fact that the row (i.e. set) "covers" the column.
     class Node
@@ -249,14 +249,14 @@ module Doku::DancingLinks
       # Removes a row from the {LinkMatrix} by covering every
       # column that it touches.  This represents choosing
       # the row to be in our exact cover.
-      # This can be done with {#unchoose_row}.
+      # This can be done with {#uncover}.
       def cover
         nodes_except_self_rightward.each do |node|
           node.column.cover
         end
       end
 
-      # Undoes the effect of {#choose_row}, putting
+      # Undoes the effect of {#cover}, putting
       # the nodes of the row back into the {LinkMatrix}.
       def uncover
         nodes_except_self_leftward.each do |node|
@@ -459,7 +459,8 @@ module Doku::DancingLinks
     # Searches for exact covers and yields them as it finds them.
     # NOTE: This method mutates the LinkMatrix while it is running, but
     #  when it is finished the matrix will be back to its original state.
-    # @yield exact_cover (Array)  Array of row_ids of the rows/sets that are
+    # @yield exact_cover
+    # @yieldparam exact_cover (Array)  Array of row_ids of the rows/sets that are
     #   in the cover.
     def each_exact_cover
       nodes = []   # List of nodes that are currently "covered"
