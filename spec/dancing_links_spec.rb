@@ -57,7 +57,7 @@ describe Doku::DancingLinks::LinkMatrix do
       m.each_exact_cover { |ec| true.should == false }
     end
 
-    it "it finds the trivial exact cover for the trivial matrix" do
+    it "finds the trivial exact cover for the trivial matrix" do
       already_yielded = false
       Doku::DancingLinks::LinkMatrix.new.each_exact_cover do |ec|
         ec.should == []
@@ -68,6 +68,10 @@ describe Doku::DancingLinks::LinkMatrix do
   end
 
   describe "find_exact_cover_recursive" do
+    it "find the trivial cover for the trivial matrix" do
+      Doku::DancingLinks::LinkMatrix.new.find_exact_cover_recursive.should == []
+    end
+
     it "works even if final(k) < max(k)" do
       # This makes sure we call collect on o[0...k] instead of on o.
       m = Doku::DancingLinks::LinkMatrix.from_sets [
