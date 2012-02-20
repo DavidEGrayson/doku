@@ -67,6 +67,19 @@ describe Doku::DancingLinks::LinkMatrix do
     end
   end
 
+  describe "find_exact_cover_recursive" do
+    it "works even if final(k) < max(k)" do
+      # This makes sure we call collect on o[0...k] instead of on o.
+      m = Doku::DancingLinks::LinkMatrix.from_sets [
+          [1,2,     ],
+          [  2,3,   ],
+          [    3,4, ],
+          [      4,5],
+          [1,2,3,4,5] ]
+      m.find_exact_cover_recursive.sort.should == [[1, 2, 3, 4, 5]]
+    end
+  end
+
   shared_examples_for "figure 3 from Knuth" do
     it "has 7 columns" do
       @sm.columns.to_a.size.should == 7

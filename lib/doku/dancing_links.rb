@@ -2,7 +2,8 @@ require 'backports' unless defined?(Enumerator)
 
 module Doku; end
 
-# This module contains a general-purpose implementation of the Dancing Links
+# This module contains a general-purpose implementation of the
+# {http://arxiv.org/abs/cs/0011047 Dancing Links}
 # algorithm discovered by Donald Knuth for solving
 # {http://en.wikipedia.org/wiki/Exact_cover exact cover problems}.
 # This module is included in the Doku gem for convenience, but it really has
@@ -397,7 +398,7 @@ module Doku::DancingLinks
 
     # This is a recursive method that finds the first exact cover of a
     # LinkMatrix that represents an exact cover problem, using the
-    # the algorithm described in Donald Knuth's paper "Dancing Links".
+    # the algorithm described on page 5 of Donald Knuth's paper "Dancing Links".
     # This method is just here for purists who want to be sure they are using
     # Donald Knuth's algorithm.
     # For most uses, it is recommended to use the more flexible, non-recursive
@@ -405,28 +406,28 @@ module Doku::DancingLinks
     # and {#find_exact_cover}.
     # @return (Array) Array of row_ids of the rows/sets that are in the cover,
     #   or nil if no exact cover was found. 
-    def find_exact_cover_recursive(nodes=[])
+    def find_exact_cover_recursive(k=0, o=[])
       if right == self
-        # Success.  Matrix is empty because every column is covered.
-        return nodes.collect &:row_id
+        return o[0...k].collect &:row_id   # Success
       end
 
       c = smallest_column
       c.cover
 
       c.nodes_downward.each do |r|
-        nodes.push r
+        o[k] = r
 
-        r.cover
+        r.nodes_except_self_rightward.each do |j|
+          j.column.cover
+        end
 
-        if answer = find_exact_cover_recursive(nodes)
-          # Success
-          return answer
+        if answer = find_exact_cover_recursive(k+1, o)
+          return answer   # Success
         end
         
-        r.uncover
-
-        nodes.pop
+        r.nodes_except_self_leftward.each do |j|
+          j.column.uncover
+        end
       end
 
       c.uncover
