@@ -248,18 +248,19 @@ module Doku::DancingLinks
       alias :nodes_except_self :nodes_except_self_rightward
 
       # Removes a row from the {LinkMatrix} by covering every
-      # column that it touches.  This represents choosing
-      # the row to be in our exact cover.
-      # This can be done with {#uncover}.
-      def cover
+      # column that it touches.  This represents (tentatively)
+      # choosing the node's row to be in our exact cover.
+      # When that choice is proven to not work, this action can
+      # be efficiently undone with {#unchoose}.
+      def choose
         nodes_except_self_rightward.each do |node|
           node.column.cover
         end
       end
 
-      # Undoes the effect of {#cover}, putting
+      # Undoes the effect of {#choose}, putting
       # the nodes of the row back into the {LinkMatrix}.
-      def uncover
+      def unchoose
         nodes_except_self_leftward.each do |node|
           node.column.uncover
         end
@@ -485,7 +486,7 @@ module Doku::DancingLinks
 
         # Try the node (push it and cover its columns).
         nodes.push node
-        node.cover
+        node.choose
 
       end
     end
@@ -530,7 +531,7 @@ module Doku::DancingLinks
         # We tried nodes.last and it didn't work, so
         # pop it off and uncover the corresponding columns.
         node = nodes.pop
-        node.uncover
+        node.unchoose
         
         # Try the next node in this column.
         x = node.down
