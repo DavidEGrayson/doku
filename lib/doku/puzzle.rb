@@ -234,10 +234,9 @@ module Doku
     end
 
     def glyph_assignment_subset?(puzzle)
-      glyph_state.each_pair do |square, glyph|
-        return false if puzzle[square] != glyph
+      glyph_state.all? do |square, glyph|
+        glyph == puzzle[square]
       end
-      return true
     end
 
     def self.define_group(squares)
