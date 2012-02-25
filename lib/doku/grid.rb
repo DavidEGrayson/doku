@@ -231,10 +231,7 @@ module Doku
     #  :x or :y and the values are either Integers or Integer ranges.
     # @return (Boolean) True if the square matches all the conditions.
     def matches?(conditions)
-      conditions.each do |property, values|
-        return false unless values === send(property)
-      end
-      return true
+      conditions.all? { |property, values| values === send(property) }
     end
 
     def to_s

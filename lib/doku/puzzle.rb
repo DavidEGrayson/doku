@@ -184,11 +184,10 @@ module Doku
     #
     # @return [Boolean]
     def valid?
-      groups.each do |group|
-        gs = group.collect { |square| self[square] } - [nil]
-        return false if gs.uniq.size != gs.size
+      groups.all? do |group|
+        glyphs = group.collect { |square| self[square] } - [nil]
+        glyphs.uniq.size == glyphs.size
       end
-      return true
     end
 
     # Returns true if the puzzle is {#filled?} and {#valid?}.
