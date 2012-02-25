@@ -13,9 +13,17 @@ describe Doku::DancingLinks::LinkMatrix do
     end
   end
 
-  it "can be created from a set of sets" do
-    @m = Doku::DancingLinks::LinkMatrix.from_sets(
-      Set.new([ Set.new([1, 2]), Set.new([2, 3]) ]) )
+  describe ".from_sets" do
+    it "can create a matrix from a set of sets" do
+      @m = Doku::DancingLinks::LinkMatrix.from_sets(
+        Set.new([ Set.new([1, 2]), Set.new([2, 3]) ]) )
+    end
+
+    it "filters out duplicate column ids" do
+      @m = Doku::DancingLinks::LinkMatrix.from_sets [ [1,2,2] ]
+      @m.row([1,2,2]).nodes.to_a.size.should == 2
+    end
+
   end
 
   describe "find_exact_cover" do

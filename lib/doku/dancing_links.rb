@@ -1,4 +1,5 @@
 require 'backports' unless defined?(Enumerator)
+require 'set'
 
 module Doku; end
 
@@ -247,6 +248,8 @@ module Doku::DancingLinks
 
       alias :nodes_except_self :nodes_except_self_rightward
 
+      alias :nodes :nodes_rightward
+
       # Removes a row from the {LinkMatrix} by covering every
       # column that it touches.  This represents (tentatively)
       # choosing the node's row to be in our exact cover.
@@ -367,7 +370,7 @@ module Doku::DancingLinks
     # @param row_id (Object) The id of this row.  This is used to express express exact covers and as the argument to {#remove_row}.
     def add_row(column_ids, row_id=column_ids.dup)
       first_node = nil
-      column_ids.each do |column_id|
+      Set.new(column_ids).each do |column_id|
         column = find_or_create_column(column_id)
         node = Node.new
 
@@ -395,6 +398,15 @@ module Doku::DancingLinks
       @rows[row_id].nodes_rightward.each do |node|
         node.column.cover
       end
+    end
+
+    # Retrieves a node in the row with the specified ID or returns nil if there is
+    # no row with that ID.
+    # @param id (Object) The ID of the row that was specified when
+    #   {#add_row} was called.
+    # @return (Node)
+    def row(id)
+      @rows[id]
     end
 
     # This is a recursive method that finds the first exact cover of a
