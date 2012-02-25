@@ -3,11 +3,16 @@
 # The default puzzle is from the July 2011 Elektor magazine.
 # Another puzzle can be specified by supplying the file name.
 # You can use the recursive (Knuth style) method
-$LOAD_PATH.unshift File.join File.dirname(__FILE__), 'lib'
-require 'doku'
+
+# TODO: figure out why this trial in 1.8.7 takes almost 100x longer than in 1.9.2
+# TODO: figure out why it takes about a second to require the puzzle file
 
 require 'rubygems'
-require 'rspec'
+
+$LOAD_PATH.unshift File.join File.dirname(__FILE__), 'lib'
+
+puts "Loading doku..."
+require 'doku'
 
 class Doku::Puzzle
   def solve_recursive
@@ -27,6 +32,7 @@ puzzle_file = File.join 'puzzles', 'elektor', '2011-07.rb'
 if ARGV.size > 0
   puzzle_file = ARGV.shift
 end
+puts "Loading puzzle..."
 require_relative puzzle_file
 
 puts "Solving #{puzzle_file} with #{method.inspect}..."
