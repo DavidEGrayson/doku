@@ -7,8 +7,8 @@ module Doku; end
 # {http://arxiv.org/abs/cs/0011047 Dancing Links}
 # algorithm discovered by Donald Knuth for solving
 # {http://en.wikipedia.org/wiki/Exact_cover exact cover problems}.
-# This module is included in the Doku gem for convenience, but it really has
-# nothing to do with solving Sudoku-like puzzles; it can be applied to any
+# This module is included in the Doku gem for convenience, but it is not
+# specifically for solving Sudoku-like puzzles; it can be applied to any
 # exact cover problem.
 # The main class in this module is {LinkMatrix}.  All the other classes and
 # modules are helpers for this class.

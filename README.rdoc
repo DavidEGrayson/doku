@@ -1,3 +1,60 @@
 = Doku: solve Sudoku-like puzzles!
 
-Doku is a Ruby[http://www.rubylang.org/] gem[http://rubygems.org/] for solving Sudoku-like puzzles using the Dancing&nbsp;Links[http://en.wikipedia.org/wiki/Dancing_Links] algorithm by Donald Knuth.
+Doku is a Ruby[http://www.rubylang.org/] gem for solving Sudoku-like puzzles using the {Dancing Links}[http://en.wikipedia.org/wiki/Dancing_Links] algorithm by Donald Knuth.
+
+Currently it supports these puzzles:
+
+* {Doku::Sudoku Sudoku}
+* {Doku::Hexadoku Hexadoku}
+* {Doku::Hexamurai Hexamurai}
+
+== Installation
+
+At the command line, type
+
+  gem install doku
+
+You might need to prefix that with <code>sudo</code> depending on where your gems are stored.
+
+== Example code
+
+  require 'rubygems'
+  require 'doku'
+  
+  puzzle = Doku::Sudoku.new <<END
+  ...|..8|...
+  ..7|.35|..9
+  5..|4.6|8..
+  ---+---+---
+  ...|..4|2..
+  4..|...|.37
+  8..|...|5..
+  ---+---+---
+  .9.|.67|...
+  ..3|...|1.5
+  ...|...|..3
+  END
+  
+  puts puzzle.solve || "No solutions."
+
+== Introduction
+
+This gem is designed to solve Sudoku-like puzzles.  For the purposes of this gem, a "Sudoku-like" puzzle is a defined to be a puzzle consisting of a set of glyphs (i.e. symbols), a set of squares, and a set of groups of squares.  Given a partial assignment of squares to glyphs, the goal is to assign every square to a glyph such that no two squares in the same group are assigned to the same glyph.
+
+In Sudoku, the glyphs are the numbers 0 through 9, the squares are the squares of a 9x9 grid, and the groups consist of nine rows, nine columns, and nine 3x3 squares.
+
+{http://arxiv.org/abs/cs/0011047 Dancing Links}
+
+== Class and Module Overview
+
+The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of groups, glyphs and squares.  It provides the {Doku::Puzzle#[] []} {Doku::Puzzle#[]= []=} for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking among other things.
+
+The {Doku::SquareOnGrid} module provides functions used for Sudoku-like puzzles that can be drawn on a 2D grid.  It implements the string representations of the puzzle and an <code>initialize</code> method that creates puzzles from strings and a <code>to_s</code> methods that creates strings from puzzles.  It provides <code>get</code> and <code>set</code> methods for modifying the puzzle by its coordinates.
+
+used to define classes the represent Sudoku-like puzzles.  The Puzzle class includes the {Doku::SolvableWithDancingLinks} module which provides methods for solving the puzzles using the Dancing Links algorithm.
+
+The {Doku::DancingLinks} module contains several class that comprise a general-purpose implementation of the Dancing Links algorithm.  This module is included in the Doku gem for convenience, but it is not specifically for solving Sudoku-like puzzles; it can be applied to any exact cover problem. The main class in this module is LinkMatrix. All the other classes and modules are helpers for this class.
+
+== Detailed Documentation
+
+For detailed documentation of every class, module, and method, see the "Class List" link above.
