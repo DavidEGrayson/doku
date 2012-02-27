@@ -1,5 +1,4 @@
 require 'backports' unless defined?(Enumerator)
-require 'set'
 
 module Doku; end
 
@@ -370,7 +369,8 @@ module Doku::DancingLinks
     # @param row_id (Object) The id of this row.  This is used to express express exact covers and as the argument to {#remove_row}.
     def add_row(column_ids, row_id=column_ids.dup)
       first_node = nil
-      Set.new(column_ids).each do |column_id|
+      column_ids = column_ids.uniq if column_ids.respond_to?(:uniq)
+      column_ids.each do |column_id|
         column = find_or_create_column(column_id)
         node = Node.new
 

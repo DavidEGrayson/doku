@@ -148,7 +148,7 @@ describe Doku::DancingLinks::LinkMatrix do
                   [  2,3,    6  ],
                   [1,    4      ],
                   [  2,        7],
-          Set.new([      4,5,  7]),
+                  [      4,5,  7],
                  ]
       @m = Doku::DancingLinks::LinkMatrix.from_sets @subsets, @universe
     end
