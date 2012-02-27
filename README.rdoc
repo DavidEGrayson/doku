@@ -43,11 +43,11 @@ This gem is designed to solve Sudoku-like puzzles.  For the purposes of this gem
 
 For example, in Sudoku, the glyphs are the numbers 0 through 9, the squares are the squares of a 9x9 grid, and the groups consist of nine rows, nine columns, and nine 3x3 squares.
 
-Every Sudoku-like puzzle can be reduced to an {http://en.wikipedia.org/wiki/Exact_cover exact cover problem}.  From there is can be efficiently solved with the {http://arxiv.org/abs/cs/0011047 Dancing Links} algorithm discovered by Donald Knuth.  That is the main purpose of this gem.
+Every Sudoku-like puzzle can be reduced to an {exact cover problem}[http://en.wikipedia.org/wiki/Exact_cover].  From there is can be efficiently solved with the {Dancing Links}[http://arxiv.org/abs/cs/0011047] algorithm discovered by Donald Knuth.  That is the main purpose of this gem.
 
 == Classes and Modules Overview
 
-The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of {Doku::Puzzle.groups groups}, {Doku::Puzzle.glyphs glyphs} and {Doku::Puzzle.squares squares}.  Each instance of this class represents a particular assigment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and values are glyphs.  This class provides {Doku::Puzzle#[] <code>[]</code>} and {Doku::Puzzle#[]= <code>[]=</code>} methods for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking.
+The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of {Doku::Puzzle.groups groups}, {Doku::Puzzle.glyphs glyphs} and {Doku::Puzzle.squares squares}.  Each instance of this class represents a particular assignment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and values are glyphs.  This class provides {Doku::Puzzle#[] <code>[]</code>} and {Doku::Puzzle#[]= <code>[]=</code>} methods for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking.
 
 The Puzzle class includes the {Doku::SolvableWithDancingLinks} module which provides methods for solving puzzles using the Dancing Links algorithm.  The solutions returned are instances of Puzzle.
 
