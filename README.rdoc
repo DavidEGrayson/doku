@@ -14,7 +14,7 @@ At the command line, type
 
   gem install doku
 
-You might need to prefix that with <code>sudo</code> depending on where your gems are stored.
+You might need to prefix the command with <code>sudo</code> depending on where your gems are stored.
 
 == Example code
 
@@ -39,11 +39,11 @@ You might need to prefix that with <code>sudo</code> depending on where your gem
 
 == Introduction
 
-This gem is designed to solve Sudoku-like puzzles.  For the purposes of this gem, a "Sudoku-like" puzzle is a defined to be a puzzle consisting of a set of glyphs (i.e. symbols), a set of squares, and a set of groups of squares.  Given a partial assignment of squares to glyphs, the goal is to assign every square to a glyph such that no two squares in the same group are assigned to the same glyph.
+This gem is designed to solve Sudoku-like puzzles.  For the purposes of this gem, a "Sudoku-like" puzzle is a defined to be a puzzle consisting of a set of glyphs (i.e. symbols), a set of squares, and a set of groups of squares.  Additionally, the number of squares in each group must be equal to the number of glyphs.  Given a partial assignment of glyphs to squares, the goal is to assign a glyph to every square such that no two squares in the same group are assigned the same glyph.
 
-In Sudoku, the glyphs are the numbers 0 through 9, the squares are the squares of a 9x9 grid, and the groups consist of nine rows, nine columns, and nine 3x3 squares.
+For example, in Sudoku, the glyphs are the numbers 0 through 9, the squares are the squares of a 9x9 grid, and the groups consist of nine rows, nine columns, and nine 3x3 squares.
 
-{http://arxiv.org/abs/cs/0011047 Dancing Links}
+Every Sudoku-like puzzle can be reduced to an {http://en.wikipedia.org/wiki/Exact_cover exact cover problem}.  From there is can be efficiently solved with the {http://arxiv.org/abs/cs/0011047 Dancing Links} algorithm discovered by Donald Knuth.  That is the main purpose of this gem.
 
 == Classes and Modules Overview
 
@@ -55,8 +55,24 @@ The {Doku::SquareOnGrid} module provides methods used for Sudoku-like puzzles th
 
 The classes {Doku::Sudoku}, {Doku::Hexadoku}, and {Doku::Hexamurai} all inherit from {Doku::Puzzle} and include {Doku::SquareOnGrid}.  Because of the framework set up by that class and that module, the definitions of these classes are short and the methods provided by each of them are rich and consistent with eachother.
 
-The {Doku::DancingLinks} module contains several class that comprise a general-purpose implementation of the Dancing Links algorithm.  This module is included in the Doku gem for convenience, but it is not specifically for solving Sudoku-like puzzles; it can be applied to any exact cover problem. The main class in this module is LinkMatrix. All the other classes and modules are helpers for this class.
+The {Doku::DancingLinks} module contains several class that comprise a general-purpose implementation of the Dancing Links algorithm.  This module is included in the Doku gem for convenience, but it is not specifically for solving Sudoku-like puzzles; it can be applied to any exact cover problem.
 
 == Detailed Documentation
 
 For detailed documentation of every class, module, and method, see the "Class List" link above.
+
+== Contributing
+
+You are invited to fork the {https://github.com/DavidEGrayson/doku Doku github repository} and work on improving the gem.
+
+There are many directions this gem could go in.  The direction will be determined by user feedback and by whatever the developers feel like working on.  Possible improvements could be:
+
+* A command-line utility for solving puzzles.  This requires us to define a file format for puzzles.
+* A C extension or a column size cache to make the Dancing Links algorithm faster.
+* Hooks for providing progress updates during the solving of hard puzzles.
+* Outputting puzzles in SVG format.  Could include SVG animations that show the process of solving the puzzle!
+* More types of puzzles that are solvable (e.g. puzzles that have groups with fewer squares than the number of glyphs).
+
+== Philosophy
+
+This gem is meant to showcase beautiful Ruby code.  Test-driven development was used at all times during the development of this gem.  I have spent many hours reviewing the code, looking for ways to make it simpler, and refactoring it.  Every class and public method is documented.  Every method is short.  There are no ugly hacks.  All method names were chosen carefully.  At every level, the power of the Ruby language is exploited to its fullest potential.  --David Grayson
