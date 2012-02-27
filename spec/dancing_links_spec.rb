@@ -75,9 +75,9 @@ describe Doku::DancingLinks::LinkMatrix do
     end
   end
 
-  describe "find_exact_cover_recursive" do
+  describe "each_exact_cover_recursive" do
     it "find the trivial cover for the trivial matrix" do
-      Doku::DancingLinks::LinkMatrix.new.find_exact_cover_recursive.should == []
+      Doku::DancingLinks::LinkMatrix.new.enum_for(:each_exact_cover_recursive).to_a.should == [[]]
     end
 
     it "works even if final(k) < max(k)" do
@@ -88,7 +88,19 @@ describe Doku::DancingLinks::LinkMatrix do
           [    3,4, ],
           [      4,5],
           [1,2,3,4,5] ]
-      m.find_exact_cover_recursive.sort.should == [[1, 2, 3, 4, 5]]
+      m.enum_for(:each_exact_cover_recursive).to_a.should == [[[1, 2, 3, 4, 5]]]
+    end
+
+    it "can find multiple solutions" do
+      m = Doku::DancingLinks::LinkMatrix.from_sets({
+        :a => [1,2,     ],
+        :b => [    3,4,5],
+        :c => [1,  3,  5],
+        :d => [  2,  4, ],
+      })
+      solutions = m.enum_for(:each_exact_cover_recursive).to_a.collect { |s| s.sort }
+      solutions.should include [:a, :b]
+      solutions.should include [:c, :d]
     end
   end
 

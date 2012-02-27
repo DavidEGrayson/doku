@@ -16,7 +16,7 @@ require 'doku'
 
 class Doku::Puzzle
   def solve_recursive
-    cover = to_link_matrix.find_exact_cover_recursive
+    cover = to_link_matrix.enum_for(:each_exact_cover_recursive).first
     exact_cover_to_solution(cover) if cover
   end
 end

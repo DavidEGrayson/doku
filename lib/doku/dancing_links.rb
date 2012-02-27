@@ -409,19 +409,20 @@ module Doku::DancingLinks
       @rows[id]
     end
 
-    # This is a recursive method that finds the first exact cover of a
-    # LinkMatrix that represents an exact cover problem, using the
+    # This method is equivalent to {#each_exact_cover} but uses
     # the algorithm described on page 5 of Donald Knuth's paper "Dancing Links".
     # This method is just here for purists who want to be sure they are using
     # Donald Knuth's algorithm.
-    # For most uses, it is recommended to use the more flexible, non-recursive
+    # For most users, it is recommended to use the more flexible, non-recursive
     # function {#each_exact_cover} and the methods based on it: {#exact_covers}
-    # and {#find_exact_cover}.
+    # and {#find_exact_cover} because it can be difficult to debug programs with
+    # deep stacks.
     # @return (Array) Array of row_ids of the rows/sets that are in the cover,
     #   or nil if no exact cover was found. 
-    def find_exact_cover_recursive(k=0, o=[])
+    def each_exact_cover_recursive(k=0, o=[], &block)
       if right == self
-        return o[0...k].collect &:row_id   # Success
+        yield o[0...k].collect &:row_id   # Success
+        return
       end
 
       c = smallest_column
@@ -434,9 +435,7 @@ module Doku::DancingLinks
           j.column.cover
         end
 
-        if answer = find_exact_cover_recursive(k+1, o)
-          return answer   # Success
-        end
+        each_exact_cover_recursive(k+1, o, &block)
         
         r.nodes_except_self_leftward.each do |j|
           j.column.uncover
@@ -463,16 +462,12 @@ module Doku::DancingLinks
     # @return (Enumerable) Enumerable of exact covers.  Each exact cover is
     #  an array of row ids of the rows/sets that are in the cover.
     def exact_covers
-      Enumerator.new do |y|
-        each_exact_cover do |ec|
-          y << ec
-        end
-      end
+      enum_for :each_exact_cover
     end
 
     # Searches for exact covers and yields them as it finds them.
     # NOTE: This method mutates the LinkMatrix while it is running, but
-    #  when it is finished the matrix will be back to its original state.
+    # when it is finished the matrix will be back to its original state.
     # @yield exact_cover
     # @yieldparam exact_cover (Array)  Array of row_ids of the rows/sets that are
     #   in the cover.

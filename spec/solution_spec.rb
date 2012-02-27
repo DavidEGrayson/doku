@@ -41,12 +41,6 @@ END
 END
     end
 
-    it "can also find the solution using Donald Knuth's recursive DLX" do
-      sm = @puzzle.to_link_matrix
-      exact_cover = sm.find_exact_cover_recursive
-      solution = @puzzle.exact_cover_to_solution exact_cover
-      solution.should == @solution
-    end
   end
 
   context 'given a sudoku puzzle with two solutions' do
@@ -64,13 +58,8 @@ END
 ..3|...|1.5
 ...|...|..3
 END
-    end
 
-    it 'finds two solutions' do
-      solutions = @puzzle.solutions.to_a
-      solutions.size.should == 2
-
-      solutions.should include Doku::Sudoku.new <<END
+      @solution1 = Doku::Sudoku.new <<END
 964|278|351
 287|135|649
 531|496|872
@@ -83,8 +72,7 @@ END
 723|849|165
 648|512|793
 END
-
-      solutions.should include Doku::Sudoku.new <<END
+      @solution2 = Doku::Sudoku.new <<END
 964|278|351
 287|531|649
 531|496|872
@@ -97,6 +85,14 @@ END
 723|849|165
 648|152|793
 END
+    end
+
+    it 'finds two solutions' do
+      solutions = @puzzle.solutions.to_a
+      solutions.size.should == 2
+
+      solutions.should include @solution1
+      solutions.should include @solution2
 
       solutions[0].should be_a_solution_for @puzzle
       solutions[1].should be_a_solution_for @puzzle
@@ -129,11 +125,6 @@ END
       sm = @puzzle.to_link_matrix
       sc = sm.columns.min_by(&:size)
       sc.size.should > 0
-    end
-
-    it 'finds no solutions using the recursive algorithm' do
-      sm = @puzzle.to_link_matrix
-      sm.find_exact_cover_recursive.should == nil
     end
   end
 

@@ -9,18 +9,13 @@ module Doku
     # Returns the first solution found by the Dancing Links algorithm,
     # or nil if there is no solution.
     def solve
-      each_solution { |s| return s }
-      return nil
+      solutions.first
     end
 
     # An enumerator for all the solutions to the puzzle.
     # @return (Enumerable)
     def solutions
-      Enumerator.new do |y|
-        each_solution do |solution|
-          y << solution
-        end
-      end
+      enum_for :each_solution
     end
 
     # This method lets you iterate over each solution.
