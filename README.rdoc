@@ -74,6 +74,8 @@ There are many directions this gem could go in.  The direction will be determine
 * More types of puzzles that are solvable (e.g. puzzles that have groups with fewer squares than the number of glyphs).
 * Improve this page.  Ideally the method names should be linkified on the {rubydoc.info page}[http://rubydoc.info/github/DavidEGrayson/doku/master], but I still want something presentable to be on the {github repository}[https://github.com/DavidEGrayson/doku].  Here's an example of a link that looks good on RubyDoc.info but not on github: {Doku::Sudoku Sudoku}.  If either YARD or Github could be configured to use a different file on the front page, that would suffice!
 
+To report bugs, use the {github issues page}[https://github.com/DavidEGrayson/doku/issues].
+
 == Philosophy
 
 This gem is meant to showcase beautiful Ruby code.  Test-driven development was used at all times during the development of this gem.  I have spent many hours reviewing the code, looking for ways to make it simpler, and refactoring it.  Every class and public method is documented.  Every method is short.  There are no ugly hacks.  All method names were chosen carefully.  At every level, the power of the Ruby language is exploited to its fullest potential.  --David Grayson
