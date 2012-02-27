@@ -59,7 +59,7 @@ The Doku::DancingLinks module contains several class that comprise a general-pur
 
 == Detailed Documentation
 
-For detailed documentation of every class, module, and method, see the "Class List" link above.
+For detailed documentation of every class, module, and method go to the {rubydoc.info page}[http://rubydoc.info/github/DavidEGrayson/doku/master/frames] and look for the "Class List" link at the top.
 
 == Contributing
 
