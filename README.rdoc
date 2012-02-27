@@ -1,0 +1,3 @@
+= Doku: solve Sudoku-like puzzles!
+
+Doku is a Ruby[http://www.rubylang.org/] gem[http://rubygems.org/] for solving Sudoku-like puzzles using the Dancing&nbsp;Links[http://en.wikipedia.org/wiki/Dancing_Links] algorithm by Donald Knuth.
