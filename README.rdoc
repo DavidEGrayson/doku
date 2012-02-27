@@ -47,7 +47,7 @@ Every Sudoku-like puzzle can be reduced to an {exact cover problem}[http://en.wi
 
 == Classes and Modules Overview
 
-The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of {Doku::Puzzle.groups groups}, {Doku::Puzzle.glyphs glyphs} and {Doku::Puzzle.squares squares}.  Each instance of this class represents a particular assignment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and values are glyphs.  This class provides {Doku::Puzzle#[] <code>[]</code>} and {Doku::Puzzle#[]= <code>[]=</code>} methods for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking.
+The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of {groups}, glyphs and squares.  Each instance of this class represents a particular assignment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and values are glyphs.  This class provides <code>[]</code> and <code>[]=</code> methods for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking.
 
 The Puzzle class includes the {Doku::SolvableWithDancingLinks} module which provides methods for solving puzzles using the Dancing Links algorithm.  The solutions returned are instances of Puzzle.
 
@@ -63,7 +63,7 @@ For detailed documentation of every class, module, and method, see the "Class Li
 
 == Contributing
 
-You are invited to fork the {https://github.com/DavidEGrayson/doku Doku github repository} and work on improving the gem.
+You are invited to fork the {Doku github repository}[https://github.com/DavidEGrayson/doku] and work on improving the gem.
 
 There are many directions this gem could go in.  The direction will be determined by user feedback and by whatever the developers feel like working on.  Possible improvements could be:
 
@@ -72,6 +72,7 @@ There are many directions this gem could go in.  The direction will be determine
 * Hooks for providing progress updates during the solving of hard puzzles.
 * Outputting puzzles in SVG format.  Could include SVG animations that show the process of solving the puzzle!
 * More types of puzzles that are solvable (e.g. puzzles that have groups with fewer squares than the number of glyphs).
+* Improve this page.  Ideally the method names should be linkified on the {rubydoc.info page}[http://rubydoc.info/github/DavidEGrayson/doku/master], but I still want something presentable to be on the {github repository}[https://github.com/DavidEGrayson/doku].  Here's an example of a link that looks good on RubyDoc.info but not on github: {Doku::Sudoku Sudoku}.  If either YARD or Github could be configured to use a different file on the front page, that would suffice!
 
 == Philosophy
 
