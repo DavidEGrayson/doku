@@ -45,13 +45,15 @@ In Sudoku, the glyphs are the numbers 0 through 9, the squares are the squares o
 
 {http://arxiv.org/abs/cs/0011047 Dancing Links}
 
-== Class and Module Overview
+== Classes and Modules Overview
 
-The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of groups, glyphs and squares.  It provides the {Doku::Puzzle#[] []} {Doku::Puzzle#[]= []=} for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking among other things.
+The {Doku::Puzzle} class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of {Doku::Puzzle.groups groups}, {Doku::Puzzle.glyphs glyphs} and {Doku::Puzzle.squares squares}.  Each instance of this class represents a particular assigment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and values are glyphs.  This class provides {Doku::Puzzle#[] <code>[]</code>} and {Doku::Puzzle#[]= <code>[]=</code>} methods for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking.
 
-The {Doku::SquareOnGrid} module provides functions used for Sudoku-like puzzles that can be drawn on a 2D grid.  It implements the string representations of the puzzle and an <code>initialize</code> method that creates puzzles from strings and a <code>to_s</code> methods that creates strings from puzzles.  It provides <code>get</code> and <code>set</code> methods for modifying the puzzle by its coordinates.
+The Puzzle class includes the {Doku::SolvableWithDancingLinks} module which provides methods for solving puzzles using the Dancing Links algorithm.  The solutions returned are instances of Puzzle.
 
-used to define classes the represent Sudoku-like puzzles.  The Puzzle class includes the {Doku::SolvableWithDancingLinks} module which provides methods for solving the puzzles using the Dancing Links algorithm.
+The {Doku::SquareOnGrid} module provides methods used for Sudoku-like puzzles that can be drawn on a 2D grid.  It implements the string representations of the puzzle by providing an <code>initialize</code> method that creates puzzles from strings and a <code>to_s</code> method that creates strings from puzzles.  It provides <code>get</code> and <code>set</code> methods for modifying suqares of the puzzle by their coordinates.
+
+The classes {Doku::Sudoku}, {Doku::Hexadoku}, and {Doku::Hexamurai} all inherit from {Doku::Puzzle} and include {Doku::SquareOnGrid}.  Because of the framework set up by that class and that module, the definitions of these classes are short and the methods provided by each of them are rich and consistent with eachother.
 
 The {Doku::DancingLinks} module contains several class that comprise a general-purpose implementation of the Dancing Links algorithm.  This module is included in the Doku gem for convenience, but it is not specifically for solving Sudoku-like puzzles; it can be applied to any exact cover problem. The main class in this module is LinkMatrix. All the other classes and modules are helpers for this class.
 
