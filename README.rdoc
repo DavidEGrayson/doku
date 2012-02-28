@@ -43,19 +43,19 @@ This gem is designed to solve Sudoku-like puzzles.  For the purposes of this gem
 
 For example, in Sudoku, the glyphs are the numbers 0 through 9, the squares are the squares of a 9x9 grid, and the groups consist of nine rows, nine columns, and nine 3x3 squares.
 
-Every Sudoku-like puzzle can be reduced to an {exact cover problem}[http://en.wikipedia.org/wiki/Exact_cover].  From there is can be efficiently solved with the {Dancing Links}[http://arxiv.org/abs/cs/0011047] algorithm discovered by Donald Knuth.  That is the main purpose of this gem.
+Every Sudoku-like puzzle can be reduced to an {exact cover problem}[http://en.wikipedia.org/wiki/Exact_cover].  From there it can be efficiently solved with the {Dancing Links}[http://arxiv.org/abs/cs/0011047] algorithm discovered by Donald Knuth.  That is the main purpose of this gem.
 
 == Classes and Modules Overview
 
-The Doku::Puzzle class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of groups, glyphs and squares.  Each instance of this class represents a particular assignment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and values are glyphs.  This class provides <code>[]</code> and <code>[]=</code> methods for reading and modifying instances of the puzzle.  It provides equality comparison and solution checking.
+The <b>Doku::DancingLinks</b> module contains several classes that comprise a general-purpose implementation of the Dancing Links algorithm.  This module is included in the Doku gem for convenience, but it is not specifically for solving Sudoku-like puzzles; it can be applied to any exact cover problem.
 
-The Puzzle class includes the Doku::SolvableWithDancingLinks module which provides methods for solving puzzles using the Dancing Links algorithm.  The solutions returned are instances of Puzzle.
+The <b>Doku::Puzzle</b> class is an abstract class for working with Sudoku-like puzzles.  It implements the concepts of groups, glyphs and squares.  Each instance of this class represents a particular assignment of glyphs to squares; at its core, an instance is just a hash where the keys are squares and the values are glyphs.  This class provides <code>[]</code> and <code>[]=</code> methods for reading and modifying instances of the puzzle, and it makes <code>dup</code> and <code>clone</code> work correctly.  This class provides equality comparison and solution checking.
 
-The Doku::SquareOnGrid module provides methods used for Sudoku-like puzzles that can be drawn on a 2D grid.  It implements the string representations of the puzzle by providing an <code>initialize</code> method that creates puzzles from strings and a <code>to_s</code> method that creates strings from puzzles.  It provides <code>get</code> and <code>set</code> methods for modifying suqares of the puzzle by their coordinates.
+The Puzzle class includes the <b>Doku::SolvableWithDancingLinks</b> module which provides methods for solving puzzles using Doku::DancingLinks.  The solutions returned are instances of Puzzle.  This module is the glue that connects Doku::Puzzle to Doku::DancingLinks.
 
-The classes Doku::Sudoku, Doku::Hexadoku, and Doku::Hexamurai all inherit from Doku::Puzzle and include Doku::SquareOnGrid.  Because of the framework set up by that class and that module, the definitions of these classes are short and the methods provided by each of them are rich and consistent with eachother.
+The <b>Doku::SquareOnGrid</b> module is useful for any Sudoku-like puzzle that can be drawn on a 2D grid.  It implements the string representations of the puzzle by providing an <code>initialize</code> method that creates puzzles from strings and a <code>to_s</code> method that creates strings from puzzles.  It also provides convenient <code>get</code> and <code>set</code> methods for reading and modifying instances of the puzzle using grid coordinates.
 
-The Doku::DancingLinks module contains several class that comprise a general-purpose implementation of the Dancing Links algorithm.  This module is included in the Doku gem for convenience, but it is not specifically for solving Sudoku-like puzzles; it can be applied to any exact cover problem.
+The classes <b>Doku::Sudoku</b>, <b>Doku::Hexadoku</b>, and <b>Doku::Hexamurai</b> all inherit from Doku::Puzzle and include Doku::SquareOnGrid.  As a user of the gem, these are the classes you will probably interact with most of the time.  Because of the framework set up by Doku::Puzzle and include Doku::SquareOnGrid, the definitions of these classes are short and the methods provided by each of them are rich and consistent with eachother.
 
 == Detailed Documentation
 

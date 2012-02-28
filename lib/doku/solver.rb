@@ -38,13 +38,14 @@ module Doku
     # @return (DancingLinks::LinkMatrix)
     def to_link_matrix
       # Create the link matrix.  This is a generic matrix
-      # that does not take in to account square.given_glyph.
+      # that does not take in to account the state of this instance.
       sm = DancingLinks::LinkMatrix.from_sets sets_for_exact_cover_problem
       
-      # Take into account square.given_glyph by covering certain
-      # rows (removing the row and all columns it touches).
+      # Take into account the state of this instance
+      # by "choosing" rows.  This removes them from the matrix
+      # by covering all the columns they touch.
       each do |square, glyph|
-        sm.remove_row SquareAndGlyph.new(square,glyph)
+        sm.row(SquareAndGlyph.new(square,glyph)).choose
       end
 
       sm

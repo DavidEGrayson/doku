@@ -250,19 +250,29 @@ module Doku::DancingLinks
       alias :nodes :nodes_rightward
 
       # Removes a row from the {LinkMatrix} by covering every
-      # column that it touches.  This represents (tentatively)
+      # column that it touches.
+      def choose
+        nodes_rightward.each do |node|
+          node.column.cover
+        end
+      end
+
+      # Removes a row from the {LinkMatrix} by covering every
+      # column that it touches EXCEPT self.column, which is
+      # assumed to already be covered.
+      # This represents (tentatively)
       # choosing the node's row to be in our exact cover.
       # When that choice is proven to not work, this action can
-      # be efficiently undone with {#unchoose}.
-      def choose
+      # be efficiently undone with {#unchoose_except_self_column}.
+      def choose_except_self_column
         nodes_except_self_rightward.each do |node|
           node.column.cover
         end
       end
 
-      # Undoes the effect of {#choose}, putting
+      # Undoes the effect of {#choose_except_self_column}, putting
       # the nodes of the row back into the {LinkMatrix}.
-      def unchoose
+      def unchoose_except_self_column
         nodes_except_self_leftward.each do |node|
           node.column.uncover
         end
@@ -366,7 +376,7 @@ module Doku::DancingLinks
     # as a new column.
     #
     # @param column_ids (Enumerable) The column_ids that are in this row.
-    # @param row_id (Object) The id of this row.  This is used to express express exact covers and as the argument to {#remove_row}.
+    # @param row_id (Object) The id of this row.  This is used to express express exact covers.
     def add_row(column_ids, row_id=column_ids.dup)
       first_node = nil
       column_ids = column_ids.uniq if column_ids.respond_to?(:uniq)
@@ -387,16 +397,6 @@ module Doku::DancingLinks
         end
 
         column.size += 1
-      end
-    end
-
-    # Removes a row from the matrix.
-    # @param row_id (Object) The ID of the row that was specified when
-    #   {#add_row} was called.
-    def remove_row(row_id)
-      raise ArgumentError, "Row with id #{row_id} not found." if !@rows[row_id]
-      @rows[row_id].nodes_rightward.each do |node|
-        node.column.cover
       end
     end
 
@@ -493,7 +493,7 @@ module Doku::DancingLinks
 
         # Try the node (push it and cover its columns).
         nodes.push node
-        node.choose
+        node.choose_except_self_column
 
       end
     end
@@ -538,7 +538,7 @@ module Doku::DancingLinks
         # We tried nodes.last and it didn't work, so
         # pop it off and uncover the corresponding columns.
         node = nodes.pop
-        node.unchoose
+        node.unchoose_except_self_column
         
         # Try the next node in this column.
         x = node.down
