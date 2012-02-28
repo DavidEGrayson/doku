@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "doku"
-  s.version = "1.0.1"
+  s.version = "1.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Grayson"]
-  s.date = "2012-02-27"
+  s.date = "2012-02-28"
   s.description = "This gem allows you to represent Sudoku-like puzzles\n(Sudoku, Hexadoku, and Hexamurai) as objects and find\nsolutions for them.\n\nThis gem contains a reusable, pure ruby implementation of the\nDancing Links algorithm by Donald Knuth.\n"
   s.email = "davidegrayson@gmail.com"
   s.extra_rdoc_files = [
