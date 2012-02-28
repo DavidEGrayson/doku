@@ -69,7 +69,7 @@ There are many directions this gem could go in.  The direction will be determine
 
 * A command-line utility for solving puzzles.  This requires us to define a file format for puzzles.
 * A C extension or a column size cache to make the Dancing Links algorithm faster.
-* Hooks for providing progress updates during the solving of hard puzzlinkes.
+* Hooks for providing progress updates during the solving of hard puzzles.
 * Outputting puzzles in SVG format.  Could include SVG animations that show the process of solving the puzzle!
 * More types of puzzles that are solvable (e.g. puzzles that have groups with fewer squares than the number of glyphs).
 * Improve this page.  Ideally the method names should be linkified on the {rubydoc.info page}[http://rubydoc.info/github/DavidEGrayson/doku/master], but I still want something presentable to be on the {github repository}[https://github.com/DavidEGrayson/doku].  Here's an example of a link that looks good on RubyDoc.info but not on github: {Doku::Sudoku Sudoku}.  If either YARD or Github could be configured to use a different file on the front page, that would suffice!
