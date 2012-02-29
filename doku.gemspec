@@ -5,12 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = "doku"
-  s.version = "1.1.1"
+  s.version = "1.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Grayson"]
   s.date = "2012-02-29"
-  s.description = "Library for solving Sudoku-like puzzles (Sudoku, Hexadoku, and Hexamurai)\nusing the Dancing Links algorithm.\n"
+  s.description = "Library for solving Sudoku-like puzzles (Sudoku, Hexadoku, etc.)\nusing the Dancing Links algorithm.\n"
   s.email = "davidegrayson@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE",
