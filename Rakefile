@@ -6,7 +6,7 @@ begin
   require 'rspec/core/rake_task'
   require 'yard'
 rescue LoadError => e
-  $stderr.puts "Run `gem install bundler && bundle install` to install missing gems."
+  $stderr.puts e, "Run `gem install bundler && bundle install` to install missing gems."
   exit 1
 end
 
@@ -15,21 +15,23 @@ Jeweler::Tasks.new do |gem|
   gem.name = "doku"
   gem.homepage = "http://github.com/DavidEGrayson/doku"
   gem.license = "MIT"
-  gem.files = %w{.document *.txt *.rdoc VERSION
-    Gemfile Rakefile
+  gem.files = %w{
+    .document
+    *.txt
+    *.rdoc
+    VERSION
+    LICENSE
+    Gemfile
+    Rakefile
     lib/doku.rb
     lib/doku/*.rb
     spec/*.rb
   }
 
-  gem.summary = "Ruby library for solving sudoku, hexadoku, and similar puzzles."
+  gem.summary = "Library for solving sudoku, hexadoku, and similar puzzles."
   gem.description = <<END
-This gem allows you to represent Sudoku-like puzzles
-(Sudoku, Hexadoku, and Hexamurai) as objects and find
-solutions for them.
-
-This gem contains a reusable, pure ruby implementation of the
-Dancing Links algorithm by Donald Knuth.
+Library for solving Sudoku-like puzzles (Sudoku, Hexadoku, and Hexamurai)
+using the Dancing Links algorithm.
 END
   gem.email = "davidegrayson@gmail.com"
   gem.authors = ["David Grayson"]
