@@ -30,7 +30,7 @@ Jeweler::Tasks.new do |gem|
 
   gem.summary = "Library for solving sudoku, hexadoku, and similar puzzles."
   gem.description = <<END
-Library for solving Sudoku-like puzzles (Sudoku, Hexadoku, and Hexamurai)
+Library for solving Sudoku-like puzzles (Sudoku, Hexadoku, etc.)
 using the Dancing Links algorithm.
 END
   gem.email = "davidegrayson@gmail.com"
