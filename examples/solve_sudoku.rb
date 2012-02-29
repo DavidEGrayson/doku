@@ -2,7 +2,7 @@ require 'rubygems'
 require 'doku'
 
 puzzle = Doku::Sudoku.new <<END
-...|..8|..1
+...|..8|...
 ..7|.35|..9
 5..|4.6|8..
 ---+---+---
@@ -15,4 +15,7 @@ puzzle = Doku::Sudoku.new <<END
 ...|...|..3
 END
 
-puts puzzle.solve || "No solution found."
+solution = puzzle.solve
+
+puts solution
+puts solution.get(7,8)

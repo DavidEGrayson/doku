@@ -8,8 +8,13 @@ source "http://rubygems.org"
 # backports gem:
 gem "backports", :platforms => :ruby_18
 
+group :svg, :development do
+  gem "builder"
+end
+
 # For development gem, these gems are recommended:
 group :development do
+  gem "nokogiri"
   gem "rspec"
   gem "bundler"
   gem "jeweler", "~> 1.6.2"

@@ -1,3 +1,6 @@
+require 'backports' unless defined?(require_relative)
+require_relative 'svg'
+
 module Doku
   # This module is meant to be included in subclasses of {Puzzle} where the
   # squares are arranged in a grid.
@@ -20,6 +23,8 @@ module Doku
   # See the {ClassMethods} module for the class methods that are added to each
   # class that includes PuzzleOnGrid.
   module PuzzleOnGrid
+    include Svg
+
     # These are the separators that can appear in the {ClassMethods#template template}
     # string or the string argument to the {#initialize} to make it more readable.
     Separators = ['-', '+', '|']
@@ -49,6 +54,8 @@ module Doku
     public
 
     module ClassMethods
+      include Svg::ClassMethods
+
       # @return (Array) Array with the line number and character number
       #   of the given square in the {#template} string.
       def coordinates_in_grid_string(square)
