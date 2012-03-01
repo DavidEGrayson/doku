@@ -78,7 +78,7 @@ END
         end
 
         each do |square, glyph|
-          builder.text({:x => (square.x+0.5)*SquareWidth, :y => (square.y+0.5)*SquareWidth}, self.class.glyph_char(glyph))
+          builder.text({:x => (square.x+0.5)*SquareWidth, :y => (square.y+0.5)*SquareWidth}, self.class.glyph_char(glyph), :id=>"square#{square.x}_#{square.y}")
         end
       end
     end
