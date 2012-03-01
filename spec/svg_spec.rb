@@ -4,7 +4,16 @@ require 'nokogiri'
 
 describe Doku::PuzzleOnGrid::Svg do
   before do
-    @puzzle = Doku::Sudoku.new
+    @puzzle = Doku::Sudoku.new <<END
+...123...
+......456
+.........
+.........
+.........
+.........
+.........
+.........
+END
   end
 
   it "can return a string svg" do
@@ -24,7 +33,10 @@ describe Doku::PuzzleOnGrid::Svg do
     svg = doc.css("svg").first
     svg.should be_a_kind_of Nokogiri::XML::Element
     svg.name.should == "svg"
-    svg.attr("width").to_i.should == 500   # tmphax
-    svg.attr("height").to_i.should == 500  # tmphax
+    svg.attr("width").to_i.should == 366
+    svg.attr("height").to_i.should == 366
+
+    svg.css("line").size.should == 20
+    svg.css("text").size.should == 6
   end
 end

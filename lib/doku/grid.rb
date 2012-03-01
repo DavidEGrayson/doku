@@ -54,8 +54,6 @@ module Doku
     public
 
     module ClassMethods
-      include Svg::ClassMethods
-
       # @return (Array) Array with the line number and character number
       #   of the given square in the {#template} string.
       def coordinates_in_grid_string(square)
