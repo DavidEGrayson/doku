@@ -50,6 +50,7 @@ END
           ys = squares.select { |s| xs.include?(s.x) }.collect(&:y)
 
           options = {}
+          options[:id] = "x#{left_x}_#{right_x}"
           options[:x1] = options[:x2] = x*SquareWidth
           options[:y1] = ys.min*SquareWidth
           options[:y2] = (ys.max+1)*SquareWidth
@@ -66,6 +67,7 @@ END
           xs = squares.select { |s| ys.include?(s.y) }.collect(&:x)
 
           options = {}
+          options[:id] = "y#{left_y}_#{right_y}"
           options[:y1] = options[:y2] = y*SquareWidth
           options[:x1] = xs.min*SquareWidth
           options[:x2] = (xs.max+1)*SquareWidth
