@@ -5,7 +5,11 @@ module Doku::PuzzleOnGrid::Svg
   Style = <<END
 line {
   stroke: #000;
-  stroke-width: 1px;
+  stroke-width: 0.6px;
+}
+line.heavy
+{
+  stroke-width: 2.7px;
 }
 text {
   dominant-baseline: central;
@@ -40,11 +44,19 @@ END
 
       builder.g :transform=>"translate(#{Margin}, #{Margin})" do
         (0..(max_x+1)).each do |x|
-          builder.line :x1 => x*SquareWidth, :y1 => 0, :x2 => x*SquareWidth, :y2 => (max_y+1)*SquareWidth
+          options = {:x1 => x*SquareWidth, :y1 => 0, :x2 => x*SquareWidth, :y2 => (max_y+1)*SquareWidth}
+          if x > 0 && x < max_x+1 && self.class.char_number[x] - self.class.char_number[x-1] > 1
+            options[:class] = "heavy"
+          end
+          builder.line options
         end
 
         (0..(max_y+1)).each do |y|
-          builder.line :x1 => 0, :y1 => y*SquareWidth, :x2 => (max_x+1)*SquareWidth, :y2 => y*SquareWidth
+          options = {:x1 => 0, :y1 => y*SquareWidth, :x2 => (max_x+1)*SquareWidth, :y2 => y*SquareWidth}
+          if y > 0 && y < max_x+1 && self.class.line_number[y] - self.class.char_number[y-1] > 1
+            options[:class] = "heavy"
+          end
+          builder.line options
         end
 
         each do |square, glyph|

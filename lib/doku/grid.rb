@@ -60,6 +60,9 @@ module Doku
         [@line_number[square.y], @char_number[square.x]]
       end
 
+      attr_reader :line_number
+      attr_reader :char_number
+
       # This is a multi-line string that defines all the squares in the puzzle and the
       # {Separators} to use to make the puzzle more readable in {#to_grid_string}.
       # A period character ('.') represents a square.
