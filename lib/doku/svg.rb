@@ -42,7 +42,7 @@ END
         builder.style Style
       end
 
-      builder.g :transform=>"translate(#{Margin}, #{Margin})" do
+      builder.g :id=>"main", :transform=>"translate(#{Margin}, #{Margin})" do
         (0..(abs_max_x+1)).each do |x|
           left_x = x > 0 ? x - 1 : nil
           right_x = x <= abs_max_x ? x : nil
